@@ -1,0 +1,20 @@
+{
+  "FinanceApp": {
+    "title": "¡Hola mundo!",
+    "login_title": "Acceder a tu cuenta",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "login": "Iniciar sesión",
+    "register_link": "¿No tienes una cuenta?",
+    "password_recover": "Olvidé mi contraseña",
+    "two_factor_title": "Código de dos factores",
+    "confirm": "Confirmar",
+    "unknown_error": "¡Algo salió mal!",
+    "invalid_credentials_error": "¡Credenciales inválidas!",
+    "email_sent": "Correo electrónico enviado",
+    "create_account": "Crear una cuenta",
+    "already_have_account": "¿Ya tienes una cuenta?",
+    "name": "Nombre",
+    "create": "Crear"
+  }
+}
