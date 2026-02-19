@@ -1,0 +1,30 @@
+services:
+  # Tu base de datos PostgreSQL
+  postgres:
+    image: postgres:latest
+    restart: always
+    container_name: handledmoney
+    environment:
+      # Pon aquí la contraseña para PostgreSQL
+      POSTGRES_PASSWORD: tu-password-de-postgres
+      POSTGRES_DB: handledmoney
+    ports:
+      - '5432:5432' # Puerto de Postgres
+    volumes:
+      - postgres-data:/var/lib/postgresql
+
+  # Tu base de datos Redis
+  redis:
+    image: redis:latest
+    restart: always
+    container_name: handledmoney_redis
+    command: redis-server --requirepass tu-password-de-redis
+    ports:
+      - '6379:6379' # Puerto de Redis
+    volumes:
+      - redis-data:/data
+
+# Definimos los volúmenes para que los datos persistan
+volumes:
+  postgres-data:
+  redis-data:
