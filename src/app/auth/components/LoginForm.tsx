@@ -2,17 +2,19 @@
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { authClient } from '@/lib/auth-client'
 import { LoginSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
-import { toast } from 'sonner'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
 
 export const LoginForm = () => {
+  const router = useRouter()
   const t = useTranslations('FinanceApp')
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
@@ -30,21 +32,18 @@ export const LoginForm = () => {
     },
   })
 
-  function onSubmit(data: z.infer<typeof LoginSchema>) {
-    toast('You submitted the following values:', {
-      description: (
-        <pre className='bg-code text-code-foreground mt-2 w-[320px] overflow-x-auto rounded-md p-4'>
-          <code>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-      position: 'bottom-right',
-      classNames: {
-        content: 'flex flex-col gap-2',
-      },
-      style: {
-        '--border-radius': 'calc(var(--radius)  + 4px)',
-      } as React.CSSProperties,
+  const handleSubmit = async (data: z.infer<typeof LoginSchema>) => {
+    const { error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password,
+      callbackURL: '/dashboard',
     })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      router.push('/dashboard')
+    }
   }
 
   return (
@@ -57,7 +56,7 @@ export const LoginForm = () => {
       callbackUrl={'/'}
       showSocial
     >
-      <form id='form-rhf-demo' onSubmit={form.handleSubmit(onSubmit)}>
+      <form id='form-rhf-demo' onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           <Controller
             name='email'
@@ -109,8 +108,12 @@ export const LoginForm = () => {
           {showTwoFactor ? t('confirm') : t('login')}
         </Button>
       </form>
+    </CardWrapper>
+  )
+}
 
-      {/* <Form {...form}>
+{
+  /* <Form {...form}>
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           {showTwoFactor ? (
             <FormField
@@ -183,7 +186,5 @@ export const LoginForm = () => {
             {showTwoFactor ? t('confirm') : t('login')}
           </Button>
         </form>
-      </Form> */}
-    </CardWrapper>
-  )
+      </Form> */
 }

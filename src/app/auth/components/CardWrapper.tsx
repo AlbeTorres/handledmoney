@@ -23,8 +23,8 @@ export const CardWrapper = ({
   callbackUrl,
 }: CardWrapperProps) => {
   return (
-    <div className='px-8 py-6 w-11/12 md:w-84 text-left bg-white md:shadow-lg'>
-      <h3 className='text-2xl font-bold '>{headerLabel}</h3>
+    <div className='px-8 py-6 w-11/12 md:w-84 text-left bg-white rounded-b-md md:shadow-lg'>
+      <h3 className='text-2xl font-bold mb-5'>{headerLabel}</h3>
       {children}
       {/* divisor line */}
       <div className='flex items-center my-5'>

@@ -1,3 +1,138 @@
+'use client'
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { Input } from '@/components/ui/input'
+import { authClient } from '@/lib/auth-client'
+import { RegisterSchema } from '@/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
+import { useState, useTransition } from 'react'
+import { Controller, useForm } from 'react-hook-form'
+import z from 'zod'
+import { AuthMessage } from './AuthMessage'
+import { CardWrapper } from './CardWrapper'
+
+export default function RegisterPage() {
+  const router = useRouter()
+  const t = useTranslations('FinanceApp')
+
+  const [isPending, startTransition] = useTransition()
+  const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
+    message: '',
+    type: null,
+  })
+
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+      name: '',
+    },
+  })
+
+  const handleSubmit = async (data: z.infer<typeof RegisterSchema>) => {
+    const { error } = await authClient.signUp.email({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      callbackURL: '/dashboard',
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      router.push('/dashboard')
+    }
+  }
+
+  return (
+    <CardWrapper
+      headerLabel={t('register_title')}
+      backButtonHref='/auth/login'
+      backButtonLabel={t('login_link')}
+      recoverButtonHref='/auth/reset'
+      recoverButtonLabel={t('password_recover')}
+      callbackUrl={'/'}
+      showSocial
+    >
+      <form id='form-signup' onSubmit={form.handleSubmit(handleSubmit)}>
+        <FieldGroup>
+          <Controller
+            name='name'
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor='form-signup-name'>{t('name')}</FieldLabel>
+                <Input
+                  {...field}
+                  id='form-signup-name'
+                  aria-invalid={fieldState.invalid}
+                  placeholder={t('name_placeholder')}
+                  autoComplete='off'
+                  type='text'
+                  disabled={isPending}
+                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Controller
+            name='email'
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor='form-signup-email'>{t('email')}</FieldLabel>
+                <Input
+                  {...field}
+                  id='form-signup-email'
+                  aria-invalid={fieldState.invalid}
+                  placeholder={t('email_placeholder')}
+                  autoComplete='off'
+                  type='email'
+                  disabled={isPending}
+                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+          <Controller
+            name='password'
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor='form-signup-password'>{t('password')}</FieldLabel>
+                <Input
+                  {...field}
+                  id='form-signup-password'
+                  aria-invalid={fieldState.invalid}
+                  placeholder={t('password_placeholder')}
+                  autoComplete='off'
+                  type='password'
+                  disabled={isPending}
+                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
+                />
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </FieldGroup>
+        <AuthMessage className='my-4' type={message.type} message={message.message} />
+        <Button
+          disabled={isPending}
+          type='submit'
+          className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
+        >
+          {t('register_button')}
+        </Button>
+      </form>
+    </CardWrapper>
+  )
+}
+
 // 'use client'
 // import { useForm } from 'react-hook-form'
 

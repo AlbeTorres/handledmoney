@@ -2,145 +2,120 @@ import { relations } from 'drizzle-orm'
 import {
   bigint,
   boolean,
-  integer,
+  index,
   pgEnum,
   pgTable,
-  primaryKey,
+  text,
   timestamp,
-  unique,
-  uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
 
-enum Languaje {
-  en = 'en',
-  es = 'es',
-}
-
-//roles
 export const roleEnum = pgEnum('role', ['admin', 'user'])
 
 export const languageEnum = pgEnum('language', ['es', 'en'])
 
-//models
-export const usersTable = pgTable('users', {
-  id: uuid().defaultRandom().primaryKey(),
-  name: varchar({ length: 255 }),
-  email: varchar({ length: 255 }).unique(),
-  emailVerified: timestamp(),
-  password: varchar({ length: 255 }),
-  image: varchar({ length: 255 }),
+export const user = pgTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  emailVerified: boolean('email_verified').default(false).notNull(),
+  image: text('image'),
   role: roleEnum().default('user'),
-  isTwoFactorEnabled: boolean().default(false),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 })
 
-export const accountsTable = pgTable(
-  'accounts',
+export const session = pgTable(
+  'session',
   {
-    userId: uuid()
+    id: text('id').primaryKey(),
+    expiresAt: timestamp('expires_at').notNull(),
+    token: text('token').notNull().unique(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+    ipAddress: text('ip_address'),
+    userAgent: text('user_agent'),
+    userId: text('user_id')
       .notNull()
-      .references(() => usersTable.id, { onDelete: 'cascade' }),
-    type: varchar({ length: 255 }).notNull(),
-    provider: varchar({ length: 255 }).notNull(),
-    providerAccountId: varchar({ length: 255 }).notNull(),
-    refresh_token: varchar({ length: 255 }),
-    access_token: varchar({ length: 255 }),
-    expires_at: integer(),
-    token_type: varchar({ length: 255 }),
-    scope: varchar({ length: 255 }),
-    id_token: varchar({ length: 255 }),
-    session_state: varchar({ length: 255 }),
+      .references(() => user.id, { onDelete: 'cascade' }),
+  },
+  table => [index('session_userId_idx').on(table.userId)],
+)
 
-    createdAt: timestamp().defaultNow(),
-    updatedAt: timestamp()
+export const account = pgTable(
+  'account',
+  {
+    id: text('id').primaryKey(),
+    accountId: text('account_id').notNull(),
+    providerId: text('provider_id').notNull(),
+    userId: text('user_id')
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    accessToken: text('access_token'),
+    refreshToken: text('refresh_token'),
+    idToken: text('id_token'),
+    accessTokenExpiresAt: timestamp('access_token_expires_at'),
+    refreshTokenExpiresAt: timestamp('refresh_token_expires_at'),
+    scope: text('scope'),
+    password: text('password'),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  table => [index('account_userId_idx').on(table.userId)],
+)
+
+export const verification = pgTable(
+  'verification',
+  {
+    id: text('id').primaryKey(),
+    identifier: text('identifier').notNull(),
+    value: text('value').notNull(),
+    expiresAt: timestamp('expires_at').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
       .defaultNow()
-      .$onUpdate(() => new Date()),
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
-  table => [
-    // Primary key compuesto
-    primaryKey({ columns: [table.provider, table.providerAccountId] }),
-  ],
+  table => [index('verification_identifier_idx').on(table.identifier)],
 )
-
-export const VerificationToken = pgTable(
-  'verification_token',
-  {
-    id: uuid().defaultRandom().primaryKey(),
-    email: varchar({ length: 255 }).notNull(),
-    token: varchar({ length: 255 }).notNull().unique(),
-    expires: timestamp().notNull(),
-  },
-  table => [
-    // unique compuesta equivalente a @@unique([email, token])
-    unique().on(table.email, table.token),
-  ],
-)
-
-export const PasswordResetToken = pgTable(
-  'password_reset_token',
-  {
-    id: uuid().defaultRandom().primaryKey(),
-    email: varchar({ length: 255 }).notNull(),
-    token: varchar({ length: 255 }).notNull().unique(),
-    expires: timestamp().notNull(),
-  },
-  table => [
-    // unique compuesta equivalente a @@unique([email, token])
-    unique().on(table.email, table.token),
-  ],
-)
-
-export const TwoFactorToken = pgTable(
-  'two_factor_token',
-  {
-    id: uuid().defaultRandom().primaryKey(),
-    email: varchar({ length: 255 }).notNull(),
-    token: varchar({ length: 255 }).notNull().unique(),
-    expires: timestamp().notNull(),
-  },
-  table => [
-    // unique compuesta equivalente a @@unique([email, token])
-    unique().on(table.email, table.token),
-  ],
-)
-
-export const TwoFactorConfirmation = pgTable('two_factor_confirmation', {
-  id: uuid().defaultRandom().primaryKey(),
-  userId: uuid()
-    .notNull()
-    .unique()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
-})
 
 export const Settings = pgTable('settings', {
-  id: uuid().defaultRandom().primaryKey(),
-  userId: uuid()
+  id: text('id').primaryKey(),
+  userId: text()
     .notNull()
     .unique()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   language: languageEnum().default('en'),
 })
 
 export const bankAccountsTable = pgTable('bank_account', {
-  id: uuid().defaultRandom().primaryKey(),
+  id: text('id').primaryKey(),
   plaidId: varchar({ length: 255 }),
-  userId: uuid()
+  userId: text()
     .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
 })
 
 export const categoriesTable = pgTable('category', {
-  id: uuid().defaultRandom().primaryKey(),
+  id: text('id').primaryKey(),
   plaidId: varchar({ length: 255 }),
-  userId: uuid()
+  userId: text()
     .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
 })
 
 export const transactionsTable = pgTable('transaction', {
-  id: uuid().defaultRandom().primaryKey(),
+  id: text('id').primaryKey(),
 
   amount: bigint({ mode: 'bigint' }).notNull(),
 
@@ -149,76 +124,67 @@ export const transactionsTable = pgTable('transaction', {
 
   date: timestamp().notNull(),
 
-  accountId: uuid()
+  accountId: text()
     .notNull()
     .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
 
-  categoryId: uuid().references(() => categoriesTable.id),
+  categoryId: text().references(() => categoriesTable.id),
 
-  userId: uuid()
+  userId: text()
     .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
+    .references(() => user.id, { onDelete: 'cascade' }),
 })
 
 //relations
-export const usersRelations = relations(usersTable, ({ many, one }) => ({
-  account: many(accountsTable),
+
+export const userRelations = relations(user, ({ many, one }) => ({
+  sessions: many(session),
+  accounts: many(account),
+
   bankAccounts: many(bankAccountsTable),
   categories: many(categoriesTable),
   transactions: many(transactionsTable),
 
-  twoFactorConfirmation: one(TwoFactorConfirmation, {
-    fields: [usersTable.id],
-    references: [TwoFactorConfirmation.userId],
-  }),
-
   settings: one(Settings, {
-    fields: [usersTable.id],
+    fields: [user.id],
     references: [Settings.userId],
   }),
 }))
 
-export const accountsRelations = relations(accountsTable, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [accountsTable.userId],
-    references: [usersTable.id],
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, {
+    fields: [session.userId],
+    references: [user.id],
   }),
 }))
 
-export const settingsRelations = relations(Settings, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [Settings.userId],
-    references: [usersTable.id],
+export const accountRelations = relations(account, ({ one }) => ({
+  user: one(user, {
+    fields: [account.userId],
+    references: [user.id],
   }),
 }))
 
 export const bankAccountsRelations = relations(bankAccountsTable, ({ one, many }) => ({
-  user: one(usersTable, {
+  user: one(user, {
     fields: [bankAccountsTable.userId],
-    references: [usersTable.id],
+    references: [user.id],
   }),
   transactions: many(transactionsTable),
 }))
 
 export const categoriesRelations = relations(categoriesTable, ({ one, many }) => ({
-  user: one(usersTable, {
+  user: one(user, {
     fields: [categoriesTable.userId],
-    references: [usersTable.id],
+    references: [user.id],
   }),
   transactions: many(transactionsTable),
 }))
 
-export const twoFactorConfirmationRelations = relations(TwoFactorConfirmation, ({ one }) => ({
-  user: one(usersTable, {
-    fields: [TwoFactorConfirmation.userId],
-    references: [usersTable.id],
-  }),
-}))
-
 export const transactionsRelations = relations(transactionsTable, ({ one }) => ({
-  user: one(usersTable, {
+  user: one(user, {
     fields: [transactionsTable.userId],
-    references: [usersTable.id],
+    references: [user.id],
   }),
   account: one(bankAccountsTable, {
     fields: [transactionsTable.accountId],
