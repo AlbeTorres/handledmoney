@@ -1,10 +1,11 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { authClient } from '@/lib/auth-client'
 import { LoginSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { EyeOffIcon, MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -12,8 +13,6 @@ import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { EyeOffIcon, MailIcon } from 'lucide-react'
 
 export const LoginForm = () => {
   const router = useRouter()
@@ -76,7 +75,7 @@ export const LoginForm = () => {
                     type='email'
                     disabled={isPending}
                   />
-                  <InputGroupAddon >
+                  <InputGroupAddon>
                     <MailIcon />
                   </InputGroupAddon>
                 </InputGroup>
@@ -100,9 +99,8 @@ export const LoginForm = () => {
                     autoComplete='off'
                     type='password'
                     disabled={isPending}
-
                   />
-                  <InputGroupAddon align="inline-end">
+                  <InputGroupAddon>
                     <EyeOffIcon />
                   </InputGroupAddon>
                 </InputGroup>

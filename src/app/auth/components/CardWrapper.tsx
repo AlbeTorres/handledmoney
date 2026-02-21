@@ -4,10 +4,10 @@ import { SocialButtons } from './SocialButtons'
 interface CardWrapperProps {
   children: React.ReactNode
   headerLabel: string
-  backButtonLabel?: string
-  backButtonHref?: string
-  recoverButtonHref?: string
-  recoverButtonLabel?: string
+  backButtonLabel: string
+  backButtonHref: string
+  recoverButtonHref: string
+  recoverButtonLabel: string
   showSocial?: boolean
   callbackUrl?: string
 }
@@ -35,10 +35,12 @@ export const CardWrapper = ({
 
       {showSocial && <SocialButtons callbackUrl={callbackUrl} />}
       <div className='mt-5 flex flex-col gap-3'>
-        <Link href={backButtonHref || ''}>
-          <p className='text-xs text-center'>{backButtonLabel}</p>
+        <Link href={backButtonHref}>
+          <p className='text-xs text-center hover:text-blue-700 hover:underline'>
+            {backButtonLabel}
+          </p>
         </Link>
-        <Link href={recoverButtonHref || ''}>
+        <Link href={recoverButtonHref}>
           <p className='text-xs text-center hover:text-blue-700 hover:underline mt-2'>
             {recoverButtonLabel}
           </p>

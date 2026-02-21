@@ -1,10 +1,11 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import { authClient } from '@/lib/auth-client'
 import { RegisterSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { EyeIcon, EyeOffIcon, MailIcon, UserIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -15,7 +16,8 @@ import { CardWrapper } from './CardWrapper'
 
 export default function RegisterPage() {
   const router = useRouter()
-  const t = useTranslations('FinanceApp')
+  const t = useTranslations('handledmoney.auth')
+  const [showPassword, setShowPassword] = useState(false)
 
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
@@ -49,11 +51,11 @@ export default function RegisterPage() {
 
   return (
     <CardWrapper
-      headerLabel={t('register_title')}
+      headerLabel={t('signup_title')}
       backButtonHref='/auth/login'
-      backButtonLabel={t('login_link')}
+      backButtonLabel={t('signin_link')}
       recoverButtonHref='/auth/reset'
-      recoverButtonLabel={t('password_recover')}
+      recoverButtonLabel={t('password_recovery')}
       callbackUrl={'/'}
       showSocial
     >
@@ -65,16 +67,21 @@ export default function RegisterPage() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signup-name'>{t('name')}</FieldLabel>
-                <Input
-                  {...field}
-                  id='form-signup-name'
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t('name_placeholder')}
-                  autoComplete='off'
-                  type='text'
-                  disabled={isPending}
-                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
-                />
+                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signup-name'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('name_placeholder')}
+                    autoComplete='off'
+                    type='text'
+                    disabled={isPending}
+                  />
+                  <InputGroupAddon>
+                    <UserIcon />
+                  </InputGroupAddon>
+                </InputGroup>
+
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -85,16 +92,22 @@ export default function RegisterPage() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signup-email'>{t('email')}</FieldLabel>
-                <Input
-                  {...field}
-                  id='form-signup-email'
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t('email_placeholder')}
-                  autoComplete='off'
-                  type='email'
-                  disabled={isPending}
-                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
-                />
+                <InputGroup>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signup-email'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('email_placeholder')}
+                    autoComplete='off'
+                    type='email'
+                    disabled={isPending}
+                  />
+
+                  <InputGroupAddon>
+                    <MailIcon />
+                  </InputGroupAddon>
+                </InputGroup>
+
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -105,16 +118,31 @@ export default function RegisterPage() {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signup-password'>{t('password')}</FieldLabel>
-                <Input
-                  {...field}
-                  id='form-signup-password'
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t('password_placeholder')}
-                  autoComplete='off'
-                  type='password'
-                  disabled={isPending}
-                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
-                />
+                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signup-password'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('password_placeholder')}
+                    autoComplete='off'
+                    type={showPassword ? 'text' : 'password'}
+                    disabled={isPending}
+                  />
+                  <InputGroupAddon>
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={isPending}
+                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                    >
+                      {showPassword ? (
+                        <EyeIcon className='w-5 h-5' />
+                      ) : (
+                        <EyeOffIcon className='w-5 h-5' />
+                      )}
+                    </button>
+                  </InputGroupAddon>
+                </InputGroup>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -126,7 +154,7 @@ export default function RegisterPage() {
           type='submit'
           className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
         >
-          {t('register_button')}
+          {t('signup')}
         </Button>
       </form>
     </CardWrapper>

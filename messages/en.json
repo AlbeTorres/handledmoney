@@ -18,6 +18,7 @@
       "email_sent": "Email sent",
       "create_account": "Create an account",
       "name": "Name",
+      "name_placeholder": "John Doe",
       "create": "Create",
       "password_recovery": "I forgot my password"
     },
