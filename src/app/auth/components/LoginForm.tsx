@@ -5,7 +5,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { authClient } from '@/lib/auth-client'
 import { LoginSchema } from '@/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { EyeOffIcon, MailIcon } from 'lucide-react'
+import { EyeIcon, EyeOffIcon, MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -17,6 +17,7 @@ import { CardWrapper } from './CardWrapper'
 export const LoginForm = () => {
   const router = useRouter()
   const t = useTranslations('handledmoney.auth')
+  const [showPassword, setShowPassword] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
     message: '',
@@ -97,11 +98,22 @@ export const LoginForm = () => {
                     aria-invalid={fieldState.invalid}
                     placeholder={t('password_placeholder')}
                     autoComplete='off'
-                    type='password'
+                    type={showPassword ? 'text' : 'password'}
                     disabled={isPending}
                   />
                   <InputGroupAddon>
-                    <EyeOffIcon />
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(!showPassword)}
+                      disabled={isPending}
+                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                    >
+                      {showPassword ? (
+                        <EyeIcon className='w-4 h-4' />
+                      ) : (
+                        <EyeOffIcon className='w-4 h-4' />
+                      )}
+                    </button>
                   </InputGroupAddon>
                 </InputGroup>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

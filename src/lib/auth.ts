@@ -2,8 +2,10 @@ import { db } from '@/db' // your drizzle instance
 import * as schema from '@/db/schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+import { twoFactor } from "better-auth/plugins"
 
 export const auth = betterAuth({
+  appName: "HandledMoney", // provide your app name. It'll be used as an issuer.
   database: drizzleAdapter(db, {
     provider: 'pg', // or "mysql", "sqlite"
     schema: schema,
@@ -23,4 +25,7 @@ export const auth = betterAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  plugins: [
+    twoFactor()
+  ]
 })

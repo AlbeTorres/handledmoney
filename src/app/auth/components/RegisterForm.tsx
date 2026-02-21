@@ -136,9 +136,9 @@ export default function RegisterPage() {
                       className='text-gray-500 pl-1.5 hover:text-foreground/80'
                     >
                       {showPassword ? (
-                        <EyeIcon className='w-5 h-5' />
+                        <EyeIcon className='w-4 h-4' />
                       ) : (
-                        <EyeOffIcon className='w-5 h-5' />
+                        <EyeOffIcon className='w-4 h-4' />
                       )}
                     </button>
                   </InputGroupAddon>

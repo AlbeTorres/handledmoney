@@ -8,6 +8,13 @@
       "when": 1771597861695,
       "tag": "0000_warm_saracen",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1771701859168,
+      "tag": "0001_sudden_psynapse",
+      "breakpoints": true
     }
   ]
 }
