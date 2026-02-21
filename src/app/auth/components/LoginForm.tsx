@@ -12,10 +12,12 @@ import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { EyeOffIcon, MailIcon } from 'lucide-react'
 
 export const LoginForm = () => {
   const router = useRouter()
-  const t = useTranslations('FinanceApp')
+  const t = useTranslations('handledmoney.auth')
   const [isPending, startTransition] = useTransition()
   const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
     message: '',
@@ -48,32 +50,37 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel={t('login_title')}
+      headerLabel={t('signin_title')}
       backButtonHref='/auth/new-account'
-      backButtonLabel={t('register_link')}
+      backButtonLabel={t('signup_link')}
       recoverButtonHref='/auth/reset'
-      recoverButtonLabel={t('password_recover')}
+      recoverButtonLabel={t('password_recovery')}
       callbackUrl={'/'}
       showSocial
     >
-      <form id='form-rhf-demo' onSubmit={form.handleSubmit(handleSubmit)}>
+      <form id='form-signin' onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           <Controller
             name='email'
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor='form-rhf-demo-email'>{t('email')}</FieldLabel>
-                <Input
-                  {...field}
-                  id='form-rhf-demo-email'
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t('email_placeholder')}
-                  autoComplete='off'
-                  type='email'
-                  disabled={isPending}
-                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
-                />
+                <FieldLabel htmlFor='form-signin-email'>{t('email')}</FieldLabel>
+                <InputGroup className='w-full border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signin-email'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('email_placeholder')}
+                    autoComplete='off'
+                    type='email'
+                    disabled={isPending}
+                  />
+                  <InputGroupAddon >
+                    <MailIcon />
+                  </InputGroupAddon>
+                </InputGroup>
+
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -83,17 +90,22 @@ export const LoginForm = () => {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor='form-rhf-demo-password'>{t('password')}</FieldLabel>
-                <Input
-                  {...field}
-                  id='form-rhf-demo-password'
-                  aria-invalid={fieldState.invalid}
-                  placeholder={t('password_placeholder')}
-                  autoComplete='off'
-                  type='password'
-                  disabled={isPending}
-                  className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'
-                />
+                <FieldLabel htmlFor='form-signin-password'>{t('password')}</FieldLabel>
+                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signin-password'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('password_placeholder')}
+                    autoComplete='off'
+                    type='password'
+                    disabled={isPending}
+
+                  />
+                  <InputGroupAddon align="inline-end">
+                    <EyeOffIcon />
+                  </InputGroupAddon>
+                </InputGroup>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
             )}
@@ -105,7 +117,7 @@ export const LoginForm = () => {
           type='submit'
           className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
         >
-          {showTwoFactor ? t('confirm') : t('login')}
+          {showTwoFactor ? t('confirm') : t('signin')}
         </Button>
       </form>
     </CardWrapper>

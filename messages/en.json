@@ -1,20 +1,26 @@
 {
-  "FinanceApp": {
-    "title": "Hello world!",
-    "login_title": "Login to your account",
-    "email": "Email",
-    "password": "Password",
-    "login": "Login",
-    "register_link": "Don't have an account?",
-    "password_recover": "I forgot my password",
-    "two_factor_title": "Two factor code",
-    "confirm": "Confirm",
-    "unknown_error": "Something went wrong!",
-    "invalid_credentials_error": "Invalid credentials!",
-    "email_sent": "Email sent",
-    "create_account": "Create an account",
-    "already_have_account": "Already have an account?",
-    "name": "Name",
-    "create": "Create"
+  "handledmoney": {
+    "auth": {
+      "signin_title": "Sign in to your account",
+      "signup_title": "Sign up for an account",
+      "signin": "Sign in",
+      "signup": "Sign up",
+      "signin_link": "Already have an account?",
+      "signup_link": "Don't have an account?",
+      "email": "Email",
+      "email_placeholder": "johndoe@email.com",
+      "password_placeholder": "Enter your password",
+      "password": "Password",
+      "forgot_password": "I forgot my password",
+      "two_factor_title": "Two factor code",
+      "confirm": "Confirm",
+      "invalid_credentials_error": "Invalid credentials!",
+      "email_sent": "Email sent",
+      "create_account": "Create an account",
+      "name": "Name",
+      "create": "Create",
+      "password_recovery": "I forgot my password"
+    },
+    "unknown_error": "Something went wrong!"
   }
 }
