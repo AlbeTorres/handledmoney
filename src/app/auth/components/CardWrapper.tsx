@@ -4,12 +4,13 @@ import { SocialButtons } from './SocialButtons'
 interface CardWrapperProps {
   children: React.ReactNode
   headerLabel: string
-  backButtonLabel: string
-  backButtonHref: string
-  recoverButtonHref: string
-  recoverButtonLabel: string
+  backButtonLabel?: string
+  backButtonHref?: string
+  recoverButtonHref?: string
+  recoverButtonLabel?: string
   showSocial?: boolean
   callbackUrl?: string
+  isPending: boolean
 }
 
 export const CardWrapper = ({
@@ -21,6 +22,7 @@ export const CardWrapper = ({
   recoverButtonHref,
   recoverButtonLabel,
   callbackUrl,
+  isPending,
 }: CardWrapperProps) => {
   return (
     <div className='px-8 py-6 w-11/12 md:w-84 text-left bg-white rounded-b-md md:shadow-lg'>
@@ -33,14 +35,14 @@ export const CardWrapper = ({
         <div className='flex-1 border-t border-gray-500'></div>
       </div>
 
-      {showSocial && <SocialButtons callbackUrl={callbackUrl} />}
+      {showSocial && <SocialButtons callbackUrl={callbackUrl} isPending={isPending} />}
       <div className='mt-5 flex flex-col gap-3'>
-        <Link href={backButtonHref}>
+        <Link href={backButtonHref || '/'}>
           <p className='text-xs text-center hover:text-blue-700 hover:underline'>
             {backButtonLabel}
           </p>
         </Link>
-        <Link href={recoverButtonHref}>
+        <Link href={recoverButtonHref || '/'}>
           <p className='text-xs text-center hover:text-blue-700 hover:underline mt-2'>
             {recoverButtonLabel}
           </p>

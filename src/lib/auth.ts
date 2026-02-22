@@ -1,11 +1,12 @@
+import { sendEmail } from '@/actions/email/sendEmail'
 import { db } from '@/db' // your drizzle instance
 import * as schema from '@/db/schema'
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { twoFactor } from "better-auth/plugins"
+import { twoFactor } from 'better-auth/plugins'
 
 export const auth = betterAuth({
-  appName: "HandledMoney", // provide your app name. It'll be used as an issuer.
+  appName: 'HandledMoney', // provide your app name. It'll be used as an issuer.
   database: drizzleAdapter(db, {
     provider: 'pg', // or "mysql", "sqlite"
     schema: schema,
@@ -18,14 +19,37 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: false,
-  },
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url, token }, request) => {
+      void sendEmail({
+        email: user.email,
+        subject: 'Recupera tu contraseña',
+        content: 'Haz clic en el link para resetear tu contraseña',
+        firstName: user.name,
+        url, // este url ya viene con el token incluido
+      })
+    },
+    onPasswordReset: async ({ user }, request) => {
+      // your logic here
+      console.log(`Password for user ${user.email} has been reset.`)
     },
   },
-  plugins: [
-    twoFactor()
-  ]
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }, request) => {
+      void sendEmail({
+        email: user.email,
+        subject: 'Verify your email address',
+        content: `Click the link to verify your email`,
+        firstName: user.name,
+        url,
+      })
+    },
+  },
+  socialProviders: {
+    // github: {
+    //   clientId: process.env.GITHUB_CLIENT_ID as string,
+    //   clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    // },
+  },
+  plugins: [twoFactor()],
 })

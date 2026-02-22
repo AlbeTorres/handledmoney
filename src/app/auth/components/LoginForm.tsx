@@ -8,7 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeIcon, EyeOffIcon, MailIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
@@ -18,7 +18,7 @@ export const LoginForm = () => {
   const router = useRouter()
   const t = useTranslations('handledmoney.auth')
   const [showPassword, setShowPassword] = useState(false)
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startLoading] = useState(false)
   const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
     message: '',
     type: null,
@@ -35,21 +35,41 @@ export const LoginForm = () => {
   })
 
   const handleSubmit = async (data: z.infer<typeof LoginSchema>) => {
-    const { error } = await authClient.signIn.email({
-      email: data.email,
-      password: data.password,
-      callbackURL: '/dashboard',
-    })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      router.push('/dashboard')
-    }
+    startLoading(true)
+    await authClient.signIn.email(
+      {
+        email: data.email,
+        password: data.password,
+        callbackURL: '/dashboard',
+      },
+      {
+        onSuccess: () => {
+          startLoading(false)
+          router.push('/dashboard')
+        },
+        onError: async ctx => {
+          startLoading(false)
+          if (ctx.error.status === 403) {
+            // Reenviar email de verificación manualmente
+            await authClient.sendVerificationEmail({
+              email: data.email,
+              callbackURL: '/dashboard',
+            })
+            setMessage({
+              message: 'Debes verificar tu email. Te hemos reenviado el correo de verificación.',
+              type: 'error',
+            })
+          } else {
+            setMessage({ message: ctx.error.message, type: 'error' })
+          }
+        },
+      },
+    )
   }
 
   return (
     <CardWrapper
+      isPending={isPending}
       headerLabel={t('signin_title')}
       backButtonHref='/auth/new-account'
       backButtonLabel={t('signup_link')}

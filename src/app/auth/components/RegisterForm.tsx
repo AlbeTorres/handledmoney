@@ -45,7 +45,7 @@ export default function RegisterPage() {
     if (error) {
       alert(error.message)
     } else {
-      router.push('/dashboard')
+      setMessage({ message: 'Revisa tu email para verificar tu cuenta', type: 'success' })
     }
   }
 
@@ -58,6 +58,7 @@ export default function RegisterPage() {
       recoverButtonLabel={t('password_recovery')}
       callbackUrl={'/'}
       showSocial
+      isPending={isPending}
     >
       <form id='form-signup' onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
