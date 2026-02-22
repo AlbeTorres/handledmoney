@@ -1,6 +1,6 @@
 export * from './AuthMessage'
 export * from './CardWrapper'
-// export * from './ChangePassword'
+export * from './ChangePassword'
 export * from './LoginForm'
 export * from './RegisterForm'
 export * from './ResetForm'

@@ -1,5 +1,4 @@
 'use client'
-
 import { Button } from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -36,9 +35,10 @@ export const ResetForm = () => {
   const callbackUrl = searchParams.get('callbackUrl') || '/'
 
   const handleSubmit = async (data: z.infer<typeof ResetSchema>) => {
+    setLoading(true)
     const { error } = await authClient.requestPasswordReset({
       email: data.email,
-      redirectTo: 'http://localhost:3000/auth/new-password', // tu página del paso 2
+      redirectTo: 'http://localhost:3000/auth/reset-password', // tu página del paso 2
     })
 
     if (error?.message) {
@@ -46,6 +46,7 @@ export const ResetForm = () => {
     } else {
       setMessage({ message: 'Te enviamos un correo de recuperación', type: 'success' })
     }
+    setLoading(false)
   }
   return (
     <CardWrapper
