@@ -1,0 +1,4 @@
+DATABASE_URL=postgres://<user>:<password>@<host>:<port>/<database>
+BETTER_AUTH_SECRET='SECRET_CODE'
+BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
+RESEND_API_KEY=

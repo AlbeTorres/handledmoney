@@ -14,7 +14,7 @@ import z from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
 
-export default function RegisterPage() {
+export const RegisterForm = () => {
   const router = useRouter()
   const t = useTranslations('handledmoney.auth')
   const [showPassword, setShowPassword] = useState(false)
@@ -39,7 +39,7 @@ export default function RegisterPage() {
       email: data.email,
       password: data.password,
       name: data.name,
-      callbackURL: '/dashboard',
+      callbackURL: '/auth/new-verification?redirect=false',
     })
 
     if (error) {

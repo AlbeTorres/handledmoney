@@ -45,7 +45,6 @@ export const LoginForm = () => {
       {
         onSuccess: () => {
           startLoading(false)
-          router.push('/dashboard')
         },
         onError: async ctx => {
           startLoading(false)
@@ -53,7 +52,7 @@ export const LoginForm = () => {
             // Reenviar email de verificación manualmente
             await authClient.sendVerificationEmail({
               email: data.email,
-              callbackURL: '/dashboard',
+              callbackURL: '/auth/new-verification?redirect=false',
             })
             setMessage({
               message: 'Debes verificar tu email. Te hemos reenviado el correo de verificación.',
