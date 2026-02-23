@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { AppSidebar } from './components/sidemenu'
+import { AppSidebar } from './_components/sidemenu'
+import { DashboardFooter } from './dashboard/_components/DashboardFooter'
 
 export default async function HandledMoneyLayout({
   children,
@@ -10,13 +11,12 @@ export default async function HandledMoneyLayout({
     <main className='bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display'>
       <div className='flex h-screen overflow-hidden'>
         <SidebarProvider>
-          {/* <!-- Sidebar Navigation --> */}
-
           <AppSidebar />
-
           <SidebarTrigger />
-          {/* <!-- Main Content Area --> */}
-          {children}
+          <section className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
+            {children}
+            <DashboardFooter />
+          </section>
         </SidebarProvider>
       </div>
     </main>

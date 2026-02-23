@@ -2,14 +2,11 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { AccountFilters } from './_components/AccountFilters'
-import { AccountGrid } from './_components/AccountGrid'
-import { DashboardFooter } from './_components/DashboardFooter'
-import { DashboardHeader } from './_components/DashboardHeader'
-import { RecentTransactions } from './_components/RecentTransactions'
-import { SummaryStats } from './_components/SummaryStats'
+import { AccountFilters } from '../_components/AccountFilters'
+import { AccountGrid } from '../_components/AccountGrid'
+import { DashboardHeader } from '../_components/DashboardHeader'
 
-export default async function Dashboard() {
+export default async function AccountPage() {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -23,22 +20,14 @@ export default async function Dashboard() {
   const avatarUrl = session.user?.image || null
 
   return (
-    <section className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
+    <>
       <DashboardHeader userName={userName} avatarUrl={avatarUrl} />
-
       <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
-        <SummaryStats />
-
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
         </Suspense>
-
         <AccountGrid />
-
-        <RecentTransactions />
       </div>
-
-      <DashboardFooter />
-    </section>
+    </>
   )
 }

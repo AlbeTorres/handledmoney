@@ -21,6 +21,22 @@ export const insertAccountSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
 })
 
+export const CreateAccountSchema = z.object({
+  name: z.string().min(1, { message: 'Account name is required' }),
+  bank: z.string().min(1, { message: 'Bank name is required' }),
+  type: z.enum(['savings', 'checking', 'investment', 'credit', 'cash'], {
+    required_error: 'Account type is required',
+  }),
+  currency: z.enum(['USD', 'EUR', 'GBP', 'JPY', 'CAD'], {
+    required_error: 'Currency is required',
+  }),
+  balance: z.coerce
+    .number({ invalid_type_error: 'Balance must be a number' })
+    .min(0, { message: 'Balance must be 0 or greater' }),
+  icon: z.string().min(1, { message: 'Please select an icon' }),
+  color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
+})
+
 export const updateAccountSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
   id: z.string().uuid(),
