@@ -11,16 +11,10 @@ export default function ExpenseRow({ tx }) {
           <span className='text-sm font-bold text-slate-900 dark:text-white'>
             {fmtDate(tx.date)}
           </span>
-          <span className='text-xs text-slate-400'>{tx.time}</span>
         </div>
       </td>
       <td className='px-6 py-5'>
         <div className='flex items-center gap-3'>
-          <div
-            className={`size-9 rounded-lg flex items-center justify-center ${tx.pending ? 'bg-primary/20 text-primary' : tx.amount > 0 ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500'}`}
-          >
-            <span className='material-symbols-outlined text-xl'>{tx.icon}</span>
-          </div>
           <span className='text-sm font-semibold'>{tx.payee}</span>
         </div>
       </td>

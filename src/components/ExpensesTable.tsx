@@ -49,14 +49,16 @@ export default function ExpensesTable({ data }: Props) {
         <table className='w-full text-left border-collapse'>
           <thead className='bg-slate-50 dark:bg-slate-800/50'>
             <tr>
-              {['Date', 'Payee / Description', 'Category', 'Amount', 'Receipt'].map((h, i) => (
-                <th
-                  key={h}
-                  className={`px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider ${i === 4 ? 'text-center' : ''}`}
-                >
-                  {h}
-                </th>
-              ))}
+              {['Date', 'Payee / Description', 'Category', 'Amount', 'Sales Tax ', 'Receipt'].map(
+                (h, i) => (
+                  <th
+                    key={h}
+                    className={`px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider ${i === 4 ? 'text-center' : ''}`}
+                  >
+                    {h}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody className='divide-y divide-primary/5'>

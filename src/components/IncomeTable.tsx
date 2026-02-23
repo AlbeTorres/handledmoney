@@ -1,13 +1,13 @@
-import { INCOME } from '@/lib/data'
+import { INCOME, INCOME_COLS } from '@/lib/data'
 import IncomeRow from './IncomeRow'
 import Pagination from './Pagination'
 
 type Income = {
   id: number
+  category: string
   date: string
   total: number
   hours: number
-  weeks: number
   overtime: number
   taxFederal: number
   fica: number
@@ -23,20 +23,6 @@ type Props = {
 }
 
 export default function IncomeTable({ data }: Props) {
-  const COLS = [
-    'Date',
-    'Net Pay',
-    'Hours',
-    'Weeks',
-    'OT Hrs',
-    'Federal',
-    'FICA',
-    'Medicare',
-    'Total Tax',
-    'Gross',
-    '$/Hr',
-    '$/OT',
-  ]
   return (
     <div className='bg-white dark:bg-slate-900 rounded-xl border border-primary/10 overflow-hidden shadow-sm'>
       <div className='p-4 border-b border-primary/10 flex justify-between items-center'>
@@ -54,7 +40,7 @@ export default function IncomeTable({ data }: Props) {
         <table className='w-full text-left border-collapse'>
           <thead className='bg-slate-50 dark:bg-slate-800/50'>
             <tr>
-              {COLS.map((h, i) => (
+              {INCOME_COLS.map((h, i) => (
                 <th
                   key={h}
                   className={`px-4 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider ${i > 0 ? 'text-right' : ''}`}

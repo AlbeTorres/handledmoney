@@ -1,3 +1,5 @@
+import { Search } from 'lucide-react'
+
 type Props = {
   activeView: string
   onViewChange: (view: string) => void
@@ -10,7 +12,6 @@ export default function TransactionHeader({ activeView, onViewChange, search, on
     <header className='sticky top-0 z-10 flex items-center justify-between bg-white/80 dark:bg-slate-900/80 backdrop-blur-md px-8 py-4 border-b border-primary/10'>
       <div className='flex items-center gap-6'>
         <div className='flex items-center gap-2'>
-          <span className='material-symbols-outlined text-slate-400'>arrow_back</span>
           <h2 className='text-slate-900 dark:text-white text-xl font-bold tracking-tight'>
             Main Checking History
           </h2>
@@ -33,9 +34,8 @@ export default function TransactionHeader({ activeView, onViewChange, search, on
       </div>
       <div className='flex items-center gap-4'>
         <div className='relative'>
-          <span className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'>
-            search
-          </span>
+          <Search />
+
           <input
             className='pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-sm focus:ring-2 focus:ring-primary w-64 transition-all'
             placeholder={activeView === 'income' ? 'Search by date...' : 'Search transactions...'}

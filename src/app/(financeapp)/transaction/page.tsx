@@ -38,7 +38,7 @@ export default function TransactionPage() {
             onSearch={setSearch}
           />
           <div className='p-8 flex flex-col gap-8 max-w-[1400px] mx-auto w-full'>
-            <SummaryCards activeView={activeView} incomeData={INCOME} />
+            <SummaryCards activeView={activeView} />
             {activeView === 'expenses' ? (
               <ExpensesTable data={filteredExpenses} />
             ) : (

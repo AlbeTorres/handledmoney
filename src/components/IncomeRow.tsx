@@ -3,9 +3,9 @@ import { fmt, fmtDate } from '@/lib/utils'
 type Income = {
   id: number
   date: string
+  category: string
   total: number
   hours: number
-  weeks: number
   overtime: number
   taxFederal: number
   fica: number
@@ -21,7 +21,6 @@ type Props = {
 }
 
 export default function IncomeRow({ row }: Props) {
-  const totalTaxes = row.taxFederal + row.fica + row.medicare
   return (
     <tr className='hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer'>
       <td className='px-4 py-4 whitespace-nowrap'>
@@ -30,13 +29,13 @@ export default function IncomeRow({ row }: Props) {
         </span>
       </td>
       <td className='px-4 py-4 text-sm text-right font-bold text-emerald-600 dark:text-emerald-400'>
+        {row.category}
+      </td>
+      <td className='px-4 py-4 text-sm text-right font-bold text-emerald-600 dark:text-emerald-400'>
         ${fmt(row.total)}
       </td>
       <td className='px-4 py-4 text-sm text-right text-slate-700 dark:text-slate-300'>
         {fmt(row.hours)}
-      </td>
-      <td className='px-4 py-4 text-sm text-right text-slate-600 dark:text-slate-400'>
-        {fmt(row.weeks)}
       </td>
       <td className='px-4 py-4 text-sm text-right text-slate-600 dark:text-slate-400'>
         {fmt(row.overtime)}
@@ -44,9 +43,7 @@ export default function IncomeRow({ row }: Props) {
       <td className='px-4 py-4 text-sm text-right text-red-500'>${fmt(row.taxFederal)}</td>
       <td className='px-4 py-4 text-sm text-right text-red-400'>${fmt(row.fica)}</td>
       <td className='px-4 py-4 text-sm text-right text-red-400'>${fmt(row.medicare)}</td>
-      <td className='px-4 py-4 text-sm text-right font-semibold text-red-600'>
-        ${fmt(totalTaxes)}
-      </td>
+
       <td className='px-4 py-4 text-sm text-right text-slate-700 dark:text-slate-300'>
         ${fmt(row.gross)}
       </td>
