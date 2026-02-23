@@ -24,14 +24,20 @@ CREATE TABLE "account" (
 );
 --> statement-breakpoint
 CREATE TABLE "bank_account" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"plaidId" varchar(255),
 	"userId" text NOT NULL,
-	"name" varchar(255) NOT NULL
+	"name" varchar(255),
+	"bank" varchar(255),
+	"type" varchar(255),
+	"currency" varchar(255) DEFAULT 'USD',
+	"balance" numeric(10, 2) DEFAULT '0',
+	"icon" varchar(255),
+	"color" varchar(255)
 );
 --> statement-breakpoint
 CREATE TABLE "category" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"plaidId" varchar(255),
 	"userId" text NOT NULL,
 	"name" varchar(255) NOT NULL
@@ -50,14 +56,21 @@ CREATE TABLE "session" (
 );
 --> statement-breakpoint
 CREATE TABLE "transaction" (
-	"id" text PRIMARY KEY NOT NULL,
-	"amount" bigint NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"amount" numeric(10, 2) DEFAULT '0',
 	"payee" varchar(255),
 	"notes" varchar(255),
 	"date" timestamp NOT NULL,
-	"accountId" text NOT NULL,
-	"categoryId" text,
+	"accountId" uuid NOT NULL,
+	"categoryId" uuid,
 	"userId" text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "two_factor" (
+	"id" text PRIMARY KEY NOT NULL,
+	"secret" text NOT NULL,
+	"backup_codes" text NOT NULL,
+	"user_id" text NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "user" (
@@ -69,6 +82,7 @@ CREATE TABLE "user" (
 	"role" "role" DEFAULT 'user',
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"two_factor_enabled" boolean DEFAULT false,
 	CONSTRAINT "user_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -89,6 +103,9 @@ ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_accountId_bank_account_id_fk" FOREIGN KEY ("accountId") REFERENCES "public"."bank_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_categoryId_category_id_fk" FOREIGN KEY ("categoryId") REFERENCES "public"."category"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "two_factor" ADD CONSTRAINT "two_factor_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "twoFactor_secret_idx" ON "two_factor" USING btree ("secret");--> statement-breakpoint
+CREATE INDEX "twoFactor_userId_idx" ON "two_factor" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");

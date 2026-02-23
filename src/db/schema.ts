@@ -1,12 +1,13 @@
 import { relations } from 'drizzle-orm'
 import {
-  bigint,
   boolean,
   index,
+  numeric,
   pgEnum,
   pgTable,
   text,
   timestamp,
+  uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
 
@@ -26,9 +27,8 @@ export const user = pgTable('user', {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  twoFactorEnabled: boolean("two_factor_enabled").default(false),
+  twoFactorEnabled: boolean('two_factor_enabled').default(false),
 })
-
 
 export const session = pgTable(
   'session',
@@ -90,20 +90,20 @@ export const verification = pgTable(
 )
 
 export const twoFactor = pgTable(
-  "two_factor",
+  'two_factor',
   {
-    id: text("id").primaryKey(),
-    secret: text("secret").notNull(),
-    backupCodes: text("backup_codes").notNull(),
-    userId: text("user_id")
+    id: text('id').primaryKey(),
+    secret: text('secret').notNull(),
+    backupCodes: text('backup_codes').notNull(),
+    userId: text('user_id')
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: 'cascade' }),
   },
-  (table) => [
-    index("twoFactor_secret_idx").on(table.secret),
-    index("twoFactor_userId_idx").on(table.userId),
+  table => [
+    index('twoFactor_secret_idx').on(table.secret),
+    index('twoFactor_userId_idx').on(table.userId),
   ],
-);
+)
 
 export const Settings = pgTable('settings', {
   id: text('id').primaryKey(),
@@ -115,16 +115,22 @@ export const Settings = pgTable('settings', {
 })
 
 export const bankAccountsTable = pgTable('bank_account', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   plaidId: varchar({ length: 255 }),
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }),
+  bank: varchar({ length: 255 }),
+  type: varchar({ length: 255 }),
+  currency: varchar({ length: 255 }).default('USD'),
+  balance: numeric('balance', { precision: 10, scale: 2 }).default('0'),
+  icon: varchar({ length: 255 }),
+  color: varchar({ length: 255 }),
 })
 
 export const categoriesTable = pgTable('category', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   plaidId: varchar({ length: 255 }),
   userId: text()
     .notNull()
@@ -133,20 +139,20 @@ export const categoriesTable = pgTable('category', {
 })
 
 export const transactionsTable = pgTable('transaction', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
 
-  amount: bigint({ mode: 'bigint' }).notNull(),
+  amount: numeric('amount', { precision: 10, scale: 2 }).default('0'),
 
   payee: varchar({ length: 255 }),
   notes: varchar({ length: 255 }),
 
   date: timestamp().notNull(),
 
-  accountId: text()
+  accountId: uuid()
     .notNull()
     .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
 
-  categoryId: text().references(() => categoriesTable.id),
+  categoryId: uuid().references(() => categoriesTable.id),
 
   userId: text()
     .notNull()
@@ -189,7 +195,7 @@ export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
     fields: [twoFactor.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const bankAccountsRelations = relations(bankAccountsTable, ({ one, many }) => ({
   user: one(user, {

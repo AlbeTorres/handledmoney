@@ -1,4 +1,14 @@
 'use client'
+import {
+  Bitcoin,
+  Car,
+  CreditCard,
+  Home,
+  LandmarkIcon,
+  PiggyBank,
+  ShoppingCart,
+  TrendingUp,
+} from 'lucide-react'
 
 interface IconPickerProps {
   value: string
@@ -6,14 +16,14 @@ interface IconPickerProps {
 }
 
 const ICONS = [
-  { name: 'account_balance', label: 'Bank' },
-  { name: 'payments', label: 'Payments' },
-  { name: 'shopping_cart', label: 'Shopping' },
-  { name: 'credit_card', label: 'Credit Card' },
-  { name: 'savings', label: 'Savings' },
-  { name: 'trending_up', label: 'Investment' },
-  { name: 'home', label: 'Home' },
-  { name: 'more_horiz', label: 'Other' },
+  { name: 'account_balance', label: 'Checkings', icon: <LandmarkIcon /> },
+  { name: 'savings', label: 'Savings', icon: <PiggyBank /> },
+  { name: 'credit_card', label: 'Credit Card', icon: <CreditCard /> },
+  { name: 'trending_up', label: 'Investment', icon: <TrendingUp /> },
+  { name: 'crypto', label: 'Crypto', icon: <Bitcoin /> },
+  { name: 'shopping_cart', label: 'Shopping', icon: <ShoppingCart /> },
+  { name: 'home', label: 'Home', icon: <Home /> },
+  { name: 'car', label: 'Car', icon: <Car /> },
 ] as const
 
 export function IconPicker({ value, onChange }: IconPickerProps) {
@@ -40,7 +50,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
             }`}
           >
             <span className='material-symbols-outlined' aria-hidden='true'>
-              {icon.name}
+              {icon.icon}
             </span>
           </button>
         )

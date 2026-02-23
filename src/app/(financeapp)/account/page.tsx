@@ -1,10 +1,10 @@
+import { AccountFilters } from '@/components/AccountFilters'
+import { AccountGrid } from '@/components/AccountGrid'
+import { DashboardHeader } from '@/components/DashboardHeader'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
-import { AccountFilters } from '../_components/AccountFilters'
-import { AccountGrid } from '../_components/AccountGrid'
-import { DashboardHeader } from '../_components/DashboardHeader'
 
 export default async function AccountPage() {
   const session = await auth.api.getSession({

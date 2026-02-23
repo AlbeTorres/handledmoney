@@ -1,6 +1,7 @@
+import { DashboardFooter } from '@/components/DashboardFooter'
+import { AppSidebar } from '@/components/Sidemenu'
+
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
-import { AppSidebar } from './_components/sidemenu'
-import { DashboardFooter } from './dashboard/_components/DashboardFooter'
 
 export default async function HandledMoneyLayout({
   children,

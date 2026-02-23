@@ -1,13 +1,9 @@
+import { DashboardHeader } from '@/components/DashboardHeader'
+import { RecentTransactions } from '@/components/RecentTransactions'
+import { SummaryStats } from '@/components/SummaryStats'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
-import { AccountFilters } from './_components/AccountFilters'
-import { AccountGrid } from './_components/AccountGrid'
-import { DashboardFooter } from './_components/DashboardFooter'
-import { DashboardHeader } from './_components/DashboardHeader'
-import { RecentTransactions } from './_components/RecentTransactions'
-import { SummaryStats } from './_components/SummaryStats'
 
 export default async function Dashboard() {
   const session = await auth.api.getSession({
@@ -29,16 +25,8 @@ export default async function Dashboard() {
       <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
         <SummaryStats />
 
-        <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
-          <AccountFilters />
-        </Suspense>
-
-        <AccountGrid />
-
         <RecentTransactions />
       </div>
-
-      <DashboardFooter />
     </section>
   )
 }

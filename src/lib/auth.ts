@@ -1,4 +1,4 @@
-import { sendEmail } from '@/actions/email/sendEmail'
+import { sendEmail } from '@/actions/email/send-email'
 import { db } from '@/db' // your drizzle instance
 import * as schema from '@/db/schema'
 import { betterAuth } from 'better-auth'

@@ -1,5 +1,5 @@
 'use client'
-import { sendEmail } from '@/actions/email/sendEmail'
+import { sendEmail } from '@/actions/email/send-email'
 import { Button } from '../ui/button'
 
 export default function SenderButton() {

@@ -1,36 +1,31 @@
 'use client'
-
+import { newBankAccount } from '@/actions/account/create-account'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
-import { CreateAccountSchema } from '@/schema'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { ACCOUNT_TYPES, CURRENCIES } from '@/lib/data'
+import { CreateAccountSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DollarSign } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 import { AppearanceSection } from './AppearanceSection'
 import { FormActions } from './FormActions'
 
 type CreateAccountValues = z.infer<typeof CreateAccountSchema>
 
-const ACCOUNT_TYPES = [
-  { value: 'savings', label: 'Savings Account' },
-  { value: 'checking', label: 'Checking Account' },
-  { value: 'investment', label: 'Investment' },
-  { value: 'credit', label: 'Credit Card' },
-  { value: 'cash', label: 'Cash / Wallet' },
-] as const
-
-const CURRENCIES = [
-  { value: 'USD', label: 'USD - US Dollar' },
-  { value: 'EUR', label: 'EUR - Euro' },
-  { value: 'GBP', label: 'GBP - British Pound' },
-  { value: 'JPY', label: 'JPY - Japanese Yen' },
-  { value: 'CAD', label: 'CAD - Canadian Dollar' },
-] as const
-
 export function CreateAccountForm() {
   const [isPending, setIsPending] = useState(false)
+  const router = useRouter()
 
   const form = useForm<CreateAccountValues>({
     resolver: zodResolver(CreateAccountSchema),
@@ -39,7 +34,7 @@ export function CreateAccountForm() {
       bank: '',
       type: 'savings',
       currency: 'USD',
-      balance: 0,
+      balance: '0',
       icon: 'account_balance',
       color: '137FEC',
     },
@@ -47,17 +42,25 @@ export function CreateAccountForm() {
 
   const handleSubmit = async (data: CreateAccountValues) => {
     setIsPending(true)
+    const { name, bank, type, currency, balance, icon, color } = data
     try {
-      // TODO: call server action
-      console.log('Create account:', data)
+      const res = await newBankAccount({ name, bank, type, currency, balance, icon, color })
+
+      if (res.success) {
+        toast.success(res.message)
+        form.reset()
+      }
+    } catch (error) {
+      console.log(error, 'error')
     } finally {
       setIsPending(false)
+      router.push('/accounts')
     }
   }
 
   const handleCancel = useCallback(() => {
     form.reset()
-    // TODO: navigate back
+    router.back()
   }, [form])
 
   return (
@@ -118,27 +121,22 @@ export function CreateAccountForm() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor='form-create-account-type'>Account Type</FieldLabel>
-                    <div className='relative'>
-                      <select
-                        {...field}
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
                         id='form-create-account-type'
                         aria-invalid={fieldState.invalid}
-                        disabled={isPending}
-                        className='w-full appearance-none bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg px-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-slate-900 dark:text-white'
+                        className='w-full'
                       >
+                        <SelectValue placeholder='Select' />
+                      </SelectTrigger>
+                      <SelectContent position='item-aligned'>
                         {ACCOUNT_TYPES.map(t => (
-                          <option key={t.value} value={t.value}>
+                          <SelectItem key={t.value} value={t.value}>
                             {t.label}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <span
-                        aria-hidden='true'
-                        className='material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400'
-                      >
-                        expand_more
-                      </span>
-                    </div>
+                      </SelectContent>
+                    </Select>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -149,33 +147,22 @@ export function CreateAccountForm() {
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
                     <FieldLabel htmlFor='form-create-account-currency'>Currency</FieldLabel>
-                    <div className='relative'>
-                      <span
-                        aria-hidden='true'
-                        className='material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm'
-                      >
-                        public
-                      </span>
-                      <select
-                        {...field}
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger
                         id='form-create-account-currency'
                         aria-invalid={fieldState.invalid}
-                        disabled={isPending}
-                        className='w-full appearance-none bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg pl-10 pr-4 py-3 focus:ring-2 focus:ring-primary focus:border-transparent transition-all outline-none text-slate-900 dark:text-white'
+                        className='w-full'
                       >
+                        <SelectValue placeholder='Select' />
+                      </SelectTrigger>
+                      <SelectContent position='item-aligned'>
                         {CURRENCIES.map(c => (
-                          <option key={c.value} value={c.value}>
+                          <SelectItem key={c.value} value={c.value}>
                             {c.label}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <span
-                        aria-hidden='true'
-                        className='material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400'
-                      >
-                        expand_more
-                      </span>
-                    </div>
+                      </SelectContent>
+                    </Select>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -215,7 +202,6 @@ export function CreateAccountForm() {
 
           <div className='border-t border-slate-100 dark:border-slate-800' />
 
-          {/* Appearance */}
           <AppearanceSection
             iconValue={form.watch('icon')}
             colorValue={form.watch('color')}
