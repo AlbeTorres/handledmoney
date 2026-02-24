@@ -5,7 +5,6 @@ import IncomeTable from '@/components/IncomeTable'
 import SummaryCards from '@/components/SummaryCards'
 import TransactionHeader from '@/components/TransactionHeader'
 import { EXPENSES, INCOME } from '@/lib/data'
-import { fmtDate } from '@/lib/utils'
 import { useState } from 'react'
 
 export default function TransactionPage() {
@@ -16,10 +15,6 @@ export default function TransactionPage() {
     tx =>
       tx.payee.toLowerCase().includes(search.toLowerCase()) ||
       tx.category.toLowerCase().includes(search.toLowerCase()),
-  )
-
-  const filteredIncome = INCOME.filter(row =>
-    fmtDate(row.date).toLowerCase().includes(search.toLowerCase()),
   )
 
   function handleViewChange(view: string) {
@@ -42,7 +37,7 @@ export default function TransactionPage() {
             {activeView === 'expenses' ? (
               <ExpensesTable data={filteredExpenses} />
             ) : (
-              <IncomeTable data={filteredIncome} />
+              <IncomeTable data={INCOME} />
             )}
           </div>
         </main>
