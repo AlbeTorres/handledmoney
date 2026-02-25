@@ -6,7 +6,10 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
-export default async function AccountPage() {
+interface AccountPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+export default async function AccountPage({ searchParams }: AccountPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -15,7 +18,9 @@ export default async function AccountPage() {
     redirect('/auth/login')
   }
 
-  // Assuming session.user has name and image. Hardcoded fallback as in original.
+  const resolvedSearchParams = await searchParams
+  const tab = (resolvedSearchParams.tab as string) || 'default'
+
   const userName = session.user?.name || 'User'
   const avatarUrl = session.user?.image || null
 
@@ -26,7 +31,7 @@ export default async function AccountPage() {
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
         </Suspense>
-        <AccountGrid userId={session.user.id} />
+        <AccountGrid userId={session.user.id} tab={tab} />
       </div>
     </>
   )

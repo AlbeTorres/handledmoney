@@ -69,6 +69,15 @@ export function DataTable<TData, TValue>({
     'You are about to perform a bulk delete.',
   )
 
+  async function handleDelete() {
+    const ok = await confirm()
+
+    if (ok) {
+      onDelete(table.getFilteredSelectedRowModel().rows)
+      table.resetRowSelection()
+    }
+  }
+
   return (
     <div>
       <ConfirmDialog />
@@ -81,14 +90,7 @@ export function DataTable<TData, TValue>({
         />
         {table.getFilteredSelectedRowModel().rows.length > 0 && (
           <Button
-            onClick={async () => {
-              const ok = await confirm()
-
-              if (ok) {
-                onDelete(table.getFilteredSelectedRowModel().rows)
-                table.resetRowSelection()
-              }
-            }}
+            onClick={handleDelete}
             disabled={disabled}
             size={'sm'}
             variant={'outline'}

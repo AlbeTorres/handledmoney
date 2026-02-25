@@ -4,9 +4,10 @@ import { AddAccountCard } from './AddAccountCard'
 
 interface AccountGridProps {
   userId: string
+  tab?: string
 }
 
-export async function AccountGrid({ userId }: AccountGridProps) {
+export async function AccountGrid({ userId, tab }: AccountGridProps) {
   const accounts = await getBankAccountsByUser(userId)
 
   if (!accounts || accounts.length === 0) {
@@ -19,9 +20,22 @@ export async function AccountGrid({ userId }: AccountGridProps) {
 
   const otherAccountsList = accounts.map(a => ({ id: a.id, name: a.name ?? 'Unnamed' }))
 
+  const filteredAccounts = accounts.filter(a => {
+    if (tab === 'All Accounts' || tab === 'default') return true
+    return a.currency === tab
+  })
+
+  if (filteredAccounts.length === 0) {
+    return (
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        <AddAccountCard />
+      </div>
+    )
+  }
+
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-      {accounts.map(account => (
+      {filteredAccounts.map(account => (
         <AccountCardWrapper
           key={account.id}
           account={account}
