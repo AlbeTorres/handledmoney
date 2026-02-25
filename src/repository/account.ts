@@ -10,7 +10,6 @@ export const createBankAccount = async ({
   bank,
   type,
   currency,
-  balance,
   icon,
   color,
   userId,
@@ -24,7 +23,6 @@ export const createBankAccount = async ({
         bank,
         type,
         currency,
-        balance,
         icon,
         color,
       })

@@ -20,6 +20,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   const resolvedSearchParams = await searchParams
   const tab = (resolvedSearchParams.tab as string) || 'default'
+  const sort = (resolvedSearchParams.sort as string) || 'default'
 
   const userName = session.user?.name || 'User'
   const avatarUrl = session.user?.image || null
@@ -31,7 +32,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
         </Suspense>
-        <AccountGrid userId={session.user.id} tab={tab} />
+        <AccountGrid userId={session.user.id} tab={tab} sort={sort} />
       </div>
     </>
   )

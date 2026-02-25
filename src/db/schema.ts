@@ -16,6 +16,15 @@ export const roleEnum = pgEnum('role', ['admin', 'user'])
 
 export const languageEnum = pgEnum('language', ['es', 'en'])
 
+const timestamps = {
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  deletedAt: timestamp('deleted_at'),
+}
+
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
@@ -113,6 +122,7 @@ export const Settings = pgTable('settings', {
     .unique()
     .references(() => user.id, { onDelete: 'cascade' }),
   language: languageEnum().default('en'),
+  ...timestamps,
 })
 
 export const bankAccountsTable = pgTable('bank_account', {
@@ -128,8 +138,9 @@ export const bankAccountsTable = pgTable('bank_account', {
   balance: numeric('balance', { precision: 10, scale: 2 }).default('0'),
   icon: varchar({ length: 255 }),
   color: varchar({ length: 255 }),
-  deletedAt: timestamp('deleted_at'),
+
   transactionsCount: integer('transactions_count').default(0).notNull(),
+  ...timestamps,
 })
 
 export const categoriesTable = pgTable('category', {
@@ -139,6 +150,7 @@ export const categoriesTable = pgTable('category', {
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
+  ...timestamps,
 })
 
 export const transactionsTable = pgTable('transaction', {
@@ -160,6 +172,7 @@ export const transactionsTable = pgTable('transaction', {
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
+  ...timestamps,
 })
 
 //relations

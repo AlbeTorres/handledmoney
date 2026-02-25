@@ -5,10 +5,13 @@ import { useCallback } from 'react'
 
 const TABS = ['All Accounts', 'USD', 'EUR', 'Crypto']
 
+const SORTS = ['Highest Balance', 'Account Name', 'Recently Added']
+
 export function AccountFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentTab = searchParams.get('tab') || 'All Accounts'
+  const currentSort = searchParams.get('sort') || 'Highest Balance'
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
@@ -21,6 +24,11 @@ export function AccountFilters() {
 
   const handleTabChange = (tab: string) => {
     router.push(`?${createQueryString('tab', tab)}`, { scroll: false })
+  }
+
+  const handleSortChange = (sort: string) => {
+    console.log(sort)
+    router.push(`?${createQueryString('sort', sort)}`, { scroll: false })
   }
 
   return (
@@ -43,12 +51,19 @@ export function AccountFilters() {
       <div className='flex items-center gap-2'>
         <span className='text-sm text-slate-500 dark:text-slate-400 font-medium'>Sort by:</span>
         <select
+          // 1. Movemos el evento al SELECT y usamos onChange
+          onChange={e => handleSortChange(e.target.value)}
+          // 2. Sincronizamos el valor visual con la URL
+          value={currentSort}
           className='bg-transparent border-none focus:ring-0 text-sm font-bold text-slate-700 dark:text-slate-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-primary rounded'
           aria-label='Sort accounts'
         >
-          <option>Highest Balance</option>
-          <option>Account Name</option>
-          <option>Recently Added</option>
+          {SORTS.map(sort => (
+            // 3. Agregamos el atributo value a la opción
+            <option key={sort} value={sort}>
+              {sort}
+            </option>
+          ))}
         </select>
       </div>
     </div>
