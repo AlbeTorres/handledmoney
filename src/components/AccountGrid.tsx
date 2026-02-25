@@ -1,6 +1,5 @@
 import { Bitcoin, CreditCard, LandmarkIcon, PiggyBank } from 'lucide-react'
 import { AccountCard } from './AccountCard'
-import { AddAccountCard } from './AddAccountCard'
 
 const ACCOUNTS = [
   {
@@ -38,6 +37,7 @@ const ACCOUNTS = [
     accentColor: '#f59e0b', // amber
     icon: <Bitcoin aria-hidden='true' />,
   },
+
   {
     institution: 'American Express',
     name: 'Gold Card',
@@ -58,7 +58,6 @@ export function AccountGrid() {
       {ACCOUNTS.map((account, index) => (
         <AccountCard key={index} {...account} />
       ))}
-      <AddAccountCard />
     </div>
   )
 }

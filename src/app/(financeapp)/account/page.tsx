@@ -1,6 +1,6 @@
 import { AccountFilters } from '@/components/AccountFilters'
 import { AccountGrid } from '@/components/AccountGrid'
-import { DashboardHeader } from '@/components/DashboardHeader'
+import { AccountHeader } from '@/components/AccountHeader'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -21,7 +21,7 @@ export default async function AccountPage() {
 
   return (
     <>
-      <DashboardHeader userName={userName} avatarUrl={avatarUrl} />
+      <AccountHeader userName={userName} avatarUrl={avatarUrl} />
       <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
