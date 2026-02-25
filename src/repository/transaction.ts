@@ -1,6 +1,34 @@
 import { db } from '@/db'
-import { bankAccountsTable, transactionsTable } from '@/db/schema'
-import { and, eq, inArray, sql } from 'drizzle-orm'
+import { bankAccountsTable, categoriesTable, transactionsTable } from '@/db/schema'
+import { and, desc, eq, inArray, sql } from 'drizzle-orm'
+
+export const getTransactionsByAccountId = async (accountId: string, userId: string) => {
+  try {
+    const transactions = await db
+      .select({
+        id: transactionsTable.id,
+        amount: transactionsTable.amount,
+        payee: transactionsTable.payee,
+        notes: transactionsTable.notes,
+        date: transactionsTable.date,
+        accountId: transactionsTable.accountId,
+        accountName: bankAccountsTable.name,
+        categoryId: transactionsTable.categoryId,
+        categoryName: categoriesTable.name,
+        userId: transactionsTable.userId,
+      })
+      .from(transactionsTable)
+      .leftJoin(bankAccountsTable, eq(transactionsTable.accountId, bankAccountsTable.id))
+      .leftJoin(categoriesTable, eq(transactionsTable.categoryId, categoriesTable.id))
+      .where(and(eq(transactionsTable.accountId, accountId), eq(transactionsTable.userId, userId)))
+      .orderBy(desc(transactionsTable.date))
+
+    return transactions
+  } catch (error) {
+    console.error('Error fetching transactions by account:', error)
+    return []
+  }
+}
 
 export const transferTransaction = async (
   accountId: string,

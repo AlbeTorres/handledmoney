@@ -1,4 +1,5 @@
 import { MoreVertical } from 'lucide-react'
+import Link from 'next/link'
 import { ReactNode } from 'react'
 import {
   DropdownMenu,
@@ -47,12 +48,14 @@ export function AccountCard({
       style={{ borderLeftColor: accentColor }}
     >
       <div className='flex justify-between items-start mb-6'>
-        <div
-          className='size-12 rounded-xl flex items-center justify-center'
-          style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
-        >
-          {icon}
-        </div>
+        <Link href={`/account/${id}`}>
+          <div
+            className='size-12 rounded-xl flex items-center justify-center'
+            style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
+          >
+            {icon}
+          </div>
+        </Link>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
