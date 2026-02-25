@@ -14,7 +14,7 @@ export default async function HandledMoneyLayout({
         <SidebarProvider>
           <AppSidebar />
           <section className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-            <SidebarTrigger />
+            <SidebarTrigger className='absolute z-40' />
             {children}
             <DashboardFooter />
           </section>
