@@ -1,6 +1,14 @@
+import { MoreVertical } from 'lucide-react'
 import { ReactNode } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from './ui/dropdown-menu'
 
 export interface AccountCardProps {
+  id: string
   institution: string
   name: string
   balance: string
@@ -11,9 +19,12 @@ export interface AccountCardProps {
   statusVariant: 'active' | 'live' | 'due'
   accentColor: string
   icon: ReactNode
+  onEdit?: () => void
+  onDelete?: () => void
 }
 
 export function AccountCard({
+  id,
   institution,
   name,
   balance,
@@ -24,13 +35,15 @@ export function AccountCard({
   statusVariant,
   accentColor,
   icon,
+  onEdit,
+  onDelete,
 }: AccountCardProps) {
   const statusColors =
     statusVariant === 'due' ? 'bg-amber-500 text-amber-500' : 'bg-emerald-500 text-emerald-500'
 
   return (
     <div
-      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 hover:shadow-xl transition-all cursor-pointer`}
+      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 hover:shadow-xl transition-all cursor-pointer relative`}
       style={{ borderLeftColor: accentColor }}
     >
       <div className='flex justify-between items-start mb-6'>
@@ -40,14 +53,37 @@ export function AccountCard({
         >
           {icon}
         </div>
-        <button
-          className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none'
-          aria-label='Account options'
-        >
-          <span className='material-symbols-outlined' aria-hidden='true'>
-            more_vert
-          </span>
-        </button>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1'
+              aria-label='Account options'
+              onClick={e => e.stopPropagation()}
+            >
+              <MoreVertical className='size-5' />
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align='end'>
+            <DropdownMenuItem
+              onClick={e => {
+                e.stopPropagation()
+                onEdit?.()
+              }}
+            >
+              Edit Account
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant='destructive'
+              onClick={e => {
+                e.stopPropagation()
+                onDelete?.()
+              }}
+            >
+              Delete Account
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div>
         <p className='text-xs font-bold text-slate-400 uppercase tracking-widest mb-1'>

@@ -26,18 +26,27 @@ export const CreateAccountSchema = z.object({
   currency: z.enum(['USD', 'EUR', 'GBP', 'JPY', 'CAD'], {
     required_error: 'Currency is required',
   }),
-  balance: z.coerce
-    .string({ invalid_type_error: 'Balance must be a number' })
-    .min(0, { message: 'Balance must be 0 or greater' }),
   icon: z.string().min(1, { message: 'Please select an icon' }),
   color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
 })
 
-export const updateAccountSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
+export const UpdateAccountSchema = z.object({
   id: z.string().uuid(),
-  type: z.string().optional(),
-  balance: z.number().optional(),
+  name: z.string().min(1, { message: 'Account name is required' }),
+  bank: z.string().min(1, { message: 'Bank name is required' }),
+  type: z.enum(['savings', 'checking', 'investment', 'credit', 'cash'], {
+    required_error: 'Account type is required',
+  }),
+  currency: z.enum(['USD', 'EUR', 'GBP', 'JPY', 'CAD'], {
+    required_error: 'Currency is required',
+  }),
+  icon: z.string().min(1, { message: 'Please select an icon' }),
+  color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color' }),
+})
+
+export const DeleteAccountSchema = z.object({
+  id: z.string().uuid(),
+  transferToAccountId: z.string().uuid().optional(),
 })
 export const insertCategorySchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),

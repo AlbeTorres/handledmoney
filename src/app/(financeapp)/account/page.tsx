@@ -26,7 +26,7 @@ export default async function AccountPage() {
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
         </Suspense>
-        <AccountGrid />
+        <AccountGrid userId={session.user.id} />
       </div>
     </>
   )

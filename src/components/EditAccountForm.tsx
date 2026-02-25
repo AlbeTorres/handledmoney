@@ -1,5 +1,8 @@
 'use client'
-import { newBankAccount } from '@/actions/account/create-account'
+
+import { editBankAccount } from '@/actions/account/update-account'
+import { AppearanceSection } from '@/components/AppearanceSection'
+import { FormActions } from '@/components/FormActions'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 import {
@@ -10,63 +13,53 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ACCOUNT_TYPES, CURRENCIES } from '@/lib/data'
-import { CreateAccountSchema } from '@/lib/schema'
+import { UpdateAccountSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
-import { AppearanceSection } from './AppearanceSection'
-import { FormActions } from './FormActions'
 
-type CreateAccountValues = z.infer<typeof CreateAccountSchema>
+type EditAccountValues = z.infer<typeof UpdateAccountSchema>
 
-export function CreateAccountForm() {
+export function EditAccountForm({ initialValues }: { initialValues: EditAccountValues }) {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
 
-  const form = useForm<CreateAccountValues>({
-    resolver: zodResolver(CreateAccountSchema),
-    defaultValues: {
-      name: '',
-      bank: '',
-      type: 'savings',
-      currency: 'USD',
-
-      icon: 'account_balance',
-      color: '137FEC',
-    },
+  const form = useForm<EditAccountValues>({
+    resolver: zodResolver(UpdateAccountSchema),
+    defaultValues: initialValues,
   })
 
-  const handleSubmit = async (data: CreateAccountValues) => {
+  const handleSubmit = async (data: EditAccountValues) => {
     setIsPending(true)
-    const { name, bank, type, currency, icon, color } = data
     try {
-      const res = await newBankAccount({ name, bank, type, currency, icon, color })
+      const res = await editBankAccount(data)
 
       if (res.success) {
         toast.success(res.message)
-        form.reset()
+        router.push('/account')
+        router.refresh()
+      } else {
+        toast.error(res.message)
       }
     } catch (error) {
-      console.log(error, 'error')
+      console.error(error)
+      toast.error('Something went wrong')
     } finally {
       setIsPending(false)
-      router.push('/account')
     }
   }
 
   const handleCancel = useCallback(() => {
-    form.reset()
     router.back()
-  }, [form])
+  }, [router])
 
   return (
     <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
-      <form id='form-create-account' onSubmit={form.handleSubmit(handleSubmit)}>
+      <form id='form-edit-account' onSubmit={form.handleSubmit(handleSubmit)}>
         <div className='p-8 space-y-8'>
-          {/* Basic Info */}
           <FieldGroup>
             <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
               <Controller
@@ -74,19 +67,18 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-name'>Account Name</FieldLabel>
+                    <FieldLabel htmlFor='form-edit-account-name'>Account Name</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-create-account-name'
+                        id='form-edit-account-name'
                         aria-invalid={fieldState.invalid}
                         placeholder='e.g., Main Savings'
                         autoComplete='off'
-                        spellCheck={false}
                         disabled={isPending}
                       />
                     </InputGroup>
-                    <FieldDescription>Must be a unique name for your records.</FieldDescription>
+                    <FieldDescription>Update the name for your records.</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -96,11 +88,11 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-bank'>Bank Name</FieldLabel>
+                    <FieldLabel htmlFor='form-edit-account-bank'>Bank Name</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-create-account-bank'
+                        id='form-edit-account-bank'
                         aria-invalid={fieldState.invalid}
                         placeholder='e.g., Chase Bank'
                         autoComplete='organization'
@@ -119,10 +111,10 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-type'>Account Type</FieldLabel>
+                    <FieldLabel htmlFor='form-edit-account-type'>Account Type</FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
-                        id='form-create-account-type'
+                        id='form-edit-account-type'
                         aria-invalid={fieldState.invalid}
                         className='w-full'
                       >
@@ -145,10 +137,10 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-currency'>Currency</FieldLabel>
+                    <FieldLabel htmlFor='form-edit-account-currency'>Currency</FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
-                        id='form-create-account-currency'
+                        id='form-edit-account-currency'
                         aria-invalid={fieldState.invalid}
                         className='w-full'
                       >
@@ -184,8 +176,8 @@ export function CreateAccountForm() {
         <FormActions
           onCancel={handleCancel}
           isPending={isPending}
-          text='Create Account'
-          loadingText='Creating…'
+          text='Update Account'
+          loadingText='Updating…'
         />
       </form>
     </div>

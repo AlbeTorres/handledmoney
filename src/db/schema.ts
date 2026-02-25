@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm'
 import {
   boolean,
   index,
+  integer,
   numeric,
   pgEnum,
   pgTable,
@@ -127,6 +128,8 @@ export const bankAccountsTable = pgTable('bank_account', {
   balance: numeric('balance', { precision: 10, scale: 2 }).default('0'),
   icon: varchar({ length: 255 }),
   color: varchar({ length: 255 }),
+  deletedAt: timestamp('deleted_at'),
+  transactionsCount: integer('transactions_count').default(0).notNull(),
 })
 
 export const categoriesTable = pgTable('category', {

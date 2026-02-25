@@ -15,7 +15,7 @@ interface IconPickerProps {
   onChange: (icon: string) => void
 }
 
-const ICONS = [
+export const ICONS = [
   { name: 'account_balance', label: 'Checkings', icon: <LandmarkIcon /> },
   { name: 'savings', label: 'Savings', icon: <PiggyBank /> },
   { name: 'credit_card', label: 'Credit Card', icon: <CreditCard /> },
@@ -49,9 +49,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
-            <span className='material-symbols-outlined' aria-hidden='true'>
-              {icon.icon}
-            </span>
+            {icon.icon}
           </button>
         )
       })}

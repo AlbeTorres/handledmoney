@@ -1,7 +1,13 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 
-export function CreateAccountBreadcrumb() {
+type AccountBreadcrumbProps = {
+  pathTitle: string
+  oldPath: string
+  oldPathTitle: string
+}
+
+export function AccountBreadcrumb({ pathTitle, oldPath, oldPathTitle }: AccountBreadcrumbProps) {
   return (
     <nav
       aria-label='Breadcrumb'
@@ -9,12 +15,12 @@ export function CreateAccountBreadcrumb() {
     >
       <Link
         className='hover:text-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded'
-        href='/account'
+        href={oldPath}
       >
-        Accounts
+        {oldPathTitle}
       </Link>
       <ChevronRight aria-hidden='true' className='size-3.5' />
-      <span className='text-slate-900 dark:text-slate-100 font-medium'>Create New Account</span>
+      <span className='text-slate-900 dark:text-slate-100 font-medium'>{pathTitle}</span>
     </nav>
   )
 }

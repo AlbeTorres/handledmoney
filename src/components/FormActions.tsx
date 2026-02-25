@@ -4,9 +4,11 @@ import { Loader2 } from 'lucide-react'
 interface FormActionsProps {
   onCancel: () => void
   isPending: boolean
+  text: string
+  loadingText: string
 }
 
-export function FormActions({ onCancel, isPending }: FormActionsProps) {
+export function FormActions({ onCancel, isPending, text, loadingText }: FormActionsProps) {
   return (
     <div className='flex flex-col-reverse sm:flex-row justify-end items-center gap-4 px-8 py-5 border-t border-slate-100 dark:border-slate-800'>
       <Button
@@ -22,10 +24,10 @@ export function FormActions({ onCancel, isPending }: FormActionsProps) {
         {isPending ? (
           <>
             <Loader2 aria-hidden='true' className='size-4 animate-spin' />
-            Creating…
+            {loadingText}
           </>
         ) : (
-          'Create Account'
+          text
         )}
       </Button>
     </div>

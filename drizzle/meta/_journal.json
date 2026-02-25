@@ -8,6 +8,20 @@
       "when": 1771876243351,
       "tag": "0000_pretty_sharon_carter",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772031007088,
+      "tag": "0001_graceful_santa_claus",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772045103568,
+      "tag": "0002_dapper_ozymandias",
+      "breakpoints": true
     }
   ]
 }
