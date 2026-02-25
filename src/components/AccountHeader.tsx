@@ -1,15 +1,14 @@
-import { Bell, PlusIcon, Search } from 'lucide-react'
+import { PlusIcon } from 'lucide-react'
 import Link from 'next/link'
-import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
+import { Suspense } from 'react'
+import { AccountSearchInput } from './AccountSearchInput'
 
 interface DashboardHeaderProps {
   userName: string
   avatarUrl: string | null
 }
 
-const SEARCH_ICON = <Search aria-hidden='true' />
 const PLUS_ICON = <PlusIcon aria-hidden='true' />
-const BELL_ICON = <Bell aria-hidden='true' />
 
 export function AccountHeader({ userName, avatarUrl }: DashboardHeaderProps) {
   return (
@@ -18,18 +17,9 @@ export function AccountHeader({ userName, avatarUrl }: DashboardHeaderProps) {
         <div className='flex items-center gap-8'>
           <h2 className='text-xl font-bold tracking-tight w-full'>Accounts Overview</h2>
 
-          <InputGroup className='w-full border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'>
-            <InputGroupInput
-              id='form-signin-email'
-              aria-label='Search accounts'
-              placeholder={'Search accounts...'}
-              autoComplete='off'
-              type='email'
-            />
-            <InputGroupAddon>
-              <Search aria-hidden='true' />
-            </InputGroupAddon>
-          </InputGroup>
+          <Suspense fallback={<div className='h-10 w-48 bg-slate-200 animate-pulse rounded-md' />}>
+            <AccountSearchInput />
+          </Suspense>
         </div>
         <div className='flex items-center gap-3'>
           <Link

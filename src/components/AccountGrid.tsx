@@ -6,9 +6,10 @@ interface AccountGridProps {
   userId: string
   tab?: string
   sort?: string
+  search?: string
 }
 
-export async function AccountGrid({ userId, tab, sort }: AccountGridProps) {
+export async function AccountGrid({ userId, tab, sort, search }: AccountGridProps) {
   const accounts = await getBankAccountsByUser(userId)
 
   if (!accounts || accounts.length === 0) {
@@ -23,8 +24,9 @@ export async function AccountGrid({ userId, tab, sort }: AccountGridProps) {
 
   const filteredAccounts = accounts
     .filter(a => {
-      if (tab === 'All Accounts' || tab === 'default') return true
-      return a.currency === tab
+      const matchesTab = tab === 'All Accounts' || tab === 'default' || a.currency === tab
+      const matchesSearch = !search || (a.name ?? '').toLowerCase().includes(search.toLowerCase())
+      return matchesTab && matchesSearch
     })
     .sort((a, b) => {
       if (sort === 'Highest Balance') return (Number(b.balance) ?? 0) - (Number(a.balance) ?? 0)

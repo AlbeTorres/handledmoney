@@ -54,7 +54,13 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu className='gap-4'>
               {NAV_ITEMS.map(({ href, icon: Icon, label }) => (
-                <SidebarNavItem href={href} icon={Icon} label={label} active={pathname === href} />
+                <SidebarNavItem
+                  key={href}
+                  href={href}
+                  icon={Icon}
+                  label={label}
+                  active={pathname === href}
+                />
               ))}
               <div className='my-4 border-t border-slate-200 dark:border-slate-800'></div>
               <SidebarNavItem
