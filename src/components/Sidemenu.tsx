@@ -23,8 +23,8 @@ import { SidebarNavItem } from './SidebarNavItem'
 const NAV_ITEMS = [
   { href: '/dashboard', icon: FileChartColumn, label: 'Dashboard' },
   { href: '/account', icon: WalletCards, label: 'Accounts' },
-  { href: '/transaction', icon: ArrowLeftRight, label: 'Transactions' },
   { href: '/category', icon: ChartColumnStacked, label: 'Categories' },
+  { href: '/transaction', icon: ArrowLeftRight, label: 'Transactions' },
 ]
 
 export function AppSidebar() {
