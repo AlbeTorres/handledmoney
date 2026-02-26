@@ -1,4 +1,25 @@
 import { Account, IncomeTransaction } from '@/components/financeapp/interfaces'
+import {
+  Bitcoin,
+  Car,
+  CreditCard,
+  Home,
+  LandmarkIcon,
+  PiggyBank,
+  ShoppingCart,
+  TrendingUp,
+} from 'lucide-react'
+
+export const ICONS = [
+  { name: 'account_balance', label: 'Checkings', icon: LandmarkIcon },
+  { name: 'savings', label: 'Savings', icon: PiggyBank },
+  { name: 'credit_card', label: 'Credit Card', icon: CreditCard },
+  { name: 'trending_up', label: 'Investment', icon: TrendingUp },
+  { name: 'crypto', label: 'Crypto', icon: Bitcoin },
+  { name: 'shopping_cart', label: 'Shopping', icon: ShoppingCart },
+  { name: 'home', label: 'Home', icon: Home },
+  { name: 'car', label: 'Car', icon: Car },
+] as const
 
 export const ACCOUNT_TYPES = [
   { value: 'savings', label: 'Savings Account' },

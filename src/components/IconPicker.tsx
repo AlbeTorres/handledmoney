@@ -1,30 +1,10 @@
 'use client'
-import {
-  Bitcoin,
-  Car,
-  CreditCard,
-  Home,
-  LandmarkIcon,
-  PiggyBank,
-  ShoppingCart,
-  TrendingUp,
-} from 'lucide-react'
+import { ICONS } from '@/lib/data'
 
 interface IconPickerProps {
   value: string
   onChange: (icon: string) => void
 }
-
-export const ICONS = [
-  { name: 'account_balance', label: 'Checkings', icon: <LandmarkIcon /> },
-  { name: 'savings', label: 'Savings', icon: <PiggyBank /> },
-  { name: 'credit_card', label: 'Credit Card', icon: <CreditCard /> },
-  { name: 'trending_up', label: 'Investment', icon: <TrendingUp /> },
-  { name: 'crypto', label: 'Crypto', icon: <Bitcoin /> },
-  { name: 'shopping_cart', label: 'Shopping', icon: <ShoppingCart /> },
-  { name: 'home', label: 'Home', icon: <Home /> },
-  { name: 'car', label: 'Car', icon: <Car /> },
-] as const
 
 export function IconPicker({ value, onChange }: IconPickerProps) {
   return (
@@ -45,7 +25,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                 : 'bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
             }`}
           >
-            {icon.icon}
+            <icon.icon className='size-6' />
           </button>
         )
       })}

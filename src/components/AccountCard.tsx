@@ -1,6 +1,5 @@
-import { MoreVertical } from 'lucide-react'
+import { LucideIcon, MoreVertical } from 'lucide-react'
 import Link from 'next/link'
-import { ReactNode } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +18,7 @@ export interface AccountCardProps {
   status: string
   statusVariant: 'active' | 'live' | 'due'
   accentColor: string
-  icon: ReactNode
+  Icon: LucideIcon
   onEdit?: () => void
   onDelete?: () => void
 }
@@ -35,7 +34,7 @@ export function AccountCard({
   status,
   statusVariant,
   accentColor,
-  icon,
+  Icon,
   onEdit,
   onDelete,
 }: AccountCardProps) {
@@ -53,7 +52,7 @@ export function AccountCard({
             className='size-12 rounded-xl flex items-center justify-center'
             style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
           >
-            {icon}
+            <Icon className='size-7' />
           </div>
         </Link>
 

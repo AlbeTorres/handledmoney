@@ -1,10 +1,10 @@
 'use client'
 
+import { getIconComponent } from '@/lib/utils'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AccountCard } from './AccountCard'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
-import { ICONS } from './IconPicker'
 
 interface AccountCardWrapperProps {
   account: {
@@ -38,8 +38,7 @@ export function AccountCardWrapper({
   }
 
   // Find the icon component based on the name stored in DB
-  const iconData = ICONS.find(i => i.name === (account.icon || 'account_balance'))
-  const iconComponent = iconData?.icon ?? ICONS[0].icon
+  const iconComponent = getIconComponent(account.icon ?? 'account_balance')
 
   return (
     <>
@@ -60,7 +59,7 @@ export function AccountCardWrapper({
         status='Active' // Hardcoded for now as per current design
         statusVariant='active'
         accentColor={account.color ? `#${account.color}` : '#3b82f6'}
-        icon={iconComponent}
+        Icon={iconComponent}
         onEdit={handleEdit}
         onDelete={handleDelete}
       />

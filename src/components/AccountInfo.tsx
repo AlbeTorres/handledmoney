@@ -1,11 +1,17 @@
-import { fmt } from '@/lib/utils'
+import { fmt, getIconComponent } from '@/lib/utils'
 
-import { Download, Landmark } from 'lucide-react'
+import { Download } from 'lucide-react'
 import { Breadcrumb } from './Breadcrumb'
 import { Account } from './financeapp/interfaces/Account'
 import { Button } from './ui/button'
 
-export const AccountInfo = ({ account }: { account: Account }) => {
+type AccountInfoProps = {
+  account: Account
+}
+
+export const AccountInfo = ({ account }: AccountInfoProps) => {
+  const Icon = getIconComponent(account.icon ?? 'account_balance')
+
   return (
     <header className='sticky top-0 z-10 flex flex-col bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
       <div className='flex items-center justify-between px-8 py-4 container mx-auto'>
@@ -13,8 +19,8 @@ export const AccountInfo = ({ account }: { account: Account }) => {
       </div>
       <div className='px-8 pb-8 pt-2 flex flex-col md:flex-row justify-between container mx-auto items-center sm:items-end gap-6'>
         <div className='flex items-center gap-6'>
-          <div className='size-20 rounded-2xl bg-primary/10 flex items-center justify-center  text-primary shadow-inner'>
-            <Landmark className='size-10' />
+          <div className='size-20 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shadow-inner'>
+            <Icon className='size-10' />
           </div>
           <div className='space-y-1'>
             <div className='flex items-center gap-2'>

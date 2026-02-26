@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { ICONS } from './data'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -15,4 +16,9 @@ export const fmtDate = (iso: string) => {
     day: 'numeric',
     year: 'numeric',
   })
+}
+
+export const getIconComponent = (iconName: string) => {
+  const iconData = ICONS.find(i => i.name === (iconName || 'account_balance'))
+  return iconData?.icon ?? ICONS[0].icon
 }
