@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
 
-export function AccountSearchInput() {
+export function SearchInput() {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

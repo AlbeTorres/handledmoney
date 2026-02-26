@@ -24,7 +24,7 @@ export async function AccountGrid({ userId, tab, sort, search }: AccountGridProp
 
   const filteredAccounts = accounts
     .filter(a => {
-      const matchesTab = tab === 'All Accounts' || tab === 'default' || a.currency === tab
+      const matchesTab = tab === 'All' || tab === 'default' || a.currency === tab
       const matchesSearch = !search || (a.name ?? '').toLowerCase().includes(search.toLowerCase())
       return matchesTab && matchesSearch
     })
@@ -35,16 +35,9 @@ export async function AccountGrid({ userId, tab, sort, search }: AccountGridProp
       return 0
     })
 
-  if (filteredAccounts.length === 0) {
-    return (
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <AddAccountCard />
-      </div>
-    )
-  }
-
   return (
     <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+      <AddAccountCard />
       {filteredAccounts.map(account => (
         <AccountCardWrapper
           key={account.id}

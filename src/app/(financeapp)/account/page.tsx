@@ -1,6 +1,6 @@
 import { AccountFilters } from '@/components/AccountFilters'
 import { AccountGrid } from '@/components/AccountGrid'
-import { AccountHeader } from '@/components/AccountHeader'
+import { AppHeader } from '@/components/AppHeader'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -23,13 +23,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const sort = (resolvedSearchParams.sort as string) || 'default'
   const search = (resolvedSearchParams.search as string) || ''
 
-  const userName = session.user?.name || 'User'
-  const avatarUrl = session.user?.image || null
-
   return (
     <>
-      <AccountHeader userName={userName} avatarUrl={avatarUrl} />
-      <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
+      <AppHeader title='Accounts Overview' />
+      <div className='p-8 space-y-8 container'>
         <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
           <AccountFilters />
         </Suspense>

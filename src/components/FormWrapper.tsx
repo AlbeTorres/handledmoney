@@ -1,4 +1,4 @@
-import { AccountBreadcrumb } from './AccountBreadcrumb'
+import { Breadcrumb } from './Breadcrumb'
 import { FormAccountHeader } from './CreateAccountHeader'
 
 export function FormWrapper({
@@ -17,8 +17,8 @@ export function FormWrapper({
   pathTitle: string
 }) {
   return (
-    <div className='p-8 space-y-8 max-w-4xl mx-auto w-full'>
-      <AccountBreadcrumb pathTitle={pathTitle} oldPath={oldPath} oldPathTitle={oldPathTitle} />
+    <div className='p-8 space-y-8 container mx-auto'>
+      <Breadcrumb pathTitle={pathTitle} oldPath={oldPath} oldPathTitle={oldPathTitle} />
       <FormAccountHeader title={title} description={description} />
       {children}
     </div>

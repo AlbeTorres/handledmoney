@@ -7,7 +7,7 @@ type AccountBreadcrumbProps = {
   oldPathTitle: string
 }
 
-export function AccountBreadcrumb({ pathTitle, oldPath, oldPathTitle }: AccountBreadcrumbProps) {
+export function Breadcrumb({ pathTitle, oldPath, oldPathTitle }: AccountBreadcrumbProps) {
   return (
     <nav
       aria-label='Breadcrumb'

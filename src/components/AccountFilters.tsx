@@ -3,14 +3,14 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
 
-const TABS = ['All Accounts', 'USD', 'EUR', 'Crypto']
+const TABS = ['All', 'USD', 'EUR', 'Crypto']
 
 const SORTS = ['Highest Balance', 'Account Name', 'Recently Added']
 
 export function AccountFilters() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentTab = searchParams.get('tab') || 'All Accounts'
+  const currentTab = searchParams.get('tab') || 'All'
   const currentSort = searchParams.get('sort') || 'Highest Balance'
 
   const createQueryString = useCallback(
@@ -32,7 +32,7 @@ export function AccountFilters() {
   }
 
   return (
-    <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
+    <div className='flex flex-col sm:flex-row items-center justify-between gap-4'>
       <div className='flex bg-slate-200/50 dark:bg-slate-800/50 p-1 rounded-lg'>
         {TABS.map(tab => (
           <button

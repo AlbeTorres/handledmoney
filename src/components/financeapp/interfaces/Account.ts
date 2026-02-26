@@ -1,6 +1,18 @@
 export interface Account {
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
   id: string
-  name: string
+  plaidId: string | null
+  userId: string
+  name: string | null
+  bank: string | null
+  type: string | null
+  currency: string | null
+  balance: string | null
+  icon: string | null
+  color: string | null
+  transactionsCount: number
 }
 
 export interface AccountResponseData {
