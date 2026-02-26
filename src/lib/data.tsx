@@ -1,13 +1,22 @@
 import { Account, IncomeTransaction } from '@/components/financeapp/interfaces'
 import {
   Bitcoin,
+  Briefcase,
   Car,
+  Clapperboard,
   CreditCard,
+  GraduationCap,
+  HeartPulse,
   Home,
   LandmarkIcon,
+  MoreHorizontal,
+  PawPrint,
   PiggyBank,
+  Plane,
+  ShoppingBag,
   ShoppingCart,
   TrendingUp,
+  UtensilsCrossed,
 } from 'lucide-react'
 
 export const ICONS = [
@@ -17,8 +26,17 @@ export const ICONS = [
   { name: 'trending_up', label: 'Investment', icon: TrendingUp },
   { name: 'crypto', label: 'Crypto', icon: Bitcoin },
   { name: 'shopping_cart', label: 'Shopping', icon: ShoppingCart },
+  { name: 'shopping_bag', label: 'Shopping Bag', icon: ShoppingBag },
   { name: 'home', label: 'Home', icon: Home },
   { name: 'car', label: 'Car', icon: Car },
+  { name: 'utensils', label: 'Dining', icon: UtensilsCrossed },
+  { name: 'heart_pulse', label: 'Health', icon: HeartPulse },
+  { name: 'clapperboard', label: 'Entertainment', icon: Clapperboard },
+  { name: 'graduation_cap', label: 'Education', icon: GraduationCap },
+  { name: 'plane', label: 'Travel', icon: Plane },
+  { name: 'paw_print', label: 'Pets', icon: PawPrint },
+  { name: 'briefcase', label: 'Work', icon: Briefcase },
+  { name: 'more_horizontal', label: 'Other', icon: MoreHorizontal },
 ] as const
 
 export const ACCOUNT_TYPES = [

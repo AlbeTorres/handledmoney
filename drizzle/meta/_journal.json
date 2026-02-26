@@ -29,6 +29,13 @@
       "when": 1772054106076,
       "tag": "0003_small_stone_men",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1772122613486,
+      "tag": "0004_quick_blackheart",
+      "breakpoints": true
     }
   ]
 }

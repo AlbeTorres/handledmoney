@@ -143,6 +143,8 @@ export const bankAccountsTable = pgTable('bank_account', {
   ...timestamps,
 })
 
+export const categoryTypeEnum = pgEnum('category_type', ['income', 'expense'])
+
 export const categoriesTable = pgTable('category', {
   id: uuid('id').defaultRandom().primaryKey(),
   plaidId: varchar({ length: 255 }),
@@ -150,6 +152,14 @@ export const categoriesTable = pgTable('category', {
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
+  icon: varchar({ length: 100 }),
+  color: varchar({ length: 7 }),
+  type: categoryTypeEnum().default('expense').notNull(),
+  parentId: uuid('parent_id').references((): any => categoriesTable.id, {
+    onDelete: 'cascade',
+  }),
+  isDefault: boolean('is_default').default(false).notNull(),
+  order: integer('order').default(0).notNull(),
   ...timestamps,
 })
 
@@ -225,6 +235,14 @@ export const categoriesRelations = relations(categoriesTable, ({ one, many }) =>
   user: one(user, {
     fields: [categoriesTable.userId],
     references: [user.id],
+  }),
+  parent: one(categoriesTable, {
+    fields: [categoriesTable.parentId],
+    references: [categoriesTable.id],
+    relationName: 'category_hierarchy',
+  }),
+  children: many(categoriesTable, {
+    relationName: 'category_hierarchy',
   }),
   transactions: many(transactionsTable),
 }))

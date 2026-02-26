@@ -48,14 +48,20 @@ export const DeleteAccountSchema = z.object({
   id: z.string().uuid(),
   transferToAccountId: z.string().uuid().optional(),
 })
-export const insertCategorySchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
+export const categorySchema = z.object({
+  name: z.string().min(1, { message: 'Name is required' }).max(50).trim(),
+  icon: z.string().min(1, { message: 'Please select an icon' }),
+  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color' }),
+  type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
+  parentId: z.string().uuid().optional().nullable(),
 })
 
-export const updateCategorySchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }),
+export const UpdateCategorySchema = categorySchema.partial().extend({
   id: z.string().uuid(),
 })
+
+export type CategoryFormData = z.infer<typeof categorySchema>
+
 export const insertTransactionSchema = z.object({
   date: z.coerce.date(),
   accountId: z.string(),
