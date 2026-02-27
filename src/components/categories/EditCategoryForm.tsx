@@ -6,7 +6,6 @@ import { useConfirm } from '@/hooks/use-confirm'
 import { ICONS } from '@/lib/data'
 import { UpdateCategorySchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -19,15 +18,6 @@ import { InputGroup, InputGroupInput } from '../ui/input-group'
 import { CategoryPreview } from './CategoryPreview'
 
 type EditCategoryValues = z.infer<typeof UpdateCategorySchema>
-
-// Internal schema for the form (full data needed)
-const formSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }).max(50).trim(),
-  icon: z.string().min(1, { message: 'Please select an icon' }),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color' }),
-  type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
-  parentId: z.string().uuid().optional().nullable(),
-})
 
 export function EditCategoryForm({ initialValues }: { initialValues: EditCategoryValues }) {
   const [isPending, setIsPending] = useState(false)
@@ -173,22 +163,14 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
               colorError={form.formState.errors.color}
             />
           </div>
-          <div className='flex justify-end items-center gap-2'>
-            <button
-              disabled={isPending}
-              type='button'
-              onClick={handleDelete}
-              className='size-14 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 rounded-2xl hover:bg-red-100 transition-all disabled:opacity-50'
-            >
-              <Trash2 className='size-6' />
-            </button>
-            <FormActions
-              onCancel={handleCancel}
-              isPending={isPending}
-              text='Update Category'
-              loadingText='Updating…'
-            />
-          </div>
+
+          <FormActions
+            onCancel={handleCancel}
+            handleDelete={handleDelete}
+            isPending={isPending}
+            text='Update Category'
+            loadingText='Updating…'
+          />
         </form>
       </div>
     </div>
