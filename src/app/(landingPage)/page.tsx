@@ -1,9 +1,9 @@
-import Feature from './components/feature'
-import Footer from './components/footer'
-import Header from './components/header'
-import Hero from './components/hero'
-import ReLogin from './components/relogin'
-import Testimony from './components/testimony'
+import Feature from '@/components/Feature'
+import Footer from '@/components/Footer'
+import Header from '@/components/Header'
+import Hero from '@/components/Hero'
+import ReLogin from '@/components/Relogin'
+import Testimony from '@/components/Testimony'
 
 export default function Home() {
   return (

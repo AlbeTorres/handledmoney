@@ -1,4 +1,4 @@
-import { AuthMessage } from '../components'
+import { AuthMessage } from '@/components'
 
 interface Props {
   searchParams: Promise<{ error?: string; token?: string }>

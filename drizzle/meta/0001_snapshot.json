@@ -1,6 +1,6 @@
 {
-  "id": "e1805521-5667-48e0-8e6d-ea91b8e7f900",
-  "prevId": "0c1c86a3-46ca-4fe4-9613-748dce433776",
+  "id": "6e79c92d-6835-4202-9110-8acef2b9209b",
+  "prevId": "cbd88539-4caf-4fd3-a5be-482f4b9899a4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -187,9 +187,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "plaidId": {
           "name": "plaidId",
@@ -207,7 +208,51 @@
           "name": "name",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
+        },
+        "bank": {
+          "name": "bank",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "type": {
+          "name": "type",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'USD'"
+        },
+        "balance": {
+          "name": "balance",
+          "type": "numeric(10, 2)",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'0'"
+        },
+        "icon": {
+          "name": "icon",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -238,9 +283,10 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "plaidId": {
           "name": "plaidId",
@@ -389,15 +435,17 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "amount": {
           "name": "amount",
-          "type": "bigint",
+          "type": "numeric(10, 2)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false,
+          "default": "'0'"
         },
         "payee": {
           "name": "payee",
@@ -419,13 +467,13 @@
         },
         "accountId": {
           "name": "accountId",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },
         "categoryId": {
           "name": "categoryId",
-          "type": "text",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": false
         },

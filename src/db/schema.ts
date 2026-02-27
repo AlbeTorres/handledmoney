@@ -1,18 +1,29 @@
 import { relations } from 'drizzle-orm'
 import {
-  bigint,
   boolean,
   index,
+  integer,
+  numeric,
   pgEnum,
   pgTable,
   text,
   timestamp,
+  uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
 
 export const roleEnum = pgEnum('role', ['admin', 'user'])
 
 export const languageEnum = pgEnum('language', ['es', 'en'])
+
+const timestamps = {
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
+  deletedAt: timestamp('deleted_at'),
+}
 
 export const user = pgTable('user', {
   id: text('id').primaryKey(),
@@ -26,9 +37,8 @@ export const user = pgTable('user', {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
-  twoFactorEnabled: boolean("two_factor_enabled").default(false),
+  twoFactorEnabled: boolean('two_factor_enabled').default(false),
 })
-
 
 export const session = pgTable(
   'session',
@@ -90,20 +100,20 @@ export const verification = pgTable(
 )
 
 export const twoFactor = pgTable(
-  "two_factor",
+  'two_factor',
   {
-    id: text("id").primaryKey(),
-    secret: text("secret").notNull(),
-    backupCodes: text("backup_codes").notNull(),
-    userId: text("user_id")
+    id: text('id').primaryKey(),
+    secret: text('secret').notNull(),
+    backupCodes: text('backup_codes').notNull(),
+    userId: text('user_id')
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: 'cascade' }),
   },
-  (table) => [
-    index("twoFactor_secret_idx").on(table.secret),
-    index("twoFactor_userId_idx").on(table.userId),
+  table => [
+    index('twoFactor_secret_idx').on(table.secret),
+    index('twoFactor_userId_idx').on(table.userId),
   ],
-);
+)
 
 export const Settings = pgTable('settings', {
   id: text('id').primaryKey(),
@@ -112,45 +122,67 @@ export const Settings = pgTable('settings', {
     .unique()
     .references(() => user.id, { onDelete: 'cascade' }),
   language: languageEnum().default('en'),
+  ...timestamps,
 })
 
 export const bankAccountsTable = pgTable('bank_account', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   plaidId: varchar({ length: 255 }),
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  name: varchar({ length: 255 }).notNull(),
+  name: varchar({ length: 255 }),
+  bank: varchar({ length: 255 }),
+  type: varchar({ length: 255 }),
+  currency: varchar({ length: 255 }).default('USD'),
+  balance: numeric('balance', { precision: 10, scale: 2 }).default('0'),
+  icon: varchar({ length: 255 }),
+  color: varchar({ length: 255 }),
+
+  transactionsCount: integer('transactions_count').default(0).notNull(),
+  ...timestamps,
 })
 
+export const categoryTypeEnum = pgEnum('category_type', ['income', 'expense'])
+
 export const categoriesTable = pgTable('category', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
   plaidId: varchar({ length: 255 }),
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
+  icon: varchar({ length: 100 }),
+  color: varchar({ length: 7 }),
+  type: categoryTypeEnum().default('expense').notNull(),
+  parentId: uuid('parent_id').references((): any => categoriesTable.id, {
+    onDelete: 'cascade',
+  }),
+  isDefault: boolean('is_default').default(false).notNull(),
+  order: integer('order').default(0).notNull(),
+  ...timestamps,
 })
 
 export const transactionsTable = pgTable('transaction', {
-  id: text('id').primaryKey(),
+  id: uuid('id').defaultRandom().primaryKey(),
 
-  amount: bigint({ mode: 'bigint' }).notNull(),
+  amount: numeric('amount', { precision: 10, scale: 2 }).default('0'),
 
   payee: varchar({ length: 255 }),
   notes: varchar({ length: 255 }),
 
   date: timestamp().notNull(),
 
-  accountId: text()
+  accountId: uuid()
     .notNull()
     .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
 
-  categoryId: text().references(() => categoriesTable.id),
+  categoryId: uuid().references(() => categoriesTable.id),
 
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
+  ...timestamps,
 })
 
 //relations
@@ -189,7 +221,7 @@ export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
     fields: [twoFactor.userId],
     references: [user.id],
   }),
-}));
+}))
 
 export const bankAccountsRelations = relations(bankAccountsTable, ({ one, many }) => ({
   user: one(user, {
@@ -203,6 +235,14 @@ export const categoriesRelations = relations(categoriesTable, ({ one, many }) =>
   user: one(user, {
     fields: [categoriesTable.userId],
     references: [user.id],
+  }),
+  parent: one(categoriesTable, {
+    fields: [categoriesTable.parentId],
+    references: [categoriesTable.id],
+    relationName: 'category_hierarchy',
+  }),
+  children: many(categoriesTable, {
+    relationName: 'category_hierarchy',
   }),
   transactions: many(transactionsTable),
 }))
