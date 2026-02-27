@@ -1,11 +1,7 @@
 'use server'
 
 import { auth } from '@/lib/auth'
-import {
-  countCategoriesByUserId,
-  createManyCategories,
-  getCategoriesByUserId,
-} from '@/repository/categories'
+import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'
 
 const DEFAULT_CATEGORIES = [
@@ -23,7 +19,7 @@ const DEFAULT_CATEGORIES = [
   { name: 'Otros Ingresos', icon: 'trending_up', color: '#6366f1', type: 'income' as const },
 ]
 
-export const getOrSeedCategories = async () => {
+export const getCategories = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -39,16 +35,16 @@ export const getOrSeedCategories = async () => {
   }
 
   try {
-    const count = await countCategoriesByUserId(userId)
+    // const count = await countCategoriesByUserId(userId)
 
-    if (count === 0) {
-      const data = DEFAULT_CATEGORIES.map(category => ({
-        ...category,
-        userId,
-        isDefault: true,
-      }))
-      await createManyCategories(data)
-    }
+    // if (count === 0) {
+    //   const data = DEFAULT_CATEGORIES.map(category => ({
+    //     ...category,
+    //     userId,
+    //     isDefault: true,
+    //   }))
+    //   await createManyCategories(data)
+    // }
 
     const categories = await getCategoriesByUserId(userId)
 
@@ -59,7 +55,7 @@ export const getOrSeedCategories = async () => {
       message: 'Categories retrieved successfully',
     }
   } catch (error) {
-    console.error('Error in getOrSeedCategories:', error)
+    console.error('Error in getCategories:', error)
     return {
       success: false,
       status: 500,

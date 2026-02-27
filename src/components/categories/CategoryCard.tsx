@@ -16,7 +16,7 @@ export function CategoryCard({ category }: CategoryCardProps) {
   const Icon = IconData?.icon || ICONS[0].icon
 
   // Calculate opacity/tint for background
-  const color = category.color || '#94a3b8'
+  const color = '#' + category.color || '#94a3b8'
   const bgColor = color + '20'
 
   return (
@@ -35,11 +35,6 @@ export function CategoryCard({ category }: CategoryCardProps) {
       </div>
       <div className='flex-1'>
         <h4 className='font-bold text-sm'>{category.name}</h4>
-        {category.children && category.children.length > 0 && (
-          <p className='text-xs text-slate-500 font-medium'>
-            {category.children.length} subcategories
-          </p>
-        )}
       </div>
       <ChevronRight className='size-5 text-slate-400 transition-transform group-hover:translate-x-1' />
     </Link>

@@ -51,13 +51,18 @@ export const DeleteAccountSchema = z.object({
 export const categorySchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }).max(50).trim(),
   icon: z.string().min(1, { message: 'Please select an icon' }),
-  color: z.string().regex(/^#[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color' }),
+  color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
   type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
   parentId: z.string().uuid().optional().nullable(),
 })
 
-export const UpdateCategorySchema = categorySchema.partial().extend({
+export const UpdateCategorySchema = z.object({
   id: z.string().uuid(),
+  name: z.string().min(1, { message: 'Name is required' }).max(50).trim(),
+  icon: z.string().min(1, { message: 'Please select an icon' }),
+  color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
+  type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
+  parentId: z.string().uuid().optional().nullable(),
 })
 
 export type CategoryFormData = z.infer<typeof categorySchema>
