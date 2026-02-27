@@ -1,13 +1,13 @@
 'use client'
 
+import { fmtDate } from '@/lib/utils'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
-import { Button } from '../ui/button'
-import { Checkbox } from '../ui/checkbox'
-import { AccountColumn } from './AccountColumn'
-import { Actions } from './actions'
-import { CategoryColumn } from './CategoryColumn'
-import { Transaction } from './interfaces'
+import { Transaction } from '../interfaces'
+import { Actions } from './financeapp/actions'
+import { CategoryColumn } from './financeapp/CategoryColumn'
+import { Button } from './ui/button'
+import { Checkbox } from './ui/checkbox'
 
 export const columns: ColumnDef<Transaction>[] = [
   {
@@ -30,6 +30,23 @@ export const columns: ColumnDef<Transaction>[] = [
     ),
     enableSorting: false,
     enableHiding: false,
+  },
+  {
+    accessorKey: 'date',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Date
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      )
+    },
+    cell: ({ row }) => {
+      return fmtDate(row.original.date)
+    },
   },
   {
     accessorKey: 'amount',
@@ -59,9 +76,7 @@ export const columns: ColumnDef<Transaction>[] = [
       )
     },
     cell: ({ row }) => {
-      return (
-        <AccountColumn accountId={row.original.accountId} accountName={row.original.accountName} />
-      )
+      return <p>{row.original.accountName}</p>
     },
   },
   {
@@ -78,13 +93,7 @@ export const columns: ColumnDef<Transaction>[] = [
       )
     },
     cell: ({ row }) => {
-      return (
-        <CategoryColumn
-          transactionId={row.original.id}
-          categoryId={row.original.categoryId}
-          categoryName={row.original.categoryName}
-        />
-      )
+      return <CategoryColumn categoryName={row.original.categoryName} />
     },
   },
   {
@@ -101,20 +110,7 @@ export const columns: ColumnDef<Transaction>[] = [
       )
     },
   },
-  {
-    accessorKey: 'date',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          Date
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      )
-    },
-  },
+
   {
     id: 'actions',
     cell: ({ row }) => <Actions id={row.original.id} />,

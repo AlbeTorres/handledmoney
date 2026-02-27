@@ -1,5 +1,5 @@
 import { Breadcrumb } from './Breadcrumb'
-import { FormAccountHeader } from './CreateAccountHeader'
+import { FormHeader } from './FormHeader'
 
 export function FormWrapper({
   children,
@@ -19,7 +19,7 @@ export function FormWrapper({
   return (
     <div className='p-8 space-y-8 container mx-auto'>
       <Breadcrumb pathTitle={pathTitle} oldPath={oldPath} oldPathTitle={oldPathTitle} />
-      <FormAccountHeader title={title} description={description} />
+      <FormHeader title={title} description={description} />
       {children}
     </div>
   )

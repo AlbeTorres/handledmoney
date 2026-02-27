@@ -1,6 +1,5 @@
 import { getCategories } from '@/actions/category/get-categories'
-import { CategoryContent } from '@/components/categories/CategoryContent'
-import { redirect } from 'next/navigation'
+import { CategoryContent } from '@/components/CategoryContent'
 
 interface CategoryPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -10,17 +9,6 @@ export default async function CategoryPage({ searchParams }: CategoryPageProps) 
   const result = await getCategories()
   const resolvedSearchParams = await searchParams
   const activeTab = (resolvedSearchParams.tab as 'expense' | 'income') || 'expense'
-
-  if (!result.success) {
-    if (result.status === 401) {
-      redirect('/login')
-    }
-    return (
-      <div className='flex items-center justify-center h-screen'>
-        <p className='text-red-500 font-bold'>{result.message}</p>
-      </div>
-    )
-  }
 
   return (
     <div className='bg-background-light dark:bg-background-dark'>

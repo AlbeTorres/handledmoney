@@ -1,5 +1,5 @@
+import { SelectedColumns } from '../../interfaces'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
-import { SelectedColumns } from './interfaces'
 import { TableHeadSelected } from './TableHeadSelected'
 
 type Props = {

@@ -1,47 +1,45 @@
-'use client'
-import ExpensesTable from '@/components/ExpensesTable'
+import { TransactionPageContent } from '@/components/TransactionPageContent'
+import { Transaction } from '@/interfaces'
 
-import IncomeTable from '@/components/IncomeTable'
-import SummaryCards from '@/components/SummaryCards'
-import TransactionHeader from '@/components/TransactionHeader'
-import { EXPENSES, INCOME } from '@/lib/data'
-import { useState } from 'react'
-
-export default function TransactionPage() {
-  const [activeView, setActiveView] = useState('expenses')
-  const [search, setSearch] = useState('')
-
-  const filteredExpenses = EXPENSES.filter(
-    tx =>
-      tx.payee.toLowerCase().includes(search.toLowerCase()) ||
-      tx.category.toLowerCase().includes(search.toLowerCase()),
-  )
-
-  function handleViewChange(view: string) {
-    setActiveView(view)
-    setSearch('')
-  }
+export default async function TransactionPage() {
+  const transactions: Transaction[] = [
+    {
+      id: '1',
+      type: 'expense',
+      amount: '100',
+      payee: 'Transaction 1',
+      date: new Date('2022-01-01'),
+      categoryId: '1',
+      accountId: '1',
+      notes: 'Transaction 1',
+      createdAt: new Date('2022-01-01'),
+      updatedAt: new Date('2022-01-01'),
+      userId: '1',
+      accountName: 'Account 1',
+      categoryName: 'Category 1',
+      deletedAt: null,
+    },
+    {
+      id: '2',
+      type: 'income',
+      amount: '200',
+      payee: 'Transaction 2',
+      date: new Date('2022-01-02'),
+      categoryId: '2',
+      accountId: '2',
+      notes: 'Transaction 2',
+      createdAt: new Date('2022-01-02'),
+      updatedAt: new Date('2022-01-02'),
+      userId: '2',
+      accountName: 'Account 2',
+      categoryName: 'Category 2',
+      deletedAt: null,
+    },
+  ]
 
   return (
-    <div className='bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen'>
-      <div className='flex h-screen overflow-hidden'>
-        <main className='flex-1 flex flex-col overflow-y-auto'>
-          <TransactionHeader
-            activeView={activeView}
-            onViewChange={handleViewChange}
-            search={search}
-            onSearch={setSearch}
-          />
-          <div className='p-8 flex flex-col gap-8 max-w-[1400px] mx-auto w-full'>
-            <SummaryCards activeView={activeView} />
-            {activeView === 'expenses' ? (
-              <ExpensesTable data={filteredExpenses} />
-            ) : (
-              <IncomeTable data={INCOME} />
-            )}
-          </div>
-        </main>
-      </div>
+    <div className='max-w-screen-2xl h-full flex flex-col items-center justify-center mx-auto w-full'>
+      <TransactionPageContent data={transactions} />
     </div>
   )
 }

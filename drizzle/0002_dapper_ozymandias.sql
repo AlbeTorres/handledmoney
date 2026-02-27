@@ -1,1 +1,0 @@
-ALTER TABLE "bank_account" ADD COLUMN "transactions_count" integer DEFAULT 0 NOT NULL;

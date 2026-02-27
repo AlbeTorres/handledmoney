@@ -1,65 +1,44 @@
 'use client'
 
-import { deleteCategoryAction } from '@/actions/category/delete-category'
-import { updateCategoryAction } from '@/actions/category/update-category'
-import { useConfirm } from '@/hooks/use-confirm'
+import { createCategoryAction } from '@/actions/category/create-category'
 import { ICONS } from '@/lib/data'
-import { UpdateCategorySchema } from '@/lib/schema'
+import { CategoryFormData, categorySchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
-import * as z from 'zod'
-import { AppearanceSection } from '../AppearanceSection'
-import { FormActions } from '../FormActions'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '../ui/field'
-import { InputGroup, InputGroupInput } from '../ui/input-group'
+import z from 'zod'
+import { AppearanceSection } from './AppearanceSection'
 import { CategoryPreview } from './CategoryPreview'
+import { FormActions } from './FormActions'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from './ui/field'
+import { InputGroup, InputGroupInput } from './ui/input-group'
 
-type EditCategoryValues = z.infer<typeof UpdateCategorySchema>
+type CreateCategoryValues = z.infer<typeof categorySchema>
 
-export function EditCategoryForm({ initialValues }: { initialValues: EditCategoryValues }) {
+export function CreateCategoryForm() {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
-  const [ConfirmationDialog, confirm] = useConfirm(
-    'Delete Category',
-    'Are you sure you want to delete this category? This action cannot be undone.',
-  )
 
-  const form = useForm<EditCategoryValues>({
-    resolver: zodResolver(UpdateCategorySchema),
-    defaultValues: initialValues,
+  const form = useForm<CreateCategoryValues>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: {
+      name: '',
+      icon: 'more_horizontal',
+      color: '94a3b8',
+      type: 'expense',
+    },
   })
 
-  const watched = useWatch<EditCategoryValues>({ control: form.control })
+  const watched = useWatch<CreateCategoryValues>({ control: form.control })
+
   const CurrentIcon = ICONS.find(i => i.name === watched.icon)?.icon || ICONS[0].icon
 
-  const handleSubmit = async (data: z.infer<typeof UpdateCategorySchema>) => {
+  const handleSubmit = async (data: CategoryFormData) => {
     setIsPending(true)
     try {
-      const response = await updateCategoryAction(data)
-      if (response.success) {
-        toast.success(response.message)
-        router.push('/category')
-        router.refresh()
-      } else {
-        toast.error(response.message)
-      }
-    } catch (error) {
-      toast.error('Something went wrong')
-    } finally {
-      setIsPending(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    const ok = await confirm()
-    if (!ok) return
-
-    setIsPending(true)
-    try {
-      const response = await deleteCategoryAction(initialValues.id)
+      const response = await createCategoryAction(data)
       if (response.success) {
         toast.success(response.message)
         router.push('/category')
@@ -75,12 +54,12 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
   }
 
   const handleCancel = useCallback(() => {
+    form.reset()
     router.back()
-  }, [router])
+  }, [form])
 
   return (
     <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
-      <ConfirmationDialog />
       <div className='grid sm:grid-cols-2 sm:gap-4'>
         <CategoryPreview
           name={watched.name!}
@@ -88,7 +67,6 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
           type={watched.type!}
           Icon={CurrentIcon}
         />
-
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className='p-6 sm:p-8 space-y-8'>
             <FieldGroup>
@@ -166,10 +144,9 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
 
           <FormActions
             onCancel={handleCancel}
-            handleDelete={handleDelete}
             isPending={isPending}
-            text='Update Category'
-            loadingText='Updating…'
+            text='Create Account'
+            loadingText='Creating…'
           />
         </form>
       </div>

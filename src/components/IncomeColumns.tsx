@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
+import { IncomeTransaction } from '../interfaces'
 import { Actions } from './financeapp/actions'
 import { CategoryColumn } from './financeapp/CategoryColumn'
-import { IncomeTransaction } from './financeapp/interfaces'
 import { Button } from './ui/button'
 import { Checkbox } from './ui/checkbox'
 

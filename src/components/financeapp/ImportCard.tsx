@@ -1,8 +1,8 @@
 import { useState } from 'react'
+import { CSVTransaction, SelectedColumns } from '../../interfaces'
 import { Button } from '../ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
 import { ImportTable } from './ImportTable'
-import { CSVTransaction, SelectedColumns } from './interfaces'
 
 type Props = {
   data: string[][]

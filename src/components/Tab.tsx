@@ -10,8 +10,9 @@ export const Tab = ({ activeView, onViewChange, tabs }: Props) => {
       {tabs.map(view => (
         <button
           key={view}
+          type='button'
           onClick={() => onViewChange(view)}
-          className={`px-4 py-1.5 rounded-md text-sm font-semibold capitalize transition-all ${
+          className={`px-4 py-1.5 w-full rounded-md text-sm font-semibold capitalize transition-all ${
             activeView === view
               ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'

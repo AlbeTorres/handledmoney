@@ -5,13 +5,13 @@ export interface Account {
   id: string
   plaidId: string | null
   userId: string
-  name: string | null
-  bank: string | null
-  type: string | null
-  currency: string | null
-  balance: string | null
-  icon: string | null
-  color: string | null
+  name: string
+  bank: string
+  type: string
+  currency: string
+  balance: string
+  icon: string
+  color: string
   transactionsCount: number
 }
 

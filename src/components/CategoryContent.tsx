@@ -5,9 +5,9 @@ import { Plus, Search } from 'lucide-react'
 import Link from 'next/link'
 import { useState } from 'react'
 
-import { Tab } from '../Tab'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { CategoryList } from './CategoryList'
+import { Tab } from './Tab'
+import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
 
 interface CategoryListProps {
   categories: (CategorySelect & { children?: any[] })[]

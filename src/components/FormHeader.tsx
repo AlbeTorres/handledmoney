@@ -5,7 +5,7 @@ interface FormAccountHeaderProps {
   description: string
 }
 
-export function FormAccountHeader({ title, description }: FormAccountHeaderProps) {
+export function FormHeader({ title, description }: FormAccountHeaderProps) {
   return (
     <div className='flex items-center gap-4'>
       <div className='size-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center'>
