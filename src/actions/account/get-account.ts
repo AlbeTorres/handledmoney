@@ -26,7 +26,7 @@ export const getBankAccountByIdAction = async (id: string) => {
         success: false,
         status: 404,
         message: 'Account not found',
-        data: [],
+        data: null,
       }
     }
 
@@ -42,7 +42,7 @@ export const getBankAccountByIdAction = async (id: string) => {
       success: false,
       status: 500,
       message: 'Error getting account',
-      data: [],
+      data: null,
     }
   }
 }

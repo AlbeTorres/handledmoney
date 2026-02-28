@@ -1,6 +1,7 @@
-import { getAccountById } from '@/actions/account/get-account'
+import { getBankAccountByIdAction } from '@/actions/account/get-account'
 import { EditAccountForm } from '@/components/EditAccountForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import Link from 'next/link'
 import toast from 'react-hot-toast'
 
 interface EditAccountPageProps {
@@ -10,16 +11,25 @@ interface EditAccountPageProps {
 export default async function EditAccountPage({ params }: EditAccountPageProps) {
   const { id } = await params
 
-  const response = await getAccountById(id)
+  const response = await getBankAccountByIdAction(id)
 
-  if (!response.success) {
+  if (!response.success || !response.data) {
+    //todo: show a toast with the error message user friendly not the error message from the database
     toast.error(response.message)
-    return
-  }
-
-  if (!response.data) {
-    toast.error('Account not found')
-    return
+    return (
+      <FormWrapper
+        title='Edit Account'
+        description='Update your account details.'
+        oldPath='/account'
+        oldPathTitle='Accounts'
+        pathTitle='Edit'
+      >
+        <div className='flex items-center justify-center'>
+          <p>Account not found</p>
+          <Link href='/account'>Go back to accounts</Link>
+        </div>
+      </FormWrapper>
+    )
   }
 
   const account = response.data
