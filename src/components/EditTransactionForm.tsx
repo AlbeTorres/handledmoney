@@ -1,7 +1,7 @@
 'use client'
-import { createTransactionAction } from '@/actions/transaction/create-transaction'
-import { CreateTransactionSchema } from '@/lib/schema'
+import { UpdateTransactionSchema } from '@/lib/schema'
 
+import { updateTransactionAction } from '@/actions/transaction/update-transaction'
 import { Account, Category } from '@/interfaces'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
@@ -20,34 +20,30 @@ import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select'
 import { Textarea } from './ui/textarea'
 
-type CreateTransactionValues = z.infer<typeof CreateTransactionSchema>
+type UpdateTransactionValues = z.infer<typeof UpdateTransactionSchema>
 
-export const CreateTransactionForm = ({
+export const EditTransactionForm = ({
   accounts,
   categories,
+  initialValues,
 }: {
   accounts: Account[]
   categories: Category[]
+  initialValues: UpdateTransactionValues
 }) => {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
 
-  const form = useForm<CreateTransactionValues>({
-    resolver: zodResolver(CreateTransactionSchema),
-    defaultValues: {
-      type: 'expense',
-      date: new Date(),
-      payee: '',
-      amount: undefined,
-      notes: '',
-    },
+  const form = useForm<UpdateTransactionValues>({
+    resolver: zodResolver(UpdateTransactionSchema),
+    defaultValues: initialValues,
   })
 
-  const handleSubmit = async (data: CreateTransactionValues) => {
+  const handleSubmit = async (data: UpdateTransactionValues) => {
     setIsPending(true)
-    const { date, accountId, categoryId, payee, amount, notes, type } = data
+    const { date, accountId, categoryId, payee, amount, notes, type, id } = data
     try {
-      const res = await createTransactionAction({
+      const res = await updateTransactionAction({
         date,
         accountId,
         categoryId,
@@ -55,6 +51,7 @@ export const CreateTransactionForm = ({
         amount,
         notes,
         type,
+        id,
       })
 
       if (res.success) {
@@ -65,7 +62,7 @@ export const CreateTransactionForm = ({
       console.log(error, 'error')
     } finally {
       setIsPending(false)
-      router.push('/account')
+      router.push('/transaction')
     }
   }
 
@@ -262,8 +259,8 @@ export const CreateTransactionForm = ({
       <FormActions
         onCancel={handleCancel}
         isPending={isPending}
-        text='Create Transaction'
-        loadingText='Creating…'
+        text='Update Transaction'
+        loadingText='Updating…'
       />
     </form>
   )

@@ -176,21 +176,15 @@ export const transactionsTable = pgTable(
   'transaction',
   {
     id: uuid('id').defaultRandom().primaryKey(),
-
     amount: numeric('amount', { precision: 10, scale: 2 }).default('0'),
-
-    payee: varchar({ length: 255 }),
+    payee: varchar({ length: 255 }).notNull(),
     notes: varchar({ length: 255 }),
-
     date: timestamp().notNull(),
-
     accountId: uuid()
       .notNull()
       .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
-
     categoryId: uuid().references(() => categoriesTable.id),
     type: categoryTypeEnum().default('expense').notNull(),
-
     userId: text()
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),

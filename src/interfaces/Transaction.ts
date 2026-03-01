@@ -22,7 +22,7 @@ export interface Transaction {
   id: string
   type: 'expense' | 'income'
   amount: string | null
-  payee: string | null
+  payee: string
   accountId: string
   categoryId: string | null
   notes: string | null

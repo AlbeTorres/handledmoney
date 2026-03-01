@@ -2,8 +2,8 @@
 
 import { Button } from '@/components/ui/button'
 
-import { useTransactionState } from '@/store'
 import { Edit, MoreHorizontal } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,7 @@ type Props = {
 }
 
 export const Actions = ({ id }: Props) => {
-  const { onOpen } = useTransactionState()
+  const router = useRouter()
 
   return (
     <DropdownMenu>
@@ -26,7 +26,11 @@ export const Actions = ({ id }: Props) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem disabled={false} onClick={() => onOpen(id)}>
+        <DropdownMenuItem
+          disabled={false}
+          onClick={() => router.push(`/transaction/${id}/edit`)}
+          className='p-2 cursor-pointer'
+        >
           <Edit className='size-4 mr-2' />
           Edit
         </DropdownMenuItem>

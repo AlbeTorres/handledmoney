@@ -130,10 +130,10 @@ export const insertTransactionSchema = z.object({
 export const transactionFormSchema = z.object({
   date: z.coerce.date(),
   accountId: z.string(),
-  categoryId: z.string().nullable().optional(),
+  categoryId: z.string().uuid().optional(),
   payee: z.string(),
   amount: z.string(),
-  notes: z.string().nullable().optional(),
+  notes: z.string().max(255).optional(),
   type: z.enum(['income', 'expense']).default('expense'),
 })
 
@@ -150,15 +150,15 @@ export const CreateTransactionSchema = z.object({
   type: z.enum(['income', 'expense']),
 })
 
-export const updateTransactionSchema = z.object({
+export const UpdateTransactionSchema = z.object({
   id: z.string().uuid(),
-  date: z.coerce.date().optional(),
-  accountId: z.string().optional(),
-  categoryId: z.string().nullable().optional(),
-  payee: z.string().optional(),
-  amount: z.coerce.number().positive().optional(),
-  notes: z.string().max(255).nullable().optional(),
-  type: z.enum(['income', 'expense']).optional(),
-  incomeDetails: incomeDetailsSchema.optional(),
-  expenseDetails: expenseDetailsSchema.optional(),
+  date: z.coerce.date(),
+  accountId: z.string(),
+  categoryId: z.string().uuid().optional(),
+  payee: z.string().min(1, 'Payee is required'),
+  amount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .positive('Amount must be positive'),
+  notes: z.string().max(255).optional(),
+  type: z.enum(['income', 'expense']),
 })

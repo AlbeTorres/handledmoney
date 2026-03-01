@@ -1,10 +1,19 @@
 import { db } from '@/db'
-import { bankAccountsTable, transactionsTable } from '@/db/schema'
-import { CreateTransactionSchema } from '@/lib/schema'
-import { and, eq, inArray, sql } from 'drizzle-orm'
+import { bankAccountsTable, categoriesTable, transactionsTable } from '@/db/schema'
+import { CreateTransactionSchema, UpdateTransactionSchema } from '@/lib/schema'
+import { and, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 import z from 'zod'
 
 type CreateTransactionValues = z.infer<typeof CreateTransactionSchema> & { userId: string }
+type UpdateTransactionValues = z.infer<typeof UpdateTransactionSchema> & { userId: string }
+
+export interface PaginatedTransactionsParams {
+  userId: string
+  type: 'income' | 'expense'
+  page?: number
+  limit?: number
+  search?: string
+}
 
 export const createTransaction = async ({
   userId,
@@ -89,6 +98,174 @@ export const transferTransaction = async (
     throw new Error('Could not complete the transaction transfer.')
   }
 }
+export const updateTransaction = async ({
+  userId,
+  id,
+  accountId,
+  categoryId,
+  payee,
+  amount,
+  notes,
+  date,
+  type,
+}: UpdateTransactionValues) => {
+  return db.transaction(async tx => {
+    // 1. Fetch existing
+    const [existing] = await tx
+      .select({
+        amount: transactionsTable.amount,
+        type: transactionsTable.type,
+        accountId: transactionsTable.accountId,
+      })
+      .from(transactionsTable)
+      .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
+
+    if (!existing) throw new Error('Transaction not found')
+
+    // 2. Build update payload
+    const updatePayload: Partial<typeof transactionsTable.$inferInsert> = {}
+    if (payee !== undefined) updatePayload.payee = payee
+    if (notes !== undefined) updatePayload.notes = notes
+    if (date !== undefined) updatePayload.date = date
+    if (categoryId !== undefined) updatePayload.categoryId = categoryId
+    if (accountId !== undefined) updatePayload.accountId = accountId
+    if (type !== undefined) updatePayload.type = type
+    if (amount !== undefined) updatePayload.amount = String(amount)
+
+    const [updated] = await tx
+      .update(transactionsTable)
+      .set(updatePayload)
+      .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
+      .returning()
+
+    // 3. Recalculate balance
+    const oldAmount = parseFloat(existing.amount ?? '0')
+    const oldType = existing.type
+    const newAmount = amount ?? oldAmount
+    const newType = type ?? oldType
+
+    const oldEffect = oldType === 'income' ? -oldAmount : +oldAmount
+    const newEffect = newType === 'income' ? +newAmount : -newAmount
+
+    const accountChanged = accountId !== undefined && accountId !== existing.accountId
+    const somethingChanged =
+      accountChanged ||
+      (amount !== undefined && newAmount !== oldAmount) ||
+      (type !== undefined && newType !== oldType)
+
+    if (somethingChanged) {
+      if (accountChanged) {
+        // Revert effect on old account
+        await tx
+          .update(bankAccountsTable)
+          .set({ balance: sql`${bankAccountsTable.balance} + ${oldEffect}` })
+          .where(eq(bankAccountsTable.id, existing.accountId))
+
+        // Apply new effect on new account
+        await tx
+          .update(bankAccountsTable)
+          .set({ balance: sql`${bankAccountsTable.balance} + ${newEffect}` })
+          .where(eq(bankAccountsTable.id, accountId))
+      } else {
+        // Same account — just apply the net delta
+        const delta = oldEffect + newEffect
+        await tx
+          .update(bankAccountsTable)
+          .set({ balance: sql`${bankAccountsTable.balance} + ${delta}` })
+          .where(eq(bankAccountsTable.id, existing.accountId))
+      }
+    }
+
+    return updated
+  })
+}
+
+export const getTransactionById = async (id: string, userId: string) => {
+  return await db.query.transactionsTable.findFirst({
+    where: and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)),
+    with: {
+      category: true,
+      account: true,
+      incomeDetails: true,
+      expenseDetails: true,
+    },
+  })
+}
+
+export const getTransactionsByAccountId = async (accountId: string, userId: string) => {
+  try {
+    const transactions = await db
+      .select({
+        id: transactionsTable.id,
+        amount: transactionsTable.amount,
+        payee: transactionsTable.payee,
+        notes: transactionsTable.notes,
+        date: transactionsTable.date,
+        accountId: transactionsTable.accountId,
+        accountName: bankAccountsTable.name,
+        categoryId: transactionsTable.categoryId,
+        categoryName: categoriesTable.name,
+        userId: transactionsTable.userId,
+      })
+      .from(transactionsTable)
+      .leftJoin(bankAccountsTable, eq(transactionsTable.accountId, bankAccountsTable.id))
+      .leftJoin(categoriesTable, eq(transactionsTable.categoryId, categoriesTable.id))
+      .where(and(eq(transactionsTable.accountId, accountId), eq(transactionsTable.userId, userId)))
+      .orderBy(desc(transactionsTable.date))
+
+    return transactions
+  } catch (error) {
+    console.error('Error fetching transactions by account:', error)
+    return []
+  }
+}
+
+export const getTransactionsPaginated = async ({
+  userId,
+  type,
+  page = 1,
+  limit = 20,
+  search,
+}: PaginatedTransactionsParams) => {
+  const offset = (page - 1) * limit
+
+  const searchCondition = search
+    ? or(
+        ilike(transactionsTable.payee, `%${search}%`),
+        ilike(transactionsTable.notes, `%${search}%`),
+      )
+    : undefined
+
+  const whereClause = and(
+    eq(transactionsTable.userId, userId),
+    eq(transactionsTable.type, type),
+    searchCondition,
+  )
+
+  const [rows, totalResult] = await Promise.all([
+    db.query.transactionsTable.findMany({
+      where: whereClause,
+      with: {
+        category: true,
+        account: true,
+        ...(type === 'income' ? { incomeDetails: true } : { expenseDetails: true }),
+      },
+      orderBy: desc(transactionsTable.date),
+      limit,
+      offset,
+    }),
+    db.select({ count: count() }).from(transactionsTable).where(whereClause),
+  ])
+
+  const total = Number(totalResult[0]?.count ?? 0)
+
+  return {
+    data: rows,
+    total,
+    page,
+    totalPages: Math.ceil(total / limit),
+  }
+}
 
 // // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -112,53 +289,6 @@ export const transferTransaction = async (
 // }
 
 // // ── Paginated list ─────────────────────────────────────────────────────────────
-
-// export const getTransactionsPaginated = async ({
-//   userId,
-//   type,
-//   page = 1,
-//   limit = 20,
-//   search,
-// }: PaginatedTransactionsParams) => {
-//   const offset = (page - 1) * limit
-
-//   const searchCondition = search
-//     ? or(
-//         ilike(transactionsTable.payee, `%${search}%`),
-//         ilike(transactionsTable.notes, `%${search}%`),
-//       )
-//     : undefined
-
-//   const whereClause = and(
-//     eq(transactionsTable.userId, userId),
-//     eq(transactionsTable.type, type),
-//     searchCondition,
-//   )
-
-//   const [rows, totalResult] = await Promise.all([
-//     db.query.transactionsTable.findMany({
-//       where: whereClause,
-//       with: {
-//         category: true,
-//         account: true,
-//         ...(type === 'income' ? { incomeDetails: true } : { expenseDetails: true }),
-//       },
-//       orderBy: desc(transactionsTable.date),
-//       limit,
-//       offset,
-//     }),
-//     db.select({ count: count() }).from(transactionsTable).where(whereClause),
-//   ])
-
-//   const total = Number(totalResult[0]?.count ?? 0)
-
-//   return {
-//     data: rows,
-//     total,
-//     page,
-//     totalPages: Math.ceil(total / limit),
-//   }
-// }
 
 // // ── Single transaction ─────────────────────────────────────────────────────────
 

@@ -1,20 +1,20 @@
 'use server'
 
 import { auth } from '@/lib/auth'
-import { updateTransactionSchema } from '@/lib/schema'
-import { updateTransactionWithDetails } from '@/repository/transaction'
+import { UpdateTransactionSchema } from '@/lib/schema'
+import { updateTransaction } from '@/repository/transaction'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
 import * as z from 'zod'
 
-export const updateTransactionAction = async (values: z.infer<typeof updateTransactionSchema>) => {
+export const updateTransactionAction = async (values: z.infer<typeof UpdateTransactionSchema>) => {
   const session = await auth.api.getSession({ headers: await headers() })
 
   if (!session?.user?.id) {
     return { success: false, status: 401, message: 'Unauthorized' }
   }
 
-  const validated = updateTransactionSchema.safeParse(values)
+  const validated = UpdateTransactionSchema.safeParse(values)
   if (!validated.success) {
     return {
       success: false,
@@ -24,19 +24,13 @@ export const updateTransactionAction = async (values: z.infer<typeof updateTrans
     }
   }
 
-  const { id, incomeDetails, expenseDetails, ...rest } = validated.data
+  const { id, ...rest } = validated.data
 
   try {
-    const transaction = await updateTransactionWithDetails({
+    const transaction = await updateTransaction({
       id,
       userId: session.user.id,
       ...rest,
-      incomeDetails: incomeDetails as Parameters<
-        typeof updateTransactionWithDetails
-      >[0]['incomeDetails'],
-      expenseDetails: expenseDetails as Parameters<
-        typeof updateTransactionWithDetails
-      >[0]['expenseDetails'],
     })
 
     revalidatePath('/transaction')

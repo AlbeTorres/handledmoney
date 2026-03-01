@@ -5,7 +5,7 @@ import { auth } from '@/lib/auth'
 import { getTransactionsPaginated, PaginatedTransactionsParams } from '@/repository/transaction'
 import { headers } from 'next/headers'
 
-export const getTransactionsAction = async (
+export const getTransactionsPaginatedAction = async (
   params: Omit<PaginatedTransactionsParams, 'userId'>,
 ) => {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -26,7 +26,7 @@ export const getTransactionsAction = async (
 
     const transactions = result.data.map(parseTransaction)
 
-    return { success: true, status: 200, data: { transactions } }
+    return { success: true, status: 200, data: [...transactions] }
   } catch (error) {
     console.error('Error fetching transactions:', error)
     return { success: false, status: 500, message: 'Something went wrong', data: null }
@@ -38,7 +38,7 @@ function parseTransaction(transaction: TransactionResponse): Transaction {
     id: transaction.id,
     type: transaction.type,
     amount: transaction.amount,
-    payee: transaction.payee,
+    payee: transaction.payee || '',
     accountId: transaction.accountId,
     categoryId: transaction.categoryId,
     notes: transaction.notes,
