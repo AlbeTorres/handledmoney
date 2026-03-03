@@ -1,11 +1,10 @@
 'use server'
 import { auth } from '@/lib/auth'
 import { DeleteAccountSchema } from '@/lib/schema'
-import { softDeleteBankAccount } from '@/repository/account'
+import { getBankAccountById, softDeleteBankAccount } from '@/repository/account'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
 import * as z from 'zod'
-import { getAccountById } from './get-account'
 
 export const removeBankAccount = async (values: z.infer<typeof DeleteAccountSchema>) => {
   const session = await auth.api.getSession({
@@ -36,9 +35,9 @@ export const removeBankAccount = async (values: z.infer<typeof DeleteAccountSche
 
   try {
     // Check if account has transactions and if we need a transfer account
-    const response = await getAccountById(id)
+    const response = await getBankAccountById(id, userId)
 
-    if (!response.success) {
+    if (!response) {
       return {
         success: false,
         status: 404,
@@ -46,15 +45,7 @@ export const removeBankAccount = async (values: z.infer<typeof DeleteAccountSche
       }
     }
 
-    const account = response.data
-
-    if (!account) {
-      return {
-        success: false,
-        status: 404,
-        message: 'Account not found',
-      }
-    }
+    const account = response
 
     if (account.transactionsCount > 0 && !transferToAccountId) {
       return {

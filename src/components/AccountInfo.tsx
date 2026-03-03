@@ -1,8 +1,8 @@
 import { fmt, getIconComponent } from '@/lib/utils'
 
 import { Download } from 'lucide-react'
+import { Account } from '../interfaces/Account'
 import { Breadcrumb } from './Breadcrumb'
-import { Account } from './financeapp/interfaces/Account'
 import { Button } from './ui/button'
 
 type AccountInfoProps = {

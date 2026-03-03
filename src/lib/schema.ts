@@ -67,6 +67,56 @@ export const UpdateCategorySchema = z.object({
 
 export type CategoryFormData = z.infer<typeof categorySchema>
 
+// ── Income details ────────────────────────────────────────────────────────────
+export const incomeDetailsSchema = z
+  .object({
+    incomeType: z.enum([
+      'product_sale',
+      'service_w2',
+      'service_1099',
+      'service_llc',
+      'investment',
+      'other',
+    ]),
+    billingType: z.enum(['hourly', 'project', 'salary']).optional(),
+    hoursWorked: z.coerce.number().positive().optional(),
+    wagePerHour: z.coerce.number().positive().optional(),
+    overtimeHours: z.coerce.number().min(0).optional(),
+    overtimeWagePerHour: z.coerce.number().positive().optional(),
+    grossAmount: z.coerce.number().positive().optional(),
+    taxesWithheld: z.coerce.number().min(0).optional(),
+    taxBreakdown: z.record(z.number()).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.billingType === 'hourly' && !data.wagePerHour) {
+      ctx.addIssue({
+        path: ['wagePerHour'],
+        code: z.ZodIssueCode.custom,
+        message: 'Wage per hour is required for hourly billing',
+      })
+    }
+    if (data.billingType === 'hourly' && !data.hoursWorked) {
+      ctx.addIssue({
+        path: ['hoursWorked'],
+        code: z.ZodIssueCode.custom,
+        message: 'Hours worked is required for hourly billing',
+      })
+    }
+  })
+
+// ── Expense details ───────────────────────────────────────────────────────────
+export const expenseDetailsSchema = z.object({
+  salesTax: z.coerce.number().min(0).default(0),
+  taxRate: z.coerce.number().min(0).max(1).optional(),
+  receiptUrl: z.string().url().optional().or(z.literal('')),
+  isDeductible: z.boolean().default(false),
+  deductionCategory: z.string().max(100).optional(),
+})
+
+export type IncomeDetailsFormData = z.infer<typeof incomeDetailsSchema>
+export type ExpenseDetailsFormData = z.infer<typeof expenseDetailsSchema>
+
+// ── Base transaction (legacy – kept for backwards compat) ─────────────────────
 export const insertTransactionSchema = z.object({
   date: z.coerce.date(),
   accountId: z.string(),
@@ -74,22 +124,41 @@ export const insertTransactionSchema = z.object({
   payee: z.string(),
   amount: z.number(),
   notes: z.string().nullable().optional(),
+  type: z.enum(['income', 'expense']).default('expense'),
 })
+
 export const transactionFormSchema = z.object({
   date: z.coerce.date(),
   accountId: z.string(),
-  categoryId: z.string().nullable().optional(),
+  categoryId: z.string().uuid().optional(),
   payee: z.string(),
   amount: z.string(),
-  notes: z.string().nullable().optional(),
+  notes: z.string().max(255).optional(),
+  type: z.enum(['income', 'expense']).default('expense'),
 })
 
-export const updateTransactionSchema = z.object({
+// ── Unified create schema (used by server action) ─────────────────────────────
+export const CreateTransactionSchema = z.object({
+  date: z.coerce.date(),
+  accountId: z.string().min(1, 'Account is required'),
+  categoryId: z.string().uuid().optional(),
+  payee: z.string().min(1, 'Payee is required'),
+  amount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .positive('Amount must be positive'),
+  notes: z.string().max(255).optional(),
+  type: z.enum(['income', 'expense']),
+})
+
+export const UpdateTransactionSchema = z.object({
   id: z.string().uuid(),
-  date: z.coerce.date().optional(),
-  accountId: z.string().optional(),
-  categoryId: z.string().nullable().optional(),
-  payee: z.string().optional(),
-  amount: z.number().optional(),
-  notes: z.string().nullable().optional(),
+  date: z.coerce.date(),
+  accountId: z.string(),
+  categoryId: z.string().uuid().optional(),
+  payee: z.string().min(1, 'Payee is required'),
+  amount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .positive('Amount must be positive'),
+  notes: z.string().max(255).optional(),
+  type: z.enum(['income', 'expense']),
 })

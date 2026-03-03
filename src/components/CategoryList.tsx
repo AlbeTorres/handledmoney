@@ -23,7 +23,7 @@ export function CategoryList({ categories }: CategoryListProps) {
   }
 
   return (
-    <div className='flex-1 overflow-y-auto px-8 pb-8 space-y-4'>
+    <div className='flex-1 overflow-y-auto grid grid-cols-1 md:grid-cols-2 items-center content-start justify-center px-8 pb-8 gap-4'>
       {categories.map(category => (
         <CategoryCard key={category.id} category={category} />
       ))}

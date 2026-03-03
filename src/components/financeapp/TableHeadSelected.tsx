@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
+import { SelectedColumns } from '../../interfaces'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
-import { SelectedColumns } from './interfaces'
 
 type Props = {
   columnIndex: number

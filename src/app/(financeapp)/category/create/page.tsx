@@ -1,4 +1,4 @@
-import { CreateCategoryForm } from '@/components/categories/CreateCategoryForm'
+import { CreateCategoryForm } from '@/components/CreateCategoryForm'
 import { FormWrapper } from '@/components/FormWrapper'
 
 export default async function CreateCategoryPage() {

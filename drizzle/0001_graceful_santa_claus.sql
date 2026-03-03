@@ -1,1 +1,0 @@
-ALTER TABLE "bank_account" ADD COLUMN "deleted_at" timestamp;

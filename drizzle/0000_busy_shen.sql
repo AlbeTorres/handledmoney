@@ -1,9 +1,15 @@
+CREATE TYPE "public"."billing_type" AS ENUM('hourly', 'project', 'salary');--> statement-breakpoint
+CREATE TYPE "public"."category_type" AS ENUM('income', 'expense');--> statement-breakpoint
+CREATE TYPE "public"."income_type" AS ENUM('product_sale', 'service_w2', 'service_1099', 'service_llc', 'investment', 'other');--> statement-breakpoint
 CREATE TYPE "public"."language" AS ENUM('es', 'en');--> statement-breakpoint
 CREATE TYPE "public"."role" AS ENUM('admin', 'user');--> statement-breakpoint
 CREATE TABLE "settings" (
 	"id" text PRIMARY KEY NOT NULL,
 	"userId" text NOT NULL,
 	"language" "language" DEFAULT 'en',
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
 	CONSTRAINT "settings_userId_unique" UNIQUE("userId")
 );
 --> statement-breakpoint
@@ -33,14 +39,59 @@ CREATE TABLE "bank_account" (
 	"currency" varchar(255) DEFAULT 'USD',
 	"balance" numeric(10, 2) DEFAULT '0',
 	"icon" varchar(255),
-	"color" varchar(255)
+	"color" varchar(255),
+	"transactions_count" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "category" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"plaidId" varchar(255),
 	"userId" text NOT NULL,
-	"name" varchar(255) NOT NULL
+	"name" varchar(255) NOT NULL,
+	"icon" varchar(100),
+	"color" varchar(7),
+	"type" "category_type" DEFAULT 'expense' NOT NULL,
+	"is_default" boolean DEFAULT false NOT NULL,
+	"order" integer DEFAULT 0 NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
+);
+--> statement-breakpoint
+CREATE TABLE "expense_details" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"sales_tax" numeric(10, 2) DEFAULT '0',
+	"tax_rate" numeric(5, 4),
+	"receipt_url" text,
+	"receipt_hash" text,
+	"is_deductible" boolean DEFAULT false,
+	"deductionCategory" varchar(100),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	CONSTRAINT "expense_details_transaction_id_unique" UNIQUE("transaction_id")
+);
+--> statement-breakpoint
+CREATE TABLE "income_details" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"transaction_id" uuid NOT NULL,
+	"income_type" "income_type" NOT NULL,
+	"billing_type" "billing_type",
+	"hours_worked" numeric(6, 2),
+	"wage_per_hour" numeric(10, 2),
+	"overtime_hours" numeric(6, 2),
+	"overtime_wage_per_hour" numeric(10, 2),
+	"tax_breakdown" jsonb,
+	"gross_amount" numeric(10, 2),
+	"taxes_withheld" numeric(10, 2),
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp,
+	CONSTRAINT "income_details_transaction_id_unique" UNIQUE("transaction_id")
 );
 --> statement-breakpoint
 CREATE TABLE "session" (
@@ -63,7 +114,11 @@ CREATE TABLE "transaction" (
 	"date" timestamp NOT NULL,
 	"accountId" uuid NOT NULL,
 	"categoryId" uuid,
-	"userId" text NOT NULL
+	"type" "category_type" DEFAULT 'expense' NOT NULL,
+	"userId" text NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	"deleted_at" timestamp
 );
 --> statement-breakpoint
 CREATE TABLE "two_factor" (
@@ -99,6 +154,8 @@ ALTER TABLE "settings" ADD CONSTRAINT "settings_userId_user_id_fk" FOREIGN KEY (
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "bank_account" ADD CONSTRAINT "bank_account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "category" ADD CONSTRAINT "category_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "expense_details" ADD CONSTRAINT "expense_details_transaction_id_transaction_id_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."transaction"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "income_details" ADD CONSTRAINT "income_details_transaction_id_transaction_id_fk" FOREIGN KEY ("transaction_id") REFERENCES "public"."transaction"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "session" ADD CONSTRAINT "session_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_accountId_bank_account_id_fk" FOREIGN KEY ("accountId") REFERENCES "public"."bank_account"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "transaction" ADD CONSTRAINT "transaction_categoryId_category_id_fk" FOREIGN KEY ("categoryId") REFERENCES "public"."category"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
@@ -106,6 +163,7 @@ ALTER TABLE "transaction" ADD CONSTRAINT "transaction_userId_user_id_fk" FOREIGN
 ALTER TABLE "two_factor" ADD CONSTRAINT "two_factor_user_id_user_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."user"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "account_userId_idx" ON "account" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "session_userId_idx" ON "session" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "transaction_userId_type_date_idx" ON "transaction" USING btree ("userId","type","date");--> statement-breakpoint
 CREATE INDEX "twoFactor_secret_idx" ON "two_factor" USING btree ("secret");--> statement-breakpoint
 CREATE INDEX "twoFactor_userId_idx" ON "two_factor" USING btree ("user_id");--> statement-breakpoint
 CREATE INDEX "verification_identifier_idx" ON "verification" USING btree ("identifier");

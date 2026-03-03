@@ -3,7 +3,7 @@ import { auth } from '@/lib/auth'
 import { getBankAccountById, getBankAccountsByUser } from '@/repository/account'
 import { headers } from 'next/headers'
 
-export const getAccountById = async (id: string) => {
+export const getBankAccountByIdAction = async (id: string) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -15,17 +15,19 @@ export const getAccountById = async (id: string) => {
       success: false,
       status: 401,
       message: 'Unauthorized User',
+      data: null,
     }
   }
 
   try {
     const account = await getBankAccountById(id, userId)
 
-    if (!account || account.length === 0) {
+    if (!account) {
       return {
         success: false,
         status: 404,
         message: 'Account not found',
+        data: null,
       }
     }
 
@@ -33,7 +35,7 @@ export const getAccountById = async (id: string) => {
       success: true,
       status: 200,
       message: 'Account fetched successfully',
-      data: account[0],
+      data: account,
     }
   } catch (error) {
     console.error('Error getting account:', error)
@@ -41,11 +43,12 @@ export const getAccountById = async (id: string) => {
       success: false,
       status: 500,
       message: 'Error getting account',
+      data: null,
     }
   }
 }
 
-export const getAccountByUser = async () => {
+export const getBankAccountByUserAction = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -57,6 +60,7 @@ export const getAccountByUser = async () => {
       success: false,
       status: 401,
       message: 'Unauthorized User',
+      data: [],
     }
   }
 
@@ -68,6 +72,7 @@ export const getAccountByUser = async () => {
         success: false,
         status: 404,
         message: 'Account not found',
+        data: [],
       }
     }
 
@@ -83,6 +88,7 @@ export const getAccountByUser = async () => {
       success: false,
       status: 500,
       message: 'Error getting account',
+      data: [],
     }
   }
 }

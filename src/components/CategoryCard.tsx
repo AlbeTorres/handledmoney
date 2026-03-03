@@ -22,16 +22,18 @@ export function CategoryCard({ category }: CategoryCardProps) {
   return (
     <Link
       href={`/category/${category.id}/edit`}
-      className='flex items-center p-4 rounded-xl border transition-all cursor-pointer bg-white/50 dark:bg-slate-900/50 border-slate-100 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600 group'
+      className='flex items-center p-4 rounded-xl hover:shadow-md transition-all cursor-pointer group'
+      style={{
+        backgroundColor: bgColor,
+      }}
     >
       <div
-        className='size-12 rounded-xl flex items-center justify-center mr-4 transition-all'
+        className='size-12 rounded-xl text-white flex items-center justify-center mr-4 transition-all'
         style={{
-          backgroundColor: bgColor,
-          color: color,
+          backgroundColor: color,
         }}
       >
-        <Icon className='size-6' />
+        <Icon className='size-6 transition-transform group-hover:scale-110' />
       </div>
       <div className='flex-1'>
         <h4 className='font-bold text-sm'>{category.name}</h4>

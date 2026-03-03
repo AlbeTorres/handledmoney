@@ -1,4 +1,4 @@
-import { Account, IncomeTransaction } from '@/components/financeapp/interfaces'
+import { Account, IncomeTransaction } from '@/interfaces'
 import {
   Bitcoin,
   Briefcase,

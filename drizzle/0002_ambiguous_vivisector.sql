@@ -1,0 +1,1 @@
+ALTER TABLE "transaction" ALTER COLUMN "payee" SET NOT NULL;

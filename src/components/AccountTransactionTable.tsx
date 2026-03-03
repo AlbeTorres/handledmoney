@@ -1,8 +1,8 @@
 'use client'
 
+import { columns } from '@/components/columns'
 import { DataTable } from '@/components/financeapp/DataTable'
-import { columns } from '@/components/financeapp/columns'
-import { Transaction } from '@/components/financeapp/interfaces'
+import { Transaction } from '@/interfaces'
 import { Row } from '@tanstack/react-table'
 
 interface AccountTransactionTableProps {

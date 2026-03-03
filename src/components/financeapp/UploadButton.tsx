@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { useCSVState } from '@/store'
 import { Upload } from 'lucide-react'
 import { useCSVReader } from 'react-papaparse'
-import { IMPORT_RESULT } from './interfaces'
+import { IMPORT_RESULT } from '../../interfaces'
 
 export const UploadButton = () => {
   const { CSVReader } = useCSVReader()

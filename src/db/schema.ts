@@ -3,6 +3,7 @@ import {
   boolean,
   index,
   integer,
+  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -15,6 +16,19 @@ import {
 export const roleEnum = pgEnum('role', ['admin', 'user'])
 
 export const languageEnum = pgEnum('language', ['es', 'en'])
+
+export const categoryTypeEnum = pgEnum('category_type', ['income', 'expense'])
+
+export const incomeTypeEnum = pgEnum('income_type', [
+  'product_sale',
+  'service_w2',
+  'service_1099',
+  'service_llc',
+  'investment',
+  'other',
+])
+
+export const billingTypeEnum = pgEnum('billing_type', ['hourly', 'project', 'salary'])
 
 const timestamps = {
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -131,19 +145,17 @@ export const bankAccountsTable = pgTable('bank_account', {
   userId: text()
     .notNull()
     .references(() => user.id, { onDelete: 'cascade' }),
-  name: varchar({ length: 255 }),
-  bank: varchar({ length: 255 }),
-  type: varchar({ length: 255 }),
-  currency: varchar({ length: 255 }).default('USD'),
-  balance: numeric('balance', { precision: 10, scale: 2 }).default('0'),
-  icon: varchar({ length: 255 }),
-  color: varchar({ length: 255 }),
+  name: varchar({ length: 255 }).notNull(),
+  bank: varchar({ length: 255 }).notNull(),
+  type: varchar({ length: 255 }).notNull(),
+  currency: varchar({ length: 255 }).default('USD').notNull(),
+  balance: numeric('balance', { precision: 10, scale: 2 }).default('0').notNull(),
+  icon: varchar({ length: 255 }).notNull(),
+  color: varchar({ length: 255 }).notNull(),
 
   transactionsCount: integer('transactions_count').default(0).notNull(),
   ...timestamps,
 })
-
-export const categoryTypeEnum = pgEnum('category_type', ['income', 'expense'])
 
 export const categoriesTable = pgTable('category', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -155,33 +167,75 @@ export const categoriesTable = pgTable('category', {
   icon: varchar({ length: 100 }),
   color: varchar({ length: 7 }),
   type: categoryTypeEnum().default('expense').notNull(),
-  parentId: uuid('parent_id').references((): any => categoriesTable.id, {
-    onDelete: 'cascade',
-  }),
   isDefault: boolean('is_default').default(false).notNull(),
   order: integer('order').default(0).notNull(),
   ...timestamps,
 })
 
-export const transactionsTable = pgTable('transaction', {
+export const transactionsTable = pgTable(
+  'transaction',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    amount: numeric('amount', { precision: 10, scale: 2 }).default('0'),
+    payee: varchar({ length: 255 }).notNull(),
+    notes: varchar({ length: 255 }),
+    date: timestamp().notNull(),
+    accountId: uuid()
+      .notNull()
+      .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
+    categoryId: uuid().references(() => categoriesTable.id),
+    type: categoryTypeEnum().default('expense').notNull(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    ...timestamps,
+  },
+  table => [index('transaction_userId_type_date_idx').on(table.userId, table.type, table.date)],
+)
+
+export const incomeDetailsTable = pgTable('income_details', {
   id: uuid('id').defaultRandom().primaryKey(),
 
-  amount: numeric('amount', { precision: 10, scale: 2 }).default('0'),
-
-  payee: varchar({ length: 255 }),
-  notes: varchar({ length: 255 }),
-
-  date: timestamp().notNull(),
-
-  accountId: uuid()
+  transactionId: uuid('transaction_id')
     .notNull()
-    .references(() => bankAccountsTable.id, { onDelete: 'cascade' }),
+    .unique()
+    .references(() => transactionsTable.id, { onDelete: 'cascade' }),
 
-  categoryId: uuid().references(() => categoriesTable.id),
+  incomeType: incomeTypeEnum('income_type').notNull(),
+  billingType: billingTypeEnum('billing_type'),
 
-  userId: text()
+  // Hourly-billing fields
+  hoursWorked: numeric('hours_worked', { precision: 6, scale: 2 }),
+  wagePerHour: numeric('wage_per_hour', { precision: 10, scale: 2 }),
+  overtimeHours: numeric('overtime_hours', { precision: 6, scale: 2 }),
+  overtimeWagePerHour: numeric('overtime_wage_per_hour', { precision: 10, scale: 2 }),
+
+  // Tax breakdown — { federal: 0.22, state: 0.05, fica: 0.062, medicare: 0.0145 }
+  taxBreakdown: jsonb('tax_breakdown'),
+
+  grossAmount: numeric('gross_amount', { precision: 10, scale: 2 }),
+  taxesWithheld: numeric('taxes_withheld', { precision: 10, scale: 2 }),
+
+  ...timestamps,
+})
+
+export const expenseDetailsTable = pgTable('expense_details', {
+  id: uuid('id').defaultRandom().primaryKey(),
+
+  transactionId: uuid('transaction_id')
     .notNull()
-    .references(() => user.id, { onDelete: 'cascade' }),
+    .unique()
+    .references(() => transactionsTable.id, { onDelete: 'cascade' }),
+
+  salesTax: numeric('sales_tax', { precision: 10, scale: 2 }).default('0'),
+  taxRate: numeric('tax_rate', { precision: 5, scale: 4 }), // e.g. 0.0725 = 7.25%
+
+  receiptUrl: text('receipt_url'),
+  receiptHash: text('receipt_hash'), // duplicate detection
+
+  isDeductible: boolean('is_deductible').default(false),
+  deductionCategory: varchar({ length: 100 }),
+
   ...timestamps,
 })
 
@@ -236,14 +290,6 @@ export const categoriesRelations = relations(categoriesTable, ({ one, many }) =>
     fields: [categoriesTable.userId],
     references: [user.id],
   }),
-  parent: one(categoriesTable, {
-    fields: [categoriesTable.parentId],
-    references: [categoriesTable.id],
-    relationName: 'category_hierarchy',
-  }),
-  children: many(categoriesTable, {
-    relationName: 'category_hierarchy',
-  }),
   transactions: many(transactionsTable),
 }))
 
@@ -259,5 +305,27 @@ export const transactionsRelations = relations(transactionsTable, ({ one }) => (
   category: one(categoriesTable, {
     fields: [transactionsTable.categoryId],
     references: [categoriesTable.id],
+  }),
+  incomeDetails: one(incomeDetailsTable, {
+    fields: [transactionsTable.id],
+    references: [incomeDetailsTable.transactionId],
+  }),
+  expenseDetails: one(expenseDetailsTable, {
+    fields: [transactionsTable.id],
+    references: [expenseDetailsTable.transactionId],
+  }),
+}))
+
+export const incomeDetailsRelations = relations(incomeDetailsTable, ({ one }) => ({
+  transaction: one(transactionsTable, {
+    fields: [incomeDetailsTable.transactionId],
+    references: [transactionsTable.id],
+  }),
+}))
+
+export const expenseDetailsRelations = relations(expenseDetailsTable, ({ one }) => ({
+  transaction: one(transactionsTable, {
+    fields: [expenseDetailsTable.transactionId],
+    references: [transactionsTable.id],
   }),
 }))

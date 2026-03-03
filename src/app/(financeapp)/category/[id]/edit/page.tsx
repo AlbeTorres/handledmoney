@@ -1,5 +1,5 @@
 import { getCategoryByIdAction } from '@/actions/category/get-category-by-id'
-import { EditCategoryForm } from '@/components/categories/EditCategoryForm'
+import { EditCategoryForm } from '@/components/EditCategoryForm'
 import { FormWrapper } from '@/components/FormWrapper'
 import { redirect } from 'next/navigation'
 

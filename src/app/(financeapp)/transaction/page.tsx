@@ -1,47 +1,26 @@
-'use client'
-import ExpensesTable from '@/components/ExpensesTable'
+import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
+import { TransactionPageContent } from '@/components/TransactionPageContent'
 
-import IncomeTable from '@/components/IncomeTable'
-import SummaryCards from '@/components/SummaryCards'
-import TransactionHeader from '@/components/TransactionHeader'
-import { EXPENSES, INCOME } from '@/lib/data'
-import { useState } from 'react'
+interface TransactionPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-export default function TransactionPage() {
-  const [activeView, setActiveView] = useState('expenses')
-  const [search, setSearch] = useState('')
+export default async function TransactionPage({ searchParams }: TransactionPageProps) {
+  const resolvedSearchParams = await searchParams
+  const activeTab = (resolvedSearchParams.tab as 'expense' | 'income') || 'expense'
 
-  const filteredExpenses = EXPENSES.filter(
-    tx =>
-      tx.payee.toLowerCase().includes(search.toLowerCase()) ||
-      tx.category.toLowerCase().includes(search.toLowerCase()),
-  )
+  const { data: transactions } = await getTransactionsPaginatedAction({
+    type: activeTab,
+    page: 1,
+    limit: 10,
+    search: '',
+  })
 
-  function handleViewChange(view: string) {
-    setActiveView(view)
-    setSearch('')
-  }
+  if (!transactions) return null
 
   return (
-    <div className='bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen'>
-      <div className='flex h-screen overflow-hidden'>
-        <main className='flex-1 flex flex-col overflow-y-auto'>
-          <TransactionHeader
-            activeView={activeView}
-            onViewChange={handleViewChange}
-            search={search}
-            onSearch={setSearch}
-          />
-          <div className='p-8 flex flex-col gap-8 max-w-[1400px] mx-auto w-full'>
-            <SummaryCards activeView={activeView} />
-            {activeView === 'expenses' ? (
-              <ExpensesTable data={filteredExpenses} />
-            ) : (
-              <IncomeTable data={INCOME} />
-            )}
-          </div>
-        </main>
-      </div>
+    <div className='max-w-screen-2xl h-full flex flex-col items-center justify-center mx-auto w-full'>
+      <TransactionPageContent data={transactions} />
     </div>
   )
 }

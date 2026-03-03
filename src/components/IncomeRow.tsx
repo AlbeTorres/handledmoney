@@ -1,61 +1,54 @@
+'use client'
+
 import { fmt, fmtDate } from '@/lib/utils'
+import { useTransactionState } from '@/store'
+import { MoreHorizontal } from 'lucide-react'
+import { Button } from './ui/button'
 
-type Income = {
-  id: number
-  date: string
-  category: string
-  total: number
-  hours: number
-  overtime: number
-  taxFederal: number
-  fica: number
-  medicare: number
-  rateHour: number
-  gross: number
-  rateOT: number
-  rateOTpay: number
-}
+export default function IncomeRow({ tx }: { tx: any }) {
+  const { onOpen } = useTransactionState()
+  const amount = parseFloat(tx.amount || '0')
+  const details = tx.incomeDetails || {}
 
-type Props = {
-  row: Income
-}
-
-export default function IncomeRow({ row }: Props) {
   return (
-    <tr className='hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors cursor-pointer'>
+    <tr className='hover:bg-slate-50 dark:hover:bg-slate-800/30 transition-colors group'>
       <td className='px-4 py-4 whitespace-nowrap'>
         <span className='text-sm font-bold text-slate-900 dark:text-white'>
-          {fmtDate(row.date)}
+          {fmtDate(new Date(tx.date))}
         </span>
       </td>
-      <td className='px-4 py-4 text-sm text-right font-bold text-emerald-600 dark:text-emerald-400'>
-        {row.category}
-      </td>
-      <td className='px-4 py-4 text-sm text-right font-bold text-emerald-600 dark:text-emerald-400'>
-        ${fmt(row.total)}
-      </td>
-      <td className='px-4 py-4 text-sm text-right text-slate-700 dark:text-slate-300'>
-        {fmt(row.hours)}
-      </td>
-      <td className='px-4 py-4 text-sm text-right text-slate-600 dark:text-slate-400'>
-        {fmt(row.overtime)}
-      </td>
-      <td className='px-4 py-4 text-sm text-right text-red-500'>${fmt(row.taxFederal)}</td>
-      <td className='px-4 py-4 text-sm text-right text-red-400'>${fmt(row.fica)}</td>
-      <td className='px-4 py-4 text-sm text-right text-red-400'>${fmt(row.medicare)}</td>
-
-      <td className='px-4 py-4 text-sm text-right text-slate-700 dark:text-slate-300'>
-        ${fmt(row.gross)}
-      </td>
-      <td className='px-4 py-4 text-sm text-right text-slate-500'>${fmt(row.rateHour)}</td>
-      <td className='px-4 py-4 text-sm text-right text-slate-500'>
-        {row.rateOTpay > 0 ? (
-          <span className='text-amber-600 dark:text-amber-400 font-semibold'>
-            ${fmt(row.rateOTpay)}
+      <td className='px-4 py-4'>
+        <div className='flex flex-col'>
+          <span className='text-sm font-semibold'>{tx.payee}</span>
+          <span className='text-[10px] text-slate-400 uppercase font-bold tracking-tight'>
+            {details.incomeType?.replace('_', ' ')}
           </span>
-        ) : (
-          <span className='text-slate-300 dark:text-slate-600'>—</span>
-        )}
+        </div>
+      </td>
+      <td className='px-4 py-4 text-right'>
+        <span className='text-sm font-bold text-emerald-500'>
+          +${amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+        </span>
+      </td>
+      <td className='px-4 py-4 text-right text-xs font-medium text-slate-600 dark:text-slate-400'>
+        {details.hoursWorked ? fmt(details.hoursWorked) : '—'}
+      </td>
+      <td className='px-4 py-4 text-right text-xs font-medium text-slate-600 dark:text-slate-400'>
+        {details.overtimeHours ? fmt(details.overtimeHours) : '—'}
+      </td>
+      <td className='px-4 py-4 text-right text-xs font-bold text-red-500'>
+        {details.taxesWithheld ? `-$${fmt(details.taxesWithheld)}` : '—'}
+      </td>
+      <td className='px-4 py-4 text-right text-xs font-medium text-slate-700 dark:text-slate-300'>
+        {details.grossAmount ? `$${fmt(details.grossAmount)}` : '—'}
+      </td>
+      <td className='px-4 py-4 text-right text-xs text-slate-500'>
+        {details.wagePerHour ? `$${fmt(details.wagePerHour)}` : '—'}
+      </td>
+      <td className='px-4 py-4 text-right'>
+        <Button variant='ghost' size='icon' className='size-8' onClick={() => onOpen(tx.id)}>
+          <MoreHorizontal className='size-4' />
+        </Button>
       </td>
     </tr>
   )

@@ -13,9 +13,6 @@ export const getCategoriesByUserId = async (userId: string, type?: 'income' | 'e
 
     const categories = await db.query.categoriesTable.findMany({
       where: whereClause,
-      with: {
-        children: true,
-      },
       orderBy: (categories, { asc }) => [asc(categories.order)],
     })
 
@@ -30,10 +27,6 @@ export const getCategoryById = async (id: string, userId: string) => {
   try {
     const category = await db.query.categoriesTable.findFirst({
       where: and(eq(categoriesTable.id, id), eq(categoriesTable.userId, userId)),
-      with: {
-        parent: true,
-        children: true,
-      },
     })
     return category
   } catch (error) {

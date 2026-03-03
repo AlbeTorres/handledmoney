@@ -1,59 +1,43 @@
+'use client'
+
 import ExpenseRow from './ExpensesRow'
 import Pagination from './Pagination'
 
-type Expense =
-  | {
-      id: number
-      date: string
-      time: string
-      payee: string
-      icon: string
-      category: string
-      categoryColor: string
-      amount: number
-      receipt: boolean
-      pending?: undefined
-    }
-  | {
-      id: number
-      date: string
-      time: string
-      payee: string
-      icon: string
-      category: string
-      categoryColor: string
-      amount: number
-      receipt: boolean
-      pending: boolean
-    }
-
 type Props = {
-  data: Expense[]
+  data: any[]
+  total: number
+  page: number
+  totalPages: number
+  onPageChange: (page: number) => void
 }
 
-export default function ExpensesTable({ data }: Props) {
+export default function ExpensesTable({ data, total, page, totalPages, onPageChange }: Props) {
   return (
     <div className='bg-white dark:bg-slate-900 rounded-xl border border-primary/10 overflow-hidden shadow-sm'>
       <div className='p-4 border-b border-primary/10 flex justify-between items-center'>
-        <h3 className='font-bold text-lg px-2'>Transaction History</h3>
-        <div className='flex gap-2'>
-          <button className='text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded hover:bg-primary/10 hover:text-primary transition-colors'>
-            Export CSV
-          </button>
-          <button className='text-xs font-bold px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded hover:bg-primary/10 hover:text-primary transition-colors'>
-            Filters
-          </button>
+        <h3 className='font-bold text-lg px-2'>Expense History</h3>
+        <div className='flex gap-2 text-xs font-bold text-slate-500'>
+          Total spending:{' '}
+          <span className='text-red-500'>
+            $
+            {data
+              .reduce((acc, curr) => acc + parseFloat(curr.amount || '0'), 0)
+              .toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </span>
         </div>
       </div>
+
       <div className='overflow-x-auto'>
         <table className='w-full text-left border-collapse'>
           <thead className='bg-slate-50 dark:bg-slate-800/50'>
             <tr>
-              {['Date', 'Payee / Description', 'Category', 'Amount', 'Sales Tax ', 'Receipt'].map(
+              {['Date', 'Payee / Account', 'Category', 'Amount', 'Sales Tax', 'Receipt', ''].map(
                 (h, i) => (
                   <th
                     key={h}
-                    className={`px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider ${i === 4 ? 'text-center' : ''}`}
+                    className={`px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest ${
+                      ['Sales Tax', 'Receipt'].includes(h) ? 'text-center' : ''
+                    }`}
                   >
                     {h}
                   </th>
@@ -62,13 +46,26 @@ export default function ExpensesTable({ data }: Props) {
             </tr>
           </thead>
           <tbody className='divide-y divide-primary/5'>
-            {data.map(tx => (
-              <ExpenseRow key={tx.id} tx={tx} />
-            ))}
+            {data.length > 0 ? (
+              data.map(tx => <ExpenseRow key={tx.id} tx={tx} />)
+            ) : (
+              <tr>
+                <td colSpan={7} className='px-6 py-20 text-center text-slate-400 font-medium'>
+                  No expenses found for this period.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
-      <Pagination total={24} shown={data.length} />
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        shown={data.length}
+        onPageChange={onPageChange}
+      />
     </div>
   )
 }

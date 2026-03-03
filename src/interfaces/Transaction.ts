@@ -1,44 +1,44 @@
 import { Account } from './Account'
 import { Category } from './Category'
 
+export interface TransactionResponse {
+  id: string
+  type: 'expense' | 'income'
+  amount: string | null
+  payee: string | null
+  accountId: string
+  categoryId: string | null
+  notes: string | null
+  date: Date
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+  account: Account
+  category: Category | null
+}
+
 export interface Transaction {
   id: string
-  amount: number
+  type: 'expense' | 'income'
+  amount: string | null
   payee: string
   accountId: string
-  accountName: string
   categoryId: string | null
-  categoryName: string | undefined
   notes: string | null
-  date: string
+  date: Date
+  userId: string
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+  accountName: string
+  categoryName: string | undefined
 }
 export interface CSVTransaction {
   amount: number
   payee: string
   notes?: string
   date: Date
-}
-
-export interface TransactionResponse {
-  id: string
-  amount: bigint
-  payee: string | null
-  accountId: string
-  categoryId: string | null
-  notes: string | null
-  date: Date
-  category: Category | null
-  account: Account
-}
-
-export interface CreateOrUpdateTransactionResponse {
-  id: string
-  amount: bigint
-  accountId: string
-  categoryId: string | null
-  notes: string | null
-  date: Date
-  userId: string
 }
 
 export interface IncomeTransaction {

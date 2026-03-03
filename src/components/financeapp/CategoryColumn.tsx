@@ -1,19 +1,12 @@
-import { useCategoryState } from '@/store'
 import { TriangleAlertIcon } from 'lucide-react'
 
 type Props = {
-  categoryId?: string | null
   categoryName?: string
-  transactionId?: string
 }
 
-export const CategoryColumn = ({ categoryId, categoryName, transactionId }: Props) => {
-  const { onOpen } = useCategoryState()
+export const CategoryColumn = ({ categoryName }: Props) => {
   return (
-    <div
-      className='flex items-center cursor-pointer hover:underline'
-      onClick={() => onOpen(categoryId, transactionId)}
-    >
+    <div className='flex items-center cursor-pointer hover:underline'>
       {categoryName ? (
         categoryName
       ) : (

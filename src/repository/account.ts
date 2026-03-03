@@ -49,7 +49,7 @@ export const getBankAccountsByUser = async (userId: string) => {
 
 export const getBankAccountById = async (id: string, userId: string) => {
   try {
-    const account = await db
+    const result = await db
       .select()
       .from(bankAccountsTable)
       .where(
@@ -59,7 +59,7 @@ export const getBankAccountById = async (id: string, userId: string) => {
           isNull(bankAccountsTable.deletedAt),
         ),
       )
-    return account
+    return result[0]
   } catch (error) {
     console.error('Error getting account:', error)
   }
