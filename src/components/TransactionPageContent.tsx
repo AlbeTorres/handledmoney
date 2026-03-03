@@ -13,7 +13,7 @@ type Props = {
 export const TransactionPageContent = ({ data }: Props) => {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const currentTab = searchParams.get('tab') || 'Expense'
+  const currentTab = searchParams.get('tab') || 'expense'
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -29,7 +29,7 @@ export const TransactionPageContent = ({ data }: Props) => {
 
   return (
     <div>
-      <Tab activeView={currentTab} onViewChange={handleTabChange} tabs={['Income', 'Expense']} />
+      <Tab activeView={currentTab} onViewChange={handleTabChange} tabs={['income', 'expense']} />
       <TransactionTableContent data={data} />
     </div>
   )

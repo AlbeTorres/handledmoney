@@ -1,10 +1,10 @@
+import { getBankAccountByIdAction } from '@/actions/account/get-account'
+import { getTransactionsByAccountIdAction } from '@/actions/transaction/get-transaction'
 import { AccountInfo } from '@/components/AccountInfo'
 import { AccountTransactionTable } from '@/components/AccountTransactionTable'
 import { InfoCard } from '@/components/InfoCard'
 
 import { auth } from '@/lib/auth'
-import { getBankAccountById } from '@/repository/account'
-import { getTransactionsByAccountId } from '@/repository/transaction'
 import { ArrowDown, ArrowRightLeft, ArrowUp, TrendingUp } from 'lucide-react'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -25,16 +25,24 @@ export default async function AccountPage({ params }: AccountPageProps) {
   const resolvedParams = await params
   const { id } = resolvedParams
 
-  const [account] = (await getBankAccountById(id, session.user.id)) || []
+  const [account, transactions] = await Promise.all([
+    getBankAccountByIdAction(id),
+    getTransactionsByAccountIdAction(id),
+  ])
 
-  if (!account) {
-    redirect('/account')
+  const { data: accountData } = account
+  const { data: transactionsData } = transactions
+
+  if (!accountData || !transactionsData) {
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <p>Error</p>
+      </div>
+    )
   }
 
-  const transactions = await getTransactionsByAccountId(id, session.user.id)
-
-  const incomeTransactions = transactions.filter(t => Number(t.amount) > 0)
-  const expenseTransactions = transactions.filter(t => Number(t.amount) < 0)
+  const incomeTransactions = transactionsData.filter(t => Number(t.amount) > 0)
+  const expenseTransactions = transactionsData.filter(t => Number(t.amount) < 0)
 
   const totalIncome = incomeTransactions.reduce((acc, t) => acc + Number(t.amount), 0)
   const totalExpenses = Math.abs(expenseTransactions.reduce((acc, t) => acc + Number(t.amount), 0))
@@ -48,7 +56,7 @@ export default async function AccountPage({ params }: AccountPageProps) {
     <div className='bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display'>
       <div className='flex  h-screen overflow-hidden'>
         <main className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-          <AccountInfo account={account} />
+          <AccountInfo account={accountData} />
 
           <div className='p-8 container space-y-8'>
             <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
@@ -80,8 +88,8 @@ export default async function AccountPage({ params }: AccountPageProps) {
             </div>
 
             <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
-              <h3 className='font-bold text-lg mb-4'>Transactions for {account.name}</h3>
-              <AccountTransactionTable data={transactions as any} />
+              <h3 className='font-bold text-lg mb-4'>Transactions for {accountData.name}</h3>
+              <AccountTransactionTable data={transactionsData as any} />
             </div>
           </div>
         </main>

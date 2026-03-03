@@ -1,50 +1,22 @@
-import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transactions'
+import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
 import { TransactionPageContent } from '@/components/TransactionPageContent'
 
-export default async function TransactionPage() {
+interface TransactionPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+export default async function TransactionPage({ searchParams }: TransactionPageProps) {
+  const resolvedSearchParams = await searchParams
+  const activeTab = (resolvedSearchParams.tab as 'expense' | 'income') || 'expense'
+
   const { data: transactions } = await getTransactionsPaginatedAction({
-    type: 'income',
+    type: activeTab,
     page: 1,
     limit: 10,
     search: '',
   })
 
   if (!transactions) return null
-
-  // const transactions: Transaction[] = [
-  //   {
-  //     id: '1',
-  //     type: 'expense',
-  //     amount: '100',
-  //     payee: 'Transaction 1',
-  //     date: new Date('2022-01-01'),
-  //     categoryId: '1',
-  //     accountId: '1',
-  //     notes: 'Transaction 1',
-  //     createdAt: new Date('2022-01-01'),
-  //     updatedAt: new Date('2022-01-01'),
-  //     userId: '1',
-  //     accountName: 'Account 1',
-  //     categoryName: 'Category 1',
-  //     deletedAt: null,
-  //   },
-  //   {
-  //     id: '2',
-  //     type: 'income',
-  //     amount: '200',
-  //     payee: 'Transaction 2',
-  //     date: new Date('2022-01-02'),
-  //     categoryId: '2',
-  //     accountId: '2',
-  //     notes: 'Transaction 2',
-  //     createdAt: new Date('2022-01-02'),
-  //     updatedAt: new Date('2022-01-02'),
-  //     userId: '2',
-  //     accountName: 'Account 2',
-  //     categoryName: 'Category 2',
-  //     deletedAt: null,
-  //   },
-  // ]
 
   return (
     <div className='max-w-screen-2xl h-full flex flex-col items-center justify-center mx-auto w-full'>

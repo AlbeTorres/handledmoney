@@ -15,6 +15,7 @@ export const getBankAccountByIdAction = async (id: string) => {
       success: false,
       status: 401,
       message: 'Unauthorized User',
+      data: null,
     }
   }
 
