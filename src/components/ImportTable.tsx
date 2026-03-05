@@ -1,6 +1,6 @@
-import { SelectedColumns } from '../../interfaces'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
+import { SelectedColumns } from '../interfaces'
 import { TableHeadSelected } from './TableHeadSelected'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 
 type Props = {
   headers: string[]
@@ -11,7 +11,7 @@ type Props = {
 
 export const ImportTable = ({ headers, body, selectedColumns, onTableHeadSelectChange }: Props) => {
   return (
-    <div className='rounded-md border overflow-hidden'>
+    <div className='rounded-md border overflow-hidden max-h-[calc(100vh-10rem)] overflow-y-auto'>
       <Table>
         <TableHeader className='bg-muted'>
           <TableRow>

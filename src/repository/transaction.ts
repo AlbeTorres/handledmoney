@@ -267,6 +267,26 @@ export const getTransactionsPaginated = async ({
   }
 }
 
+export const createTransactionsBulk = async (
+  transactions: z.infer<typeof CreateTransactionSchema>[],
+  userId: string,
+) => {
+  return db.transaction(async tx => {
+    const createdTransactions = await tx
+      .insert(transactionsTable)
+      .values(
+        transactions.map(t => ({
+          ...t,
+          userId,
+          amount: t.amount.toString(),
+        })),
+      )
+      .returning()
+
+    return createdTransactions
+  })
+}
+
 // // ── Types ─────────────────────────────────────────────────────────────────────
 
 // export type TransactionInsert = typeof transactionsTable.$inferInsert

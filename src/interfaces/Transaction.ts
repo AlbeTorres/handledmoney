@@ -39,6 +39,7 @@ export interface CSVTransaction {
   payee: string
   notes?: string
   date: Date
+  type: 'expense' | 'income'
 }
 
 export interface IncomeTransaction {
