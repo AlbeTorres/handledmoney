@@ -8,9 +8,11 @@ import { TransactionTableContent } from './TransactionTableContent'
 
 type Props = {
   data: Transaction[]
+  totalPages: number
+  currentPage: number
 }
 
-export const TransactionPageContent = ({ data }: Props) => {
+export const TransactionPageContent = ({ data, totalPages, currentPage }: Props) => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const currentTab = searchParams.get('tab') || 'expense'
@@ -30,7 +32,7 @@ export const TransactionPageContent = ({ data }: Props) => {
   return (
     <div>
       <Tab activeView={currentTab} onViewChange={handleTabChange} tabs={['income', 'expense']} />
-      <TransactionTableContent data={data} />
+      <TransactionTableContent data={data} totalPages={totalPages} currentPage={currentPage} />
     </div>
   )
 }

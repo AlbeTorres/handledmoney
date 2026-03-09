@@ -8,19 +8,28 @@ interface TransactionPageProps {
 export default async function TransactionPage({ searchParams }: TransactionPageProps) {
   const resolvedSearchParams = await searchParams
   const activeTab = (resolvedSearchParams.tab as 'expense' | 'income') || 'expense'
+  const page = Number(resolvedSearchParams.page) || 1
+  const limit = Number(resolvedSearchParams.limit) || 50
+  const search = resolvedSearchParams.search || ''
 
-  const { data: transactions } = await getTransactionsPaginatedAction({
+  const { data } = await getTransactionsPaginatedAction({
     type: activeTab,
-    page: 1,
-    limit: 10,
+    page,
+    limit,
     search: '',
   })
 
-  if (!transactions) return null
+  const transactions = data?.transactions || []
+  const totalPages = data?.totalPages || 0
+  const currentPage = data?.currentPage || 1
 
   return (
     <div className='max-w-screen-2xl h-full flex flex-col items-center justify-center mx-auto w-full'>
-      <TransactionPageContent data={transactions} />
+      <TransactionPageContent
+        data={transactions}
+        totalPages={totalPages}
+        currentPage={currentPage}
+      />
     </div>
   )
 }

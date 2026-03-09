@@ -10,9 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 type Props = {
   data: Transaction[]
+  totalPages: number
+  currentPage: number
 }
 
-export const TransactionTableContent = ({ data }: Props) => {
+const DB_CHUNK_SIZE = 100
+const UI_PAGE_SIZE = 10
+
+export const TransactionTableContent = ({ data, totalPages, currentPage }: Props) => {
   const onDelete = async (row: Row<Transaction>[]) => {
     const ids = row.map(r => r.original.id)
     const result = { error: false }
@@ -27,7 +32,14 @@ export const TransactionTableContent = ({ data }: Props) => {
         <CardTitle className='text-xl line-clamp-1'>Transactions History</CardTitle>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={data} filterKey='date' onDelete={row => onDelete(row)} />
+        <DataTable
+          columns={columns}
+          data={data}
+          filterKey='date'
+          onDelete={row => onDelete(row)}
+          totalPages={totalPages}
+          currentPage={currentPage}
+        />
       </CardContent>
     </Card>
   )

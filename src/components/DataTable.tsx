@@ -27,6 +27,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useConfirm } from '@/hooks/use-confirm'
 import { Trash } from 'lucide-react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useCallback } from 'react'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -34,6 +36,8 @@ interface DataTableProps<TData, TValue> {
   filterKey: string
   onDelete: (rows: Row<TData>[]) => void
   disabled?: boolean
+  totalPages: number
+  currentPage: number
 }
 
 export function DataTable<TData, TValue>({
@@ -42,6 +46,8 @@ export function DataTable<TData, TValue>({
   filterKey,
   onDelete,
   disabled,
+  totalPages,
+  currentPage,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
@@ -69,12 +75,44 @@ export function DataTable<TData, TValue>({
     'You are about to perform a bulk delete.',
   )
 
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams.toString())
+      params.set(name, value)
+      return params.toString()
+    },
+    [searchParams],
+  )
+
   async function handleDelete() {
     const ok = await confirm()
 
     if (ok) {
       onDelete(table.getFilteredSelectedRowModel().rows)
       table.resetRowSelection()
+    }
+  }
+
+  const handleNext = () => {
+    if (table.getCanNextPage()) {
+      table.nextPage()
+    } else {
+      if (currentPage < totalPages) {
+        router.push(`?${createQueryString('page', (currentPage + 1).toString())}`)
+      }
+    }
+  }
+
+  const handlePrev = () => {
+    if (table.getCanPreviousPage()) {
+      table.previousPage()
+    } else {
+      if (currentPage > 1) {
+        router.push(`?${createQueryString('page', (currentPage - 1).toString())}`)
+      }
     }
   }
 
@@ -148,16 +186,16 @@ export function DataTable<TData, TValue>({
         <Button
           variant='outline'
           size='sm'
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
+          onClick={() => handlePrev()}
+          disabled={!table.getCanPreviousPage() && currentPage === 1}
         >
           Previous
         </Button>
         <Button
           variant='outline'
           size='sm'
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
+          onClick={() => handleNext()}
+          disabled={!table.getCanNextPage() && currentPage === totalPages}
         >
           Next
         </Button>
