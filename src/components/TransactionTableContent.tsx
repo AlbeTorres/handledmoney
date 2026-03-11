@@ -14,9 +14,6 @@ type Props = {
   currentPage: number
 }
 
-const DB_CHUNK_SIZE = 100
-const UI_PAGE_SIZE = 10
-
 export const TransactionTableContent = ({ data, totalPages, currentPage }: Props) => {
   const onDelete = async (row: Row<Transaction>[]) => {
     const ids = row.map(r => r.original.id)
@@ -33,6 +30,7 @@ export const TransactionTableContent = ({ data, totalPages, currentPage }: Props
       </CardHeader>
       <CardContent>
         <DataTable
+          key={currentPage}
           columns={columns}
           data={data}
           filterKey='date'
