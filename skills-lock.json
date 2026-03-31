@@ -6,6 +6,11 @@
       "sourceType": "github",
       "computedHash": "c31ddd68ba5798a79a516c619b1e1fc4408cc4876ad600fefa4f5add4425719d"
     },
+    "trello": {
+      "source": "elizaOS/eliza",
+      "sourceType": "github",
+      "computedHash": "93993d6b35344227d314239038bc043673041f5413ca1e264872ec95ac24248f"
+    },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",
       "sourceType": "github",

@@ -9,10 +9,11 @@ type UpdateTransactionValues = z.infer<typeof UpdateTransactionSchema> & { userI
 
 export interface PaginatedTransactionsParams {
   userId: string
-  type: 'income' | 'expense'
+  type?: 'income' | 'expense'
   page?: number
   limit?: number
   search?: string
+  accountId?: string
 }
 
 export const createTransaction = async ({
@@ -226,6 +227,7 @@ export const getTransactionsPaginated = async ({
   page = 1,
   limit = 20,
   search,
+  accountId,
 }: PaginatedTransactionsParams) => {
   const offset = (page - 1) * limit
 
@@ -236,9 +238,13 @@ export const getTransactionsPaginated = async ({
       )
     : undefined
 
+  const accountCondition = accountId ? eq(transactionsTable.accountId, accountId) : undefined
+  const typeCondition = type ? eq(transactionsTable.type, type) : undefined
+
   const whereClause = and(
     eq(transactionsTable.userId, userId),
-    eq(transactionsTable.type, type),
+    typeCondition,
+    accountCondition,
     searchCondition,
   )
 
@@ -265,6 +271,26 @@ export const getTransactionsPaginated = async ({
     page,
     totalPages: Math.ceil(total / limit),
   }
+}
+
+export const createTransactionsBulk = async (
+  transactions: z.infer<typeof CreateTransactionSchema>[],
+  userId: string,
+) => {
+  return db.transaction(async tx => {
+    const createdTransactions = await tx
+      .insert(transactionsTable)
+      .values(
+        transactions.map(t => ({
+          ...t,
+          userId,
+          amount: t.amount.toString(),
+        })),
+      )
+      .returning()
+
+    return createdTransactions
+  })
 }
 
 // // ── Types ─────────────────────────────────────────────────────────────────────

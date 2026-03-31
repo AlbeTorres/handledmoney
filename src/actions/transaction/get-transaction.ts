@@ -52,7 +52,15 @@ export const getTransactionsPaginatedAction = async (
 
     const transactions = result.data.map(parseTransaction)
 
-    return { success: true, status: 200, data: [...transactions] }
+    return {
+      success: true,
+      status: 200,
+      data: {
+        transactions: [...transactions],
+        totalPages: result.totalPages,
+        currentPage: result.page,
+      },
+    }
   } catch (error) {
     console.error('Error fetching transactions:', error)
     return { success: false, status: 500, message: 'Something went wrong', data: null }

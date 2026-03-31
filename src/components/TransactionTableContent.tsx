@@ -10,9 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 type Props = {
   data: Transaction[]
+  totalPages: number
+  currentPage: number
 }
 
-export const TransactionTableContent = ({ data }: Props) => {
+export const TransactionTableContent = ({ data, totalPages, currentPage }: Props) => {
   const onDelete = async (row: Row<Transaction>[]) => {
     const ids = row.map(r => r.original.id)
     const result = { error: false }
@@ -22,12 +24,20 @@ export const TransactionTableContent = ({ data }: Props) => {
     }
   }
   return (
-    <Card className='border-none drop-shadow-sm'>
+    <Card className='border-none drop-shadow-sm w-full'>
       <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
         <CardTitle className='text-xl line-clamp-1'>Transactions History</CardTitle>
       </CardHeader>
       <CardContent>
-        <DataTable columns={columns} data={data} filterKey='date' onDelete={row => onDelete(row)} />
+        <DataTable
+          key={currentPage}
+          columns={columns}
+          data={data}
+          filterKey='date'
+          onDelete={row => onDelete(row)}
+          totalPages={totalPages}
+          currentPage={currentPage}
+        />
       </CardContent>
     </Card>
   )

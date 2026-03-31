@@ -1,5 +1,5 @@
 import { getBankAccountByIdAction } from '@/actions/account/get-account'
-import { getTransactionsByAccountIdAction } from '@/actions/transaction/get-transaction'
+import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
 import { AccountInfo } from '@/components/AccountInfo'
 import { AccountTransactionTable } from '@/components/AccountTransactionTable'
 import { InfoCard } from '@/components/InfoCard'
@@ -10,10 +10,11 @@ import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 interface AccountPageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
   params: Promise<{ id: string }>
 }
 
-export default async function AccountPage({ params }: AccountPageProps) {
+export default async function AccountPage({ searchParams, params }: AccountPageProps) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -25,13 +26,26 @@ export default async function AccountPage({ params }: AccountPageProps) {
   const resolvedParams = await params
   const { id } = resolvedParams
 
+  const resolvedSearchParams = await searchParams
+  const page = Number(resolvedSearchParams.page) || 1
+  const limit = Number(resolvedSearchParams.limit) || 50
+  const search = resolvedSearchParams.search || ''
+
   const [account, transactions] = await Promise.all([
     getBankAccountByIdAction(id),
-    getTransactionsByAccountIdAction(id),
+    getTransactionsPaginatedAction({
+      accountId: id,
+      page,
+      limit,
+      search: '',
+    }),
   ])
 
+  const transactionsData = transactions?.data?.transactions || []
+  const totalPages = transactions?.data?.totalPages || 0
+  const currentPage = transactions?.data?.currentPage || 1
+
   const { data: accountData } = account
-  const { data: transactionsData } = transactions
 
   if (!accountData || !transactionsData) {
     return (
@@ -89,7 +103,11 @@ export default async function AccountPage({ params }: AccountPageProps) {
 
             <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
               <h3 className='font-bold text-lg mb-4'>Transactions for {accountData.name}</h3>
-              <AccountTransactionTable data={transactionsData as any} />
+              <AccountTransactionTable
+                data={transactionsData}
+                totalPages={totalPages}
+                currentPage={currentPage}
+              />
             </div>
           </div>
         </main>

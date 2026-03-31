@@ -1,13 +1,15 @@
+'use client'
+
 import { useState } from 'react'
-import { CSVTransaction, SelectedColumns } from '../../interfaces'
-import { Button } from '../ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card'
+import { CSVTransaction, SelectedColumns } from '../interfaces'
 import { ImportTable } from './ImportTable'
+import { Button } from './ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 type Props = {
   data: string[][]
   onCancel: () => void
-  onSubmit: (data: any) => void
+  onSubmit: (data: any, accountId: string) => void
 }
 
 // const format1 = 'yyyy-MM-dd HH:mm:ss'
@@ -102,15 +104,18 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
     const formattedData: CSVTransaction[] = arrayOfData.map(item => ({
       ...item,
       date: new Date(item.date),
-      amount: Number(item.amount),
+      amount: isNaN(Number(item.amount))
+        ? Number(item.amount.replace(',', '').replace('$', '').replace('-', ''))
+        : Number(item.amount),
+      type: 'expense',
     }))
 
-    onSubmit(formattedData)
+    onSubmit(formattedData, '50a7cbca-37f0-4995-8e0e-8a3c4b7a478d')
   }
 
   return (
     <>
-      <div className='max-w-screen-2xl mx-auto w-full pb-10 -mt-24'>
+      <div className='max-w-screen-2xl mx-auto w-full pb-10 mt-24'>
         <Card className='border-none drop-shadow-sm'>
           <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
             <CardTitle className='text-xl line-clamp-1'>Import Transactions</CardTitle>

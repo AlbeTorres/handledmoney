@@ -1,0 +1,16 @@
+{
+  "trello": {
+    "boards": {
+      "HandledMoney": {
+        "id": "68463de802ee3a22f2551056",
+        "lists": {
+          "Backlog": "69b494ab69e6405eac567fa6",
+          "TO-DO": "68463de802ee3a22f25510a2",
+          "In Progress": "68463de802ee3a22f25510a3",
+          "Reviewing": "69b41b5973c463e8a858c170",
+          "Done": "69b41b66b3bcbb34502d1103"
+        }
+      }
+    }
+  }
+}
