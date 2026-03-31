@@ -30,9 +30,9 @@ export const TransactionPageContent = ({ data, totalPages, currentPage }: Props)
   }
 
   return (
-    <div>
+    <>
       <Tab activeView={currentTab} onViewChange={handleTabChange} tabs={['income', 'expense']} />
       <TransactionTableContent data={data} totalPages={totalPages} currentPage={currentPage} />
-    </div>
+    </>
   )
 }

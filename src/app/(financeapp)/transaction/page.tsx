@@ -24,7 +24,7 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
   const currentPage = data?.currentPage || 1
 
   return (
-    <div className='max-w-screen-2xl h-full flex flex-col items-center justify-center mx-auto w-full'>
+    <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
       <TransactionPageContent
         data={transactions}
         totalPages={totalPages}

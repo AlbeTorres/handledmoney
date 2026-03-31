@@ -24,7 +24,7 @@ export const TransactionTableContent = ({ data, totalPages, currentPage }: Props
     }
   }
   return (
-    <Card className='border-none drop-shadow-sm'>
+    <Card className='border-none drop-shadow-sm w-full'>
       <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
         <CardTitle className='text-xl line-clamp-1'>Transactions History</CardTitle>
       </CardHeader>
