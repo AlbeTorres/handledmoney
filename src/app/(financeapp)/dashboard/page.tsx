@@ -3,7 +3,6 @@ import { RecentTransactions } from '@/components/RecentTransactions'
 import { SummaryStats } from '@/components/SummaryStats'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 export default async function Dashboard() {
   const session = await auth.api.getSession({
@@ -11,7 +10,8 @@ export default async function Dashboard() {
   })
 
   if (!session) {
-    redirect('/auth/login')
+    // redirect('/auth/login')
+    return <>no session</>
   }
 
   // Assuming session.user has name and image. Hardcoded fallback as in original.
