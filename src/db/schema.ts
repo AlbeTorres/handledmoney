@@ -30,6 +30,15 @@ export const incomeTypeEnum = pgEnum('income_type', [
 
 export const billingTypeEnum = pgEnum('billing_type', ['hourly', 'project', 'salary'])
 
+export const budgetGroupTypeEnum = pgEnum('budget_group_type', [
+  'income',
+  'bills',
+  'variable_expenses',
+  'debt',
+  'savings',
+  'investments',
+])
+
 const timestamps = {
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
@@ -239,6 +248,45 @@ export const expenseDetailsTable = pgTable('expense_details', {
   ...timestamps,
 })
 
+// ── Budget tables ─────────────────────────────────────────────────────────────
+
+export const budgetsTable = pgTable(
+  'budget',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    userId: text()
+      .notNull()
+      .references(() => user.id, { onDelete: 'cascade' }),
+    name: varchar({ length: 255 }).notNull(),
+    month: integer('month').notNull(), // 1–12
+    year: integer('year').notNull(),
+    ...timestamps,
+  },
+  table => [index('budget_userId_year_month_idx').on(table.userId, table.year, table.month)],
+)
+
+export const budgetGroupsTable = pgTable('budget_group', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  budgetId: uuid('budget_id')
+    .notNull()
+    .references(() => budgetsTable.id, { onDelete: 'cascade' }),
+  name: varchar({ length: 255 }).notNull(),
+  type: budgetGroupTypeEnum().notNull(),
+  sortOrder: integer('sort_order').default(0).notNull(),
+  ...timestamps,
+})
+
+export const budgetItemsTable = pgTable('budget_item', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  groupId: uuid('group_id')
+    .notNull()
+    .references(() => budgetGroupsTable.id, { onDelete: 'cascade' }),
+  categoryId: uuid('category_id').references(() => categoriesTable.id, { onDelete: 'set null' }),
+  name: varchar({ length: 255 }).notNull(),
+  plannedAmount: numeric('planned_amount', { precision: 10, scale: 2 }).default('0').notNull(),
+  ...timestamps,
+})
+
 //relations
 
 export const userRelations = relations(user, ({ many, one }) => ({
@@ -249,6 +297,7 @@ export const userRelations = relations(user, ({ many, one }) => ({
   categories: many(categoriesTable),
   transactions: many(transactionsTable),
   twoFactors: many(twoFactor),
+  budgets: many(budgetsTable),
 
   settings: one(Settings, {
     fields: [user.id],
@@ -327,5 +376,32 @@ export const expenseDetailsRelations = relations(expenseDetailsTable, ({ one }) 
   transaction: one(transactionsTable, {
     fields: [expenseDetailsTable.transactionId],
     references: [transactionsTable.id],
+  }),
+}))
+
+export const budgetsRelations = relations(budgetsTable, ({ one, many }) => ({
+  user: one(user, {
+    fields: [budgetsTable.userId],
+    references: [user.id],
+  }),
+  groups: many(budgetGroupsTable),
+}))
+
+export const budgetGroupsRelations = relations(budgetGroupsTable, ({ one, many }) => ({
+  budget: one(budgetsTable, {
+    fields: [budgetGroupsTable.budgetId],
+    references: [budgetsTable.id],
+  }),
+  items: many(budgetItemsTable),
+}))
+
+export const budgetItemsRelations = relations(budgetItemsTable, ({ one }) => ({
+  group: one(budgetGroupsTable, {
+    fields: [budgetItemsTable.groupId],
+    references: [budgetGroupsTable.id],
+  }),
+  category: one(categoriesTable, {
+    fields: [budgetItemsTable.categoryId],
+    references: [categoriesTable.id],
   }),
 }))

@@ -14,6 +14,7 @@ import {
   ChartColumnStacked,
   FileChartColumn,
   LandmarkIcon,
+  PiggyBank,
   Settings,
   WalletCards,
 } from 'lucide-react'
@@ -25,6 +26,7 @@ const NAV_ITEMS = [
   { href: '/account', icon: WalletCards, label: 'Accounts' },
   { href: '/category', icon: ChartColumnStacked, label: 'Categories' },
   { href: '/transaction', icon: ArrowLeftRight, label: 'Transactions' },
+  { href: '/budget', icon: PiggyBank, label: 'Budget' },
 ]
 
 export function AppSidebar() {

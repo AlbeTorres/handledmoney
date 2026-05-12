@@ -1,4 +1,5 @@
 export * from './Account'
+export * from './Budget'
 export * from './Category'
 export * from './CSV'
 export * from './Transaction'
