@@ -162,3 +162,61 @@ export const UpdateTransactionSchema = z.object({
   notes: z.string().max(255).optional(),
   type: z.enum(['income', 'expense']),
 })
+
+// ── Budget schemas ────────────────────────────────────────────────────────────
+
+export const BudgetGroupTypeEnum = z.enum([
+  'income',
+  'bills',
+  'variable_expenses',
+  'debt',
+  'savings',
+  'investments',
+])
+
+export const CreateBudgetSchema = z.object({
+  name: z.string().min(1, 'Budget name is required').max(255),
+  month: z.number().int().min(1).max(12),
+  year: z.number().int().min(2020),
+})
+
+export const UpdateBudgetSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1, 'Budget name is required').max(255).optional(),
+  month: z.number().int().min(1).max(12).optional(),
+  year: z.number().int().min(2020).optional(),
+})
+
+export const CreateBudgetGroupSchema = z.object({
+  budgetId: z.string().uuid(),
+  name: z.string().min(1, 'Group name is required').max(255),
+  type: BudgetGroupTypeEnum,
+  sortOrder: z.number().int().min(0).default(0),
+})
+
+export const CreateBudgetItemSchema = z.object({
+  groupId: z.string().uuid(),
+  name: z.string().min(1, 'Item name is required').max(255),
+  plannedAmount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(0, 'Amount must be zero or positive'),
+  categoryId: z.string().uuid().optional().nullable(),
+})
+
+export const UpdateBudgetItemSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1, 'Item name is required').max(255).optional(),
+  plannedAmount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(0)
+    .optional(),
+  categoryId: z.string().uuid().optional().nullable(),
+})
+
+export type CreateBudgetValues = z.infer<typeof CreateBudgetSchema>
+export type UpdateBudgetValues = z.infer<typeof UpdateBudgetSchema>
+export type CreateBudgetGroupValues = z.infer<typeof CreateBudgetGroupSchema>
+export type CreateBudgetItemValues = z.infer<typeof CreateBudgetItemSchema>
+export type UpdateBudgetItemValues = z.infer<typeof UpdateBudgetItemSchema>
+export type BudgetGroupType = z.infer<typeof BudgetGroupTypeEnum>
+
