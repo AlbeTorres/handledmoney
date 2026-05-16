@@ -1,5 +1,6 @@
 import { relations } from 'drizzle-orm'
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -285,6 +286,15 @@ export const budgetItemsTable = pgTable('budget_item', {
   name: varchar({ length: 255 }).notNull(),
   plannedAmount: numeric('planned_amount', { precision: 10, scale: 2 }).default('0').notNull(),
   ...timestamps,
+})
+
+// rate limiter
+
+export const rateLimit = pgTable('rateLimit', {
+  id: text('id').primaryKey(),
+  key: text('key'), // identifica la IP
+  count: integer('count'), // cuántas requests ha hecho
+  lastRequest: bigint('last_request', { mode: 'number' }).notNull(),
 })
 
 //relations
