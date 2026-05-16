@@ -51,5 +51,12 @@ export const auth = betterAuth({
     //   clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
     // },
   },
+  rateLimit: {
+    enabled: true,
+    window: 60, // time window in seconds
+    max: 100, // max requests in the window
+    storage: 'database',
+    modelName: 'rateLimit',
+  },
   plugins: [twoFactor()],
 })
