@@ -132,7 +132,7 @@ export const ChangePassword = () => {
         <Button
           disabled={isPending}
           type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
+          className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
         >
           Reset password
         </Button>

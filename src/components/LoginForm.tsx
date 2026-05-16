@@ -144,88 +144,11 @@ export const LoginForm = () => {
         <Button
           disabled={isPending}
           type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
+          className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
         >
           {showTwoFactor ? t('confirm') : t('signin')}
         </Button>
       </form>
     </CardWrapper>
   )
-}
-
-{
-  /* <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)}>
-          {showTwoFactor ? (
-            <FormField
-              control={form.control}
-              name='code'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('two_factor_title')}</FormLabel>
-                  <FormControl>
-                    <Input
-                      className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:!ring-1 focus:!ring-blue-600'
-                      {...field}
-                      placeholder='123456'
-                      type='code'
-                      disabled={isPending}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ) : (
-            <div className='mt-4 space-y-4'>
-              <FormField
-                control={form.control}
-                name='email'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('email')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:!ring-1 focus:!ring-blue-600'
-                        {...field}
-                        placeholder='jhon.doe@example.com'
-                        type='email'
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name='password'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('password')}</FormLabel>
-                    <FormControl>
-                      <Input
-                        className='w-full px-4 py-2 border rounded-md  focus:outline-none focus:!ring-1 focus:!ring-blue-600'
-                        {...field}
-                        placeholder='password'
-                        type='password'
-                        disabled={isPending}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          )}
-          <AuthMessage className='my-4' type={message.type} message={message.message} />
-          <Button
-            disabled={isPending}
-            type='submit'
-            className='!block px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
-          >
-            {showTwoFactor ? t('confirm') : t('login')}
-          </Button>
-        </form>
-      </Form> */
 }

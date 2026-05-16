@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { Toaster } from 'react-hot-toast'
 import './globals.css'
 
 const geistSans = Geist({
@@ -30,6 +31,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Toaster position='top-right' />
         <TooltipProvider>
           <NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
         </TooltipProvider>
