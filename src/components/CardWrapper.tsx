@@ -25,7 +25,7 @@ export const CardWrapper = ({
   isPending,
 }: CardWrapperProps) => {
   return (
-    <div className='px-8 py-6 w-11/12 md:w-84 text-left bg-white rounded-b-md md:shadow-lg'>
+    <div className='px-8 py-6 w-11/12 md:w-96 text-left'>
       <h3 className='text-2xl font-bold mb-5'>{headerLabel}</h3>
       {children}
       {/* divisor line */}
@@ -38,12 +38,12 @@ export const CardWrapper = ({
       {showSocial && <SocialButtons callbackUrl={callbackUrl} isPending={isPending} />}
       <div className='mt-5 flex flex-col gap-3'>
         <Link href={backButtonHref || '/'}>
-          <p className='text-xs text-center hover:text-blue-700 hover:underline'>
+          <p className='text-xs text-center hover:text-primary hover:underline'>
             {backButtonLabel}
           </p>
         </Link>
         <Link href={recoverButtonHref || '/'}>
-          <p className='text-xs text-center hover:text-blue-700 hover:underline mt-2'>
+          <p className='text-xs text-center hover:text-primary hover:underline mt-2'>
             {recoverButtonLabel}
           </p>
         </Link>

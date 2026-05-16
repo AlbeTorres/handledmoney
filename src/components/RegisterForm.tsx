@@ -10,8 +10,8 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import z from 'zod'
-import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
 
 export const RegisterForm = () => {
@@ -43,9 +43,13 @@ export const RegisterForm = () => {
     })
 
     if (error) {
-      alert(error.message)
+      toast.error(error.message || t('errors.email_in_use'), {
+        duration: 5000,
+      })
     } else {
-      setMessage({ message: 'Revisa tu email para verificar tu cuenta', type: 'success' })
+      toast.success('Revisa tu email para verificar tu cuenta', {
+        duration: 5000,
+      })
       router.replace('/auth/login')
     }
   }
@@ -150,11 +154,10 @@ export const RegisterForm = () => {
             )}
           />
         </FieldGroup>
-        <AuthMessage className='my-4' type={message.type} message={message.message} />
         <Button
           disabled={isPending}
           type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
+          className='block! px-6 py-2 mt-8 w-full rounded-lg text-white hover:bg-secondary hover:border-secondary transition-all duration-300'
         >
           {t('signup')}
         </Button>
