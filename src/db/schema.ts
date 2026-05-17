@@ -62,6 +62,7 @@ export const user = pgTable('user', {
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
   twoFactorEnabled: boolean('two_factor_enabled').default(false),
+  termsAcceptedAt: timestamp('terms_accepted_at'),
 })
 
 export const session = pgTable(
@@ -290,7 +291,7 @@ export const budgetItemsTable = pgTable('budget_item', {
 
 // rate limiter
 
-export const rateLimit = pgTable('rateLimit', {
+export const rateLimit = pgTable('rate_limit', {
   id: text('id').primaryKey(),
   key: text('key'), // identifica la IP
   count: integer('count'), // cuántas requests ha hecho

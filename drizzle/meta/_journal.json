@@ -36,6 +36,34 @@
       "when": 1778959728468,
       "tag": "0004_ordinary_joshua_kane",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1779033962223,
+      "tag": "0005_worthless_obadiah_stane",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1779035561870,
+      "tag": "0006_zippy_invaders",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1779035662319,
+      "tag": "0007_colossal_sage",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1779035680284,
+      "tag": "0008_tidy_luckman",
+      "breakpoints": true
     }
   ]
 }

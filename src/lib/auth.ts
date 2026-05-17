@@ -14,6 +14,7 @@ export const auth = betterAuth({
   user: {
     additionalFields: {
       role: { type: 'string' },
+      termsAcceptedAt: { type: 'date' },
     },
   },
   emailAndPassword: {
