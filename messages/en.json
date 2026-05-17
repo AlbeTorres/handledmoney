@@ -20,7 +20,8 @@
       "name": "Name",
       "name_placeholder": "John Doe",
       "create": "Create",
-      "password_recovery": "I forgot my password"
+      "password_recovery": "I forgot my password",
+      "terms_accept": "I accept the Terms & Conditions"
     },
     "unknown_error": "Something went wrong!"
   }

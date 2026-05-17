@@ -1,12 +1,15 @@
 'use client'
 import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { Label } from '@/components/ui/label'
 import { authClient } from '@/lib/auth-client'
 import { RegisterSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeIcon, EyeOffIcon, MailIcon, UserIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -34,11 +37,15 @@ export const RegisterForm = () => {
     },
   })
 
+  const termsAccepted = form.watch('termsAccepted')
+
   const handleSubmit = async (data: z.infer<typeof RegisterSchema>) => {
     const { error } = await authClient.signUp.email({
+      role: 'user',
       email: data.email,
       password: data.password,
       name: data.name,
+      termsAcceptedAt: new Date(),
       callbackURL: '/auth/new-verification?redirect=false',
     })
 
@@ -154,8 +161,32 @@ export const RegisterForm = () => {
             )}
           />
         </FieldGroup>
+        <div className='mt-6'>
+          <Controller
+            name='termsAccepted'
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <div className='flex items-center gap-2'>
+                  <Checkbox
+                    id='form-signup-terms'
+                    checked={!!field.value}
+                    onCheckedChange={field.onChange}
+                    disabled={isPending}
+                  />
+                  <Label htmlFor='form-signup-terms' className='text-sm leading-normal'>
+                    <Link href='/terms' className='text-primary hover:underline underline-offset-4'>
+                      {t('terms_accept')}
+                    </Link>
+                  </Label>
+                </div>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
+        </div>
         <Button
-          disabled={isPending}
+          disabled={isPending || !termsAccepted}
           type='submit'
           className='block! px-6 py-2 mt-8 w-full rounded-lg text-white hover:bg-secondary hover:border-secondary transition-all duration-300'
         >
