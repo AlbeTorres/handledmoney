@@ -5,7 +5,7 @@ export function DashboardFooter() {
       <div className='flex items-center gap-6'>
         <a
           className='hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded'
-          href='#'
+          href='/privacy'
         >
           Privacy Policy
         </a>
