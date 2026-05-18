@@ -11,7 +11,7 @@ import { EyeIcon, EyeOffIcon, MailIcon, UserIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
@@ -22,11 +22,7 @@ export const RegisterForm = () => {
   const t = useTranslations('handledmoney.auth')
   const [showPassword, setShowPassword] = useState(false)
 
-  const [isPending, startTransition] = useTransition()
-  const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
-    message: '',
-    type: null,
-  })
+  const [isPending, setIsPending] = useState(false)
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -40,6 +36,7 @@ export const RegisterForm = () => {
   const termsAccepted = form.watch('termsAccepted')
 
   const handleSubmit = async (data: z.infer<typeof RegisterSchema>) => {
+    setIsPending(true)
     const { error } = await authClient.signUp.email({
       role: 'user',
       email: data.email,
@@ -50,10 +47,12 @@ export const RegisterForm = () => {
     })
 
     if (error) {
-      toast.error(t('errors.unknown_error'), {
+      setIsPending(false)
+      toast.error(t('error.unknown_error'), {
         duration: 5000,
       })
     } else {
+      setIsPending(false)
       toast.success(t('success.email_sent'), {
         duration: 5000,
       })
