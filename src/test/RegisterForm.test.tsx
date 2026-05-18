@@ -1,7 +1,7 @@
+import { RegisterForm } from '@/components/RegisterForm'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { RegisterForm } from './RegisterForm'
 
 const { replaceMock, signUpEmailMock, toastSuccessMock, toastErrorMock } = vi.hoisted(() => ({
   replaceMock: vi.fn(),
