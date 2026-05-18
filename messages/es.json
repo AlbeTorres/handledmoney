@@ -1,6 +1,5 @@
 {
   "handledmoney": {
-    "title": "¡Hola mundo!",
     "auth": {
       "signin_title": "Acceder a tu cuenta",
       "signup_title": "Crear una cuenta",
@@ -9,21 +8,36 @@
       "signin_link": "¿Ya tienes una cuenta?",
       "signup_link": "¿No tienes una cuenta?",
       "email": "Correo electrónico",
-      "email_placeholder": "johndoe@email.com",
+      "email_placeholder": "johndoe@gmail.com",
       "password_placeholder": "Ingresa tu contraseña",
       "password": "Contraseña",
-      "name": "Nombre",
-      "name_placeholder": "Juan Pérez",
       "forgot_password": "Olvidé mi contraseña",
-      "password_recovery": "Olvidé mi contraseña",
       "two_factor_title": "Código de dos factores",
       "confirm": "Confirmar",
       "create_account": "Crear una cuenta",
+      "name": "Nombre",
+      "name_placeholder": "Juan Pérez",
       "create": "Crear",
-      "invalid_credentials_error": "¡Credenciales inválidas!",
-      "email_sent": "Correo enviado",
-      "terms_accept": "Acepto los Términos y Condiciones"
-    },
-    "unknown_error": "¡Algo salió mal!"
+      "password_recovery": "Olvidé mi contraseña",
+      "terms_accept": "Acepto los Términos y Condiciones",
+      "error": {
+        "email_in_use": "El correo electrónico ya está en uso",
+        "email_sent": "Correo electrónico enviado",
+        "invalid_credentials": "Credenciales inválidas",
+        "unknown_error": "¡Algo salió mal!",
+        "unknown_signup_error": "Error desconocido al registrarse",
+        "name_required": "El nombre es requerido",
+        "terms_required": "Se requiere aceptar los términos y condiciones",
+        "password_required": "La contraseña es requerida",
+        "email_required": "El correo electrónico es requerido",
+        "code_required": "El código es requerido",
+        "password_too_short": "La contraseña debe tener al menos 8 caracteres",
+        "password_too_long": "La contraseña debe tener como máximo 128 caracteres"
+      },
+      "success": {
+        "email_sent": "Revisa tu correo electrónico para verificar tu cuenta",
+        "create_account": "Cuenta creada exitosamente"
+      }
+    }
   }
 }
