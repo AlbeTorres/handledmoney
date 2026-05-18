@@ -14,15 +14,30 @@
       "forgot_password": "I forgot my password",
       "two_factor_title": "Two factor code",
       "confirm": "Confirm",
-      "invalid_credentials_error": "Invalid credentials!",
-      "email_sent": "Email sent",
       "create_account": "Create an account",
       "name": "Name",
       "name_placeholder": "John Doe",
       "create": "Create",
       "password_recovery": "I forgot my password",
-      "terms_accept": "I accept the Terms & Conditions"
-    },
-    "unknown_error": "Something went wrong!"
+      "terms_accept": "I accept the Terms & Conditions",
+      "error": {
+        "email_in_use": "Email already in use",
+        "email_sent": "Email sent",
+        "invalid_credentials": "Invalid credentials",
+        "unknown_error": "Something went wrong!",
+        "unknown_signup_error": "Unknown signup error",
+        "name_required": "Name is required",
+        "terms_required": "Terms & Conditions are required",
+        "password_required": "Password is required",
+        "email_required": "Email is required",
+        "code_required": "Code is required",
+        "password_too_short": "Password must be at least 8 characters",
+        "password_too_long": "Password must be at most 128 characters"
+      },
+      "success": {
+        "email_sent": "Check your email to verify your account",
+        "create_account": "Account created successfully"
+      }
+    }
   }
 }

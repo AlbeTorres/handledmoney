@@ -220,4 +220,3 @@ export type CreateBudgetGroupValues = z.infer<typeof CreateBudgetGroupSchema>
 export type CreateBudgetItemValues = z.infer<typeof CreateBudgetItemSchema>
 export type UpdateBudgetItemValues = z.infer<typeof UpdateBudgetItemSchema>
 export type BudgetGroupType = z.infer<typeof BudgetGroupTypeEnum>
-

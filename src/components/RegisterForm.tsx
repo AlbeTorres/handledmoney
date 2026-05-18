@@ -50,11 +50,11 @@ export const RegisterForm = () => {
     })
 
     if (error) {
-      toast.error(error.message || t('errors.email_in_use'), {
+      toast.error(t('errors.unknown_error'), {
         duration: 5000,
       })
     } else {
-      toast.success('Revisa tu email para verificar tu cuenta', {
+      toast.success(t('success.email_sent'), {
         duration: 5000,
       })
       router.replace('/auth/login')
@@ -95,7 +95,9 @@ export const RegisterForm = () => {
                   </InputGroupAddon>
                 </InputGroup>
 
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[{ message: t('error.name_required') }]} />
+                )}
               </Field>
             )}
           />
@@ -121,7 +123,9 @@ export const RegisterForm = () => {
                   </InputGroupAddon>
                 </InputGroup>
 
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[{ message: t('error.email_required') }]} />
+                )}
               </Field>
             )}
           />
@@ -156,7 +160,9 @@ export const RegisterForm = () => {
                     </button>
                   </InputGroupAddon>
                 </InputGroup>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[{ message: t('error.password_too_short') }]} />
+                )}
               </Field>
             )}
           />
@@ -180,7 +186,9 @@ export const RegisterForm = () => {
                     </Link>
                   </Label>
                 </div>
-                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+                {fieldState.invalid && (
+                  <FieldError errors={[{ message: t('error.terms_required') }]} />
+                )}
               </Field>
             )}
           />
