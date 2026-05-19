@@ -20,6 +20,10 @@
       "create": "Create",
       "password_recovery": "I forgot my password",
       "terms_accept": "I accept the Terms & Conditions",
+      "verification_page_title": "Email verification",
+      "verification_page_description_error": "This page is only accessible from the verification link sent to your email.",
+      "verification_page_go_to_login": "Go to login",
+      "send_verification_email": "Send verification email",
       "error": {
         "email_in_use": "Email already in use",
         "email_sent": "Email sent",
@@ -32,7 +36,8 @@
         "email_required": "Email is required",
         "code_required": "Code is required",
         "password_too_short": "Password must be at least 8 characters",
-        "password_too_long": "Password must be at most 128 characters"
+        "password_too_long": "Password must be at most 128 characters",
+        "invalid_token": "Token is invalid or expired"
       },
       "success": {
         "email_sent": "Check your email to verify your account",

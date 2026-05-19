@@ -10,6 +10,7 @@ import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
@@ -49,17 +50,9 @@ export const LoginForm = () => {
         onError: async ctx => {
           startLoading(false)
           if (ctx.error.status === 403) {
-            // Reenviar email de verificación manualmente
-            await authClient.sendVerificationEmail({
-              email: data.email,
-              callbackURL: '/auth/new-verification?redirect=false',
-            })
-            setMessage({
-              message: 'Debes verificar tu email. Te hemos reenviado el correo de verificación.',
-              type: 'error',
-            })
+            router.push('/auth/new-verification?email=' + data.email)
           } else {
-            setMessage({ message: ctx.error.message, type: 'error' })
+            toast.error(t('error'))
           }
         },
       },
