@@ -20,6 +20,16 @@
       "create": "Crear",
       "password_recovery": "Olvidé mi contraseña",
       "terms_accept": "Acepto los Términos y Condiciones",
+      "verification_page_title": "Verificación de correo",
+      "verification_page_description_error": "Esta página solo es accesible desde el enlace de verificación enviado a tu correo.",
+      "verification_page_go_to_login": "Ir a iniciar sesión",
+      "send_verification_email": "Enviar correo de verificación",
+      "verification_page_not_verified": "Aún no has verificado tu email, revisa tu bandeja de entrada. Si no has recibido el email, solicítalo nuevamente.",
+      "verification_page_invalid_link": "El enlace de verificación es inválido o ya expiró. Intenta solicitar uno nuevo.",
+      "verification_page_success": "¡Email verificado correctamente! Ya puedes iniciar sesión.",
+      "sending": "Enviando...",
+      "resend_email_cooldown": "Reenviar en {time}",
+      "back_to_login": "Volver al inicio de sesión",
       "error": {
         "email_in_use": "El correo electrónico ya está en uso",
         "email_sent": "Correo electrónico enviado",
@@ -32,7 +42,10 @@
         "email_required": "El correo electrónico es requerido",
         "code_required": "El código es requerido",
         "password_too_short": "La contraseña debe tener al menos 8 caracteres",
-        "password_too_long": "La contraseña debe tener como máximo 128 caracteres"
+        "password_too_long": "La contraseña debe tener como máximo 128 caracteres",
+        "invalid_token": "El token es inválido o expiró",
+        "too_many_requests": "Demasiadas solicitudes. Por favor, intenta de nuevo más tarde.",
+        "email_is_already_verified": "El correo electrónico ya está verificado."
       },
       "success": {
         "email_sent": "Revisa tu correo electrónico para verificar tu cuenta",

@@ -61,7 +61,7 @@ export const auth = betterAuth({
 
     customRules: {
       '/send-verification-email': {
-        window: 300, // En un lapso de 60 segundos...
+        window: 60, // En un lapso de 60 segundos...
         max: 1, // ...solo permitimos 1 sola petición por IP.
       },
     },
