@@ -1,3 +1,4 @@
+import { cx } from 'class-variance-authority'
 import Link from 'next/link'
 import { SocialButtons } from './SocialButtons'
 
@@ -11,6 +12,7 @@ interface CardWrapperProps {
   showSocial?: boolean
   callbackUrl?: string
   isPending: boolean
+  classname?: string
 }
 
 export const CardWrapper = ({
@@ -23,9 +25,10 @@ export const CardWrapper = ({
   recoverButtonLabel,
   callbackUrl,
   isPending,
+  classname,
 }: CardWrapperProps) => {
   return (
-    <div className='px-8 py-6 w-11/12 md:w-96 text-left'>
+    <div className={cx('px-8 py-6 w-11/12 md:w-96 text-left', classname)}>
       <h3 className='text-2xl font-bold mb-5'>{headerLabel}</h3>
       {children}
       {/* divisor line */}
