@@ -14,12 +14,13 @@ import { Button } from './ui/button'
 import { Field, FieldError, FieldGroup } from './ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
 import { useCooldown } from '@/hooks/use-cooldown'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   email: string | undefined
 }
 
-const COOLDOWN_SECONDS = 300
+const COOLDOWN_SECONDS = 60
 
 function formatCooldown(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
@@ -28,6 +29,8 @@ function formatCooldown(seconds: number): string {
 }
 
 export function ResendEmailForm({ email }: Props) {
+
+  const router = useRouter()
   const t = useTranslations('handledmoney.auth')
   const [isPending, setLoading] = useState(false)
   const { cooldownSeconds, start: startCooldown } = useCooldown(COOLDOWN_SECONDS)
@@ -41,10 +44,10 @@ export function ResendEmailForm({ email }: Props) {
   })
 
   const buttonLabel = useMemo(() => {
-    if (isPending) return 'Enviando...'
-    if (isCooldownActive) return `Reenviar en ${formatCooldown(cooldownSeconds)}`
-    return 'Reenviar correo'
-  }, [cooldownSeconds, isCooldownActive, isPending])
+    if (isPending) return t('sending')
+    if (isCooldownActive) return t('resend_email_cooldown', { time: formatCooldown(cooldownSeconds) })
+    return t('send_verification_email')
+  }, [cooldownSeconds, isCooldownActive, isPending, t])
 
   const handleSubmit = async (data: z.infer<typeof ResetSchema>) => {
     if (isSubmitDisabled) return
@@ -56,13 +59,13 @@ export function ResendEmailForm({ email }: Props) {
     })
 
     if (!error) {
-      toast.success('Email sent successfully')
+      toast.success(t('success.email_sent'))
       startCooldown()
-    } else if (error?.code === '429') {
-      toast.error(t('too_many_requests'))
+    } else if (error.status === 429) {
+      toast.error(t('error.too_many_requests'))
       startCooldown()
     } else {
-      toast.error(t('something_went_wrong'))
+      toast.error(t('error.unknown_error'))
     }
 
     setLoading(false)
@@ -72,7 +75,7 @@ export function ResendEmailForm({ email }: Props) {
     <CardWrapper
       headerLabel={''}
       backButtonHref='/auth/login'
-      backButtonLabel='Back to login'
+      backButtonLabel={t('back_to_login')}
       callbackUrl={'/'}
       isPending={isPending}
       classname='mx-auto pt-2'
