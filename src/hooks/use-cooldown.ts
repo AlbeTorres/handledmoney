@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 
-const STORAGE_KEY = 'email_cooldown_until'
-
-function getRemainingSeconds(): number {
+function getRemainingSeconds(storageKey: string): number {
   if (typeof window === 'undefined') return 0
-  const storedUntil = localStorage.getItem(STORAGE_KEY)
+  const storedUntil = localStorage.getItem(storageKey)
   if (!storedUntil) return 0
   const remaining = Math.ceil((parseInt(storedUntil, 10) - Date.now()) / 1000)
   return remaining > 0 ? remaining : 0
 }
 
-export function useCooldown(defaultSeconds: number) {
+export function useCooldown(defaultSeconds: number, storageKey = 'email_cooldown_until') {
   const [cooldownSeconds, setCooldownSeconds] = useState(0)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
@@ -25,11 +23,11 @@ export function useCooldown(defaultSeconds: number) {
     stopTimer()
     
     const tick = () => {
-      const remaining = getRemainingSeconds()
+      const remaining = getRemainingSeconds(storageKey)
       setCooldownSeconds(remaining)
       if (remaining <= 0) {
         stopTimer()
-        localStorage.removeItem(STORAGE_KEY)
+        localStorage.removeItem(storageKey)
       }
     }
 
@@ -38,15 +36,15 @@ export function useCooldown(defaultSeconds: number) {
   }
 
   useEffect(() => {
-    const remaining = getRemainingSeconds()
+    const remaining = getRemainingSeconds(storageKey)
     if (remaining > 0) {
       startTimer()
     }
     return () => stopTimer()
-  }, [])
+  }, [storageKey])
 
   const start = (seconds = defaultSeconds) => {
-    localStorage.setItem(STORAGE_KEY, String(Date.now() + seconds * 1000))
+    localStorage.setItem(storageKey, String(Date.now() + seconds * 1000))
     startTimer()
   }
 
