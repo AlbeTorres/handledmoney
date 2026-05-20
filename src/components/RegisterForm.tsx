@@ -178,6 +178,7 @@ export const RegisterForm = () => {
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
                     disabled={isPending}
+                    className='data-[state=checked]:text-white'
                   />
                   <Label htmlFor='form-signup-terms' className='text-sm leading-normal'>
                     <Link href='/terms' className='text-primary hover:underline underline-offset-4'>

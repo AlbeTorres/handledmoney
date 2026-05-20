@@ -20,10 +20,7 @@ export const LoginForm = () => {
   const t = useTranslations('handledmoney.auth')
   const [showPassword, setShowPassword] = useState(false)
   const [isPending, startLoading] = useState(false)
-  const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
-    message: '',
-    type: null,
-  })
+
   const [showTwoFactor, setShowTwoFactor] = useState(false)
 
   const form = useForm<z.infer<typeof LoginSchema>>({
@@ -52,7 +49,7 @@ export const LoginForm = () => {
           if (ctx.error.status === 403) {
             router.push('/auth/new-verification?email=' + data.email)
           } else {
-            toast.error(t('error'))
+            toast.error(t('error.invalid_credentials'))
           }
         },
       },
@@ -133,7 +130,6 @@ export const LoginForm = () => {
             )}
           />
         </FieldGroup>
-        <AuthMessage className='my-4' type={message.type} message={message.message} />
         <Button
           disabled={isPending}
           type='submit'
