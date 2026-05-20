@@ -2,7 +2,7 @@ import { ResendEmailForm } from '@/components/ResendEmailForm'
 import { getTranslations } from 'next-intl/server'
 
 interface Props {
-  searchParams: Promise<{ error?: string; token?: string; email?: string }>
+  searchParams: Promise<{ error?: string; token?: string; email?: string, redirect?: string }>
 }
 
 export default async function NewVerification({ searchParams }: Props) {
@@ -41,7 +41,7 @@ export default async function NewVerification({ searchParams }: Props) {
       {showLoginButton && (
         <a
           href='/auth/login'
-          className='inline-block px-6 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-900 transition-all duration-300'
+          className='inline-block px-6 py-2 text-white bg-primary rounded-lg hover:bg-secondary transition-all duration-300'
         >
           {t('verification_page_go_to_login')}
         </a>

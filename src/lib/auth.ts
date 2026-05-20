@@ -58,11 +58,14 @@ export const auth = betterAuth({
     max: 100, // max requests in the window
     storage: 'database',
     modelName: 'rateLimit',
-
     customRules: {
       '/send-verification-email': {
         window: 60, // En un lapso de 60 segundos...
         max: 1, // ...solo permitimos 1 sola petición por IP.
+      },
+      '/sign-in/email': {
+        window: 60, // Aumentamos la ventana a 60 segundos
+        max: 5,     // Permitimos 5 intentos antes de bloquear por IP
       },
     },
   },
