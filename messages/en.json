@@ -20,6 +20,7 @@
       "create": "Create",
       "password_recovery": "I forgot my password",
       "terms_accept": "I accept the Terms & Conditions",
+      "remember_me": "Remember me",
       "verification_page_title": "Email verification",
       "verification_page_description_error": "This page is only accessible from the verification link sent to your email.",
       "verification_page_go_to_login": "Go to login",

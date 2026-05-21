@@ -14,6 +14,7 @@ import toast from 'react-hot-toast'
 import { z } from 'zod'
 import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
+import { Checkbox } from './ui/checkbox'
 
 export const LoginForm = () => {
   const router = useRouter()
@@ -29,6 +30,7 @@ export const LoginForm = () => {
       email: '',
       password: '',
       code: '',
+      rememberMe: false,
     },
   })
 
@@ -39,6 +41,7 @@ export const LoginForm = () => {
         email: data.email,
         password: data.password,
         callbackURL: '/dashboard',
+        rememberMe: data.rememberMe
       },
       {
         onSuccess: () => {
@@ -127,6 +130,28 @@ export const LoginForm = () => {
                 </InputGroup>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
               </Field>
+            )}
+          />
+
+          <Controller
+            name='rememberMe'
+            control={form.control}
+            render={({ field }) => (
+              <div className='flex items-center gap-2 mt-1'>
+                <Checkbox
+                  id='form-signin-remember'
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                  disabled={isPending}
+                  className='data-[state=checked]:text-white'
+                />
+                <label
+                  htmlFor='form-signin-remember'
+                  className='text-sm text-muted-foreground cursor-pointer select-none'
+                >
+                  {t('remember_me')}
+                </label>
+              </div>
             )}
           />
         </FieldGroup>
