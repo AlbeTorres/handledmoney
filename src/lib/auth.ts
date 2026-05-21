@@ -69,5 +69,9 @@ export const auth = betterAuth({
       },
     },
   },
+  session: {
+    expiresIn: 60 * 60 * 24 * 30, // 30 días para "remember me"
+    updateAge: 60 * 60 * 24,       // refresca cada 1 día de actividad
+  },
   plugins: [twoFactor()],
 })

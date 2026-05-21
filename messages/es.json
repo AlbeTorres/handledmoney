@@ -20,6 +20,7 @@
       "create": "Crear",
       "password_recovery": "Olvidé mi contraseña",
       "terms_accept": "Acepto los Términos y Condiciones",
+      "remember_me": "Recordarme",
       "verification_page_title": "Verificación de correo",
       "verification_page_description_error": "Esta página solo es accesible desde el enlace de verificación enviado a tu correo.",
       "verification_page_go_to_login": "Ir a iniciar sesión",
