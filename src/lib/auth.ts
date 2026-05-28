@@ -21,6 +21,7 @@ export const auth = betterAuth({
     enabled: true,
     autoSignIn: false,
     requireEmailVerification: true,
+    revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url, token }, request) => {
       void sendEmail({
         email: user.email,
@@ -31,8 +32,8 @@ export const auth = betterAuth({
       })
     },
     onPasswordReset: async ({ user }, request) => {
-      // your logic here
-      console.log(`Password for user ${user.email} has been reset.`)
+      // Invalidate ALL active sessions for this user after password reset
+      console.log(`Password for user ${user.email} has been reset. All sessions invalidated.`)
     },
   },
   emailVerification: {
@@ -65,13 +66,13 @@ export const auth = betterAuth({
       },
       '/sign-in/email': {
         window: 60, // Aumentamos la ventana a 60 segundos
-        max: 5,     // Permitimos 5 intentos antes de bloquear por IP
+        max: 5, // Permitimos 5 intentos antes de bloquear por IP
       },
     },
   },
   session: {
     expiresIn: 60 * 60 * 24 * 30, // 30 días para "remember me"
-    updateAge: 60 * 60 * 24,       // refresca cada 1 día de actividad
+    updateAge: 60 * 60 * 24, // refresca cada 1 día de actividad
   },
   plugins: [twoFactor()],
 })

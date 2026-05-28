@@ -48,13 +48,17 @@
         "password_too_short": "Password must be at least 8 characters",
         "password_too_long": "Password must be at most 128 characters",
         "invalid_token": "Token is invalid or expired",
+        "expired_token": "The reset link has expired. Please request a new one.",
+        "missing_token": "Missing reset token. Please use the link from your email.",
         "too_many_requests": "Too many requests. Please try again later.",
         "email_is_already_verified": "Email is already verified."
       },
       "success": {
         "email_sent": "Check your email to verify your account",
-        "create_account": "Account created successfully"
-      }
+        "create_account": "Account created successfully",
+        "password_reset": "Password reset successfully"
+      },
+      "reset_password": "Reset password"
     }
   }
 }

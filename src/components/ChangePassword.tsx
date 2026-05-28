@@ -9,21 +9,24 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { authClient } from '@/lib/auth-client'
 import { ChangePasswordSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import * as z from 'zod'
-import { AuthMessage } from './AuthMessage'
+
+const requirements = [
+  { label: 'Minimum 8 characters', test: (v: string) => v.length >= 8 },
+  { label: 'At least one uppercase letter', test: (v: string) => /[A-Z]/.test(v) },
+  { label: 'At least one number', test: (v: string) => /[0-9]/.test(v) },
+  { label: 'At least one special character', test: (v: string) => /[^A-Za-z0-9]/.test(v) },
+]
 
 export const ChangePassword = () => {
   const t = useTranslations('handledmoney.auth')
   const [isPending, startLoading] = useState(false)
-  const [message, setMessage] = useState<{ message: string; type: 'error' | 'success' | null }>({
-    message: '',
-    type: null,
-  })
+
   const [showPassword, setShowPassword] = useState(false)
 
   const form = useForm<z.infer<typeof ChangePasswordSchema>>({
@@ -33,58 +36,43 @@ export const ChangePassword = () => {
     },
   })
 
+  const passwordValue = form.watch('password')
   const router = useRouter()
   const token = useSearchParams().get('token')
 
   const handleSubmit = async (values: z.infer<typeof ChangePasswordSchema>) => {
     startLoading(true)
-    if (token !== null) {
-      const { data, error } = await authClient.resetPassword({
-        newPassword: values.password,
-        token,
-      })
 
-      if (!data?.status) {
-        // Manejar error
+    if (token === null) {
+      startLoading(false)
+      toast.error(t('error.missing_token'))
+      return
+    }
 
-        if (error?.message === 'invalid_credentials') {
-          setMessage({
-            message: "we couldn't found a registered user with that email",
-            type: 'error',
-          })
-          return
-        }
-        if (error?.message === 'expired_token') {
-          setMessage({
-            message: 'Expired token!',
-            type: 'error',
-          })
-          return
-        }
+    const { data, error } = await authClient.resetPassword({
+      newPassword: values.password,
+      token,
+    })
 
-        setMessage({
-          message: 'Something went wrong!',
-          type: 'error',
-        })
-      } else {
-        startLoading(false)
-        // Redirigir al usuario
-        router.push('/')
-        toast.success('Password succefully reseted')
+    if (!data?.status) {
+      startLoading(false)
+      if (error?.message === 'expired_token') {
+        toast.error(t('error.invalid_token'))
+        return
       }
+      toast.error(t('error.unknown_error'))
     } else {
-      setMessage({
-        message: 'Missing token!',
-        type: 'error',
-      })
+      startLoading(false)
+      toast.success(t('success.password_reset'))
+      router.push('/')
     }
   }
 
   return (
     <CardWrapper
-      headerLabel='Forgot your password'
+      headerLabel={t('forgot_password_title')}
       backButtonHref='/auth/login'
-      backButtonLabel='Back to login'
+      backButtonLabel={t('back_to_login')}
       callbackUrl={'/'}
       isPending={isPending}
     >
@@ -122,19 +110,43 @@ export const ChangePassword = () => {
                       </button>
                     </InputGroupAddon>
                   </InputGroup>
+
+                  {passwordValue.length > 0 && (
+                    <ul className='mt-2 space-y-1'>
+                      {requirements.map(req => {
+                        const met = req.test(passwordValue)
+                        return (
+                          <li
+                            key={req.label}
+                            className={`flex items-center gap-1.5 text-xs ${
+                              met ? 'text-green-500' : 'text-muted-foreground'
+                            }`}
+                          >
+                            {met ? (
+                              <CheckIcon className='w-3 h-3 shrink-0' />
+                            ) : (
+                              <XIcon className='w-3 h-3 shrink-0' />
+                            )}
+                            {req.label}
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
           </FieldGroup>
         </div>
-        <AuthMessage className='my-4' type={message.type} message={message.message} />
+
         <Button
           disabled={isPending}
           type='submit'
           className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
         >
-          Reset password
+          {t('reset_password')}
         </Button>
       </form>
     </CardWrapper>
