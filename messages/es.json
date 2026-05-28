@@ -48,13 +48,17 @@
         "password_too_short": "La contraseña debe tener al menos 8 caracteres",
         "password_too_long": "La contraseña debe tener como máximo 128 caracteres",
         "invalid_token": "El token es inválido o expiró",
+        "expired_token": "El enlace de recuperación expiró. Por favor, solicitá uno nuevo.",
+        "missing_token": "Falta el token de recuperación. Usá el enlace enviado a tu correo.",
         "too_many_requests": "Demasiadas solicitudes. Por favor, intenta de nuevo más tarde.",
         "email_is_already_verified": "El correo electrónico ya está verificado."
       },
       "success": {
         "email_sent": "Revisa tu correo electrónico para verificar tu cuenta",
-        "create_account": "Cuenta creada exitosamente"
-      }
+        "create_account": "Cuenta creada exitosamente",
+        "password_reset": "Contraseña restablecida exitosamente"
+      },
+      "reset_password": "Restablecer contraseña"
     }
   }
 }

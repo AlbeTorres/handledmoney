@@ -10,11 +10,21 @@ export const ResetSchema = z.object({
   email: z.string().email(),
 })
 export const ChangePasswordSchema = z.object({
-  password: z.string().min(8, { message: 'Minimun 8 characters required' }),
+  password: z
+    .string()
+    .min(8, 'Minimum 8 characters')
+    .regex(/[A-Z]/, 'At least one uppercase letter')
+    .regex(/[0-9]/, 'At least one number')
+    .regex(/[^A-Za-z0-9]/, 'At least one special character'),
 })
 export const RegisterSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8, { message: 'Minimun 8 characters required' }),
+  password: z
+    .string()
+    .min(8, 'Minimum 8 characters')
+    .regex(/[A-Z]/, 'At least one uppercase letter')
+    .regex(/[0-9]/, 'At least one number')
+    .regex(/[^A-Za-z0-9]/, 'At least one special character'),
   name: z.string().min(1, { message: 'Name is required' }),
   termsAccepted: z.literal(true, { message: 'You must accept the Terms & Conditions' }),
 })
