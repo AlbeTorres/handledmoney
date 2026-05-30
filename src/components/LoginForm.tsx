@@ -12,7 +12,6 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
-import { AuthMessage } from './AuthMessage'
 import { CardWrapper } from './CardWrapper'
 import { Checkbox } from './ui/checkbox'
 
@@ -41,7 +40,7 @@ export const LoginForm = () => {
         email: data.email,
         password: data.password,
         callbackURL: '/dashboard',
-        rememberMe: data.rememberMe
+        rememberMe: data.rememberMe,
       },
       {
         onSuccess: () => {
@@ -67,7 +66,7 @@ export const LoginForm = () => {
       backButtonLabel={t('signup_link')}
       recoverButtonHref='/auth/reset'
       recoverButtonLabel={t('password_recovery')}
-      callbackUrl={'/'}
+      callbackUrl={'/dashboard'}
       showSocial
     >
       <form id='form-signin' onSubmit={form.handleSubmit(handleSubmit)}>
