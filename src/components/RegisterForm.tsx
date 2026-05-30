@@ -160,7 +160,7 @@ export const RegisterForm = () => {
                   </InputGroupAddon>
                 </InputGroup>
                 {fieldState.invalid && (
-                  <FieldError errors={[{ message: t('error.password_too_short') }]} />
+                  <FieldError errors={[{ message: t('error.password_no_secure') }]} />
                 )}
               </Field>
             )}
