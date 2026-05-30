@@ -2,3 +2,7 @@ DATABASE_URL=postgres://<user>:<password>@<host>:<port>/<database>
 BETTER_AUTH_SECRET='SECRET_CODE'
 BETTER_AUTH_URL=http://localhost:3000 # Base URL of your app
 RESEND_API_KEY=
+
+// go to https://console.cloud.google.com/auth/ and create an oath2 client
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
