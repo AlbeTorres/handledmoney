@@ -45,6 +45,7 @@
         "password_required": "Password is required",
         "email_required": "Email is required",
         "code_required": "Code is required",
+        "password_no_secure": "Please choose a more secure password. It should be longer than 7 characters, contain an uppercase letter, a number and a special character, unique to you, and difficult for others to guess.",
         "password_too_short": "Password must be at least 8 characters",
         "password_too_long": "Password must be at most 128 characters",
         "invalid_token": "Token is invalid or expired",

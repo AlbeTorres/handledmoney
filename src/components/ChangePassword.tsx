@@ -9,7 +9,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { authClient } from '@/lib/auth-client'
 import { ChangePasswordSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckIcon, EyeIcon, EyeOffIcon, XIcon } from 'lucide-react'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -111,30 +111,9 @@ export const ChangePassword = () => {
                     </InputGroupAddon>
                   </InputGroup>
 
-                  {passwordValue.length > 0 && (
-                    <ul className='mt-2 space-y-1'>
-                      {requirements.map(req => {
-                        const met = req.test(passwordValue)
-                        return (
-                          <li
-                            key={req.label}
-                            className={`flex items-center gap-1.5 text-xs ${
-                              met ? 'text-green-500' : 'text-muted-foreground'
-                            }`}
-                          >
-                            {met ? (
-                              <CheckIcon className='w-3 h-3 shrink-0' />
-                            ) : (
-                              <XIcon className='w-3 h-3 shrink-0' />
-                            )}
-                            {req.label}
-                          </li>
-                        )
-                      })}
-                    </ul>
+                  {fieldState.invalid && (
+                    <FieldError errors={[{ message: t('error.password_no_secure') }]} />
                   )}
-
-                  {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                 </Field>
               )}
             />
