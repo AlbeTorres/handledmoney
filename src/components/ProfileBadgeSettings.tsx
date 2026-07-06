@@ -1,6 +1,13 @@
 import { LucideEdit2 } from 'lucide-react'
 
-export default function ProfileBadgeSettings() {
+type PersonalInfomationSettingsProps = {
+  user: {
+    id: string
+    name: string
+    email: string
+  }
+}
+export default function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
   return (
     <section className='mb-8 relative overflow-hidden rounded-xl bg-foreground p-6 flex flex-col md:flex-row items-center gap-6'>
       <div className='relative z-10'>
@@ -16,8 +23,8 @@ export default function ProfileBadgeSettings() {
         </button>
       </div>
       <div className='relative z-10 text-center space-y-1 md:text-left'>
-        <h1 className='text-3xl text-white'>Alex Sterling</h1>
-        <p className='text-white'>Chief Financial Officer • Joined Jan 2022</p>
+        <h1 className='text-3xl text-white uppercase'>{user?.name}</h1>
+        <p className='text-white'>{user?.email}</p>
         <div className='mt-4 flex gap-2 justify-center md:justify-start'>
           <span className='px-3 py-1 bg-primary text-sm text-primary-foreground rounded-full border border-primary/30'>
             2FA Enabled

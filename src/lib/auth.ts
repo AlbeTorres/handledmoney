@@ -16,6 +16,26 @@ export const auth = betterAuth({
       role: { type: 'string' },
       termsAcceptedAt: { type: 'date' },
     },
+    changeEmail: {
+      enabled: true,
+      sendChangeEmailVerification: async ({ user, newEmail, url, token }, request) => {
+        await sendEmail({
+          email: newEmail, // o a user.email, según tu flujo de seguridad preferido
+          subject: 'Verify your new email address',
+          content: `Click the link to verify your new email`,
+          firstName: user.name,
+          url,
+        })
+
+        await sendEmail({
+          email: user.email,
+          subject: 'Security alert: email change requested',
+          content: `Someone requested to change your account email to ${newEmail}. If this wasn't you, secure your account immediately.`,
+          url: '',
+          firstName: user.name,
+        })
+      },
+    },
   },
   emailAndPassword: {
     enabled: true,
