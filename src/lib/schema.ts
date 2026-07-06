@@ -17,6 +17,11 @@ export const ChangePasswordSchema = z.object({
     .regex(/[0-9]/, 'At least one number')
     .regex(/[^A-Za-z0-9]/, 'At least one special character'),
 })
+export const UpdatePersonalInfoSchema = z.object({
+  name: z.string().min(1, { message: 'Name is required' }).max(100, { message: 'Name is too long' }),
+  email: z.string().email({ message: 'Invalid email address' }),
+})
+
 export const RegisterSchema = z.object({
   email: z.string().email(),
   password: z
