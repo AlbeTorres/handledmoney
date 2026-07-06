@@ -22,6 +22,22 @@ export const UpdatePersonalInfoSchema = z.object({
   email: z.string().email({ message: 'Invalid email address' }),
 })
 
+export const SettingsPasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: z
+      .string()
+      .min(8, 'Minimum 8 characters')
+      .regex(/[A-Z]/, 'At least one uppercase letter')
+      .regex(/[0-9]/, 'At least one number')
+      .regex(/[^A-Za-z0-9]/, 'At least one special character'),
+    confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Passwords don't match",
+    path: ['confirmNewPassword'],
+  })
+
 export const RegisterSchema = z.object({
   email: z.string().email(),
   password: z
