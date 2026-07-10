@@ -1,9 +1,12 @@
 import * as z from 'zod'
 
+export const TwoFactorSchema = z.object({
+  code: z.string().min(1, 'Code is required'),
+})
+
 export const LoginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(1, { message: 'Password is required' }),
-  code: z.optional(z.string()),
   rememberMe: z.boolean(),
 })
 export const ResetSchema = z.object({
@@ -18,7 +21,10 @@ export const ChangePasswordSchema = z.object({
     .regex(/[^A-Za-z0-9]/, 'At least one special character'),
 })
 export const UpdatePersonalInfoSchema = z.object({
-  name: z.string().min(1, { message: 'Name is required' }).max(100, { message: 'Name is too long' }),
+  name: z
+    .string()
+    .min(1, { message: 'Name is required' })
+    .max(100, { message: 'Name is too long' }),
   email: z.string().email({ message: 'Invalid email address' }),
 })
 
@@ -33,7 +39,7 @@ export const SettingsPasswordSchema = z
       .regex(/[^A-Za-z0-9]/, 'At least one special character'),
     confirmNewPassword: z.string().min(1, 'Please confirm your new password'),
   })
-  .refine((data) => data.newPassword === data.confirmNewPassword, {
+  .refine(data => data.newPassword === data.confirmNewPassword, {
     message: "Passwords don't match",
     path: ['confirmNewPassword'],
   })

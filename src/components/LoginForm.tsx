@@ -12,7 +12,7 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
-import { CardWrapper } from './CardWrapper'
+import { SocialButtons } from './SocialButtons'
 import { Checkbox } from './ui/checkbox'
 
 export const LoginForm = () => {
@@ -21,20 +21,18 @@ export const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isPending, startLoading] = useState(false)
 
-  const [showTwoFactor, setShowTwoFactor] = useState(false)
-
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       email: '',
       password: '',
-      code: '',
       rememberMe: false,
     },
   })
 
   const handleSubmit = async (data: z.infer<typeof LoginSchema>) => {
     startLoading(true)
+
     await authClient.signIn.email(
       {
         email: data.email,
@@ -43,8 +41,12 @@ export const LoginForm = () => {
         rememberMe: data.rememberMe,
       },
       {
-        onSuccess: () => {
+        onSuccess: ({ data }) => {
           startLoading(false)
+          if (data?.twoFactorRedirect) {
+            router.push('/auth/twofactor')
+            toast.success('Please enter your 2FA code')
+          }
         },
         onError: async ctx => {
           startLoading(false)
@@ -59,16 +61,7 @@ export const LoginForm = () => {
   }
 
   return (
-    <CardWrapper
-      isPending={isPending}
-      headerLabel={t('signin_title')}
-      backButtonHref='/auth/new-account'
-      backButtonLabel={t('signup_link')}
-      recoverButtonHref='/auth/reset'
-      recoverButtonLabel={t('password_recovery')}
-      callbackUrl={'/dashboard'}
-      showSocial
-    >
+    <>
       <form id='form-signin' onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           <Controller
@@ -77,7 +70,7 @@ export const LoginForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signin-email'>{t('email')}</FieldLabel>
-                <InputGroup className='w-full border rounded-md  focus:outline-none focus:ring-1! focus:ring-blue-600!'>
+                <InputGroup className='w-full border rounded-md focus:outline-none focus:ring-1! focus:ring-blue-600!'>
                   <InputGroupInput
                     {...field}
                     id='form-signin-email'
@@ -154,14 +147,16 @@ export const LoginForm = () => {
             )}
           />
         </FieldGroup>
+
         <Button
           disabled={isPending}
           type='submit'
           className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
         >
-          {showTwoFactor ? t('confirm') : t('signin')}
+          {t('signin')}
         </Button>
       </form>
-    </CardWrapper>
+      <SocialButtons callbackUrl={'/dashboard'} isPending={isPending} />
+    </>
   )
 }
