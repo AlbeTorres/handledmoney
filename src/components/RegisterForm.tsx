@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
-import { CardWrapper } from './CardWrapper'
+import { SocialButtons } from './SocialButtons'
 
 export const RegisterForm = () => {
   const router = useRouter()
@@ -61,16 +61,7 @@ export const RegisterForm = () => {
   }
 
   return (
-    <CardWrapper
-      headerLabel={t('signup_title')}
-      backButtonHref='/auth/login'
-      backButtonLabel={t('signin_link')}
-      recoverButtonHref='/auth/reset'
-      recoverButtonLabel={t('password_recovery')}
-      callbackUrl={'/'}
-      showSocial
-      isPending={isPending}
-    >
+    <>
       <form id='form-signup' onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           <Controller
@@ -201,6 +192,8 @@ export const RegisterForm = () => {
           {t('signup')}
         </Button>
       </form>
-    </CardWrapper>
+
+      <SocialButtons callbackUrl={'/'} isPending={isPending} />
+    </>
   )
 }

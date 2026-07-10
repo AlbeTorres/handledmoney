@@ -25,6 +25,7 @@
     "next-intl": "^4.8.3",
     "papaparse": "^5.5.3",
     "pg": "^8.18.0",
+    "qrcode.react": "^4.2.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-day-picker": "^9.14.0",
