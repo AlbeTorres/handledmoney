@@ -72,7 +72,6 @@ export const useConfirmPassword = (
   // la contraseña es correcta. No crea sesión nueva: la sesión actual permanece.
   const handleConfirm = async (values: FormValues) => {
     setIsValidating(true)
-    console.log(values.password, userEmail)
 
     const { error: signInError } = await authClient.signIn.email(
       {
