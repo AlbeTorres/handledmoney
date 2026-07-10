@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
+import { useConfirmAction } from '@/hooks/use-confirm-password2'
 import { authClient } from '@/lib/auth-client'
 import { LucideShieldCheck } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
@@ -19,42 +20,30 @@ export default function TwoFASettings() {
   const { data: session } = authClient.useSession()
   const is2FAEnabled = session?.user?.twoFactorEnabled ?? false
 
-  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false)
+  const [enableDialog, confirmEnable] = useConfirmAction({
+    title: 'Enter Password',
+    description: 'Please enter your current password to setup 2FA.',
+    onSubmit: password =>
+      authClient.twoFactor.enable({ password }).then(r => {
+        if (r.error) throw new Error(r.error.message ?? 'Failed to verify password')
+        return r.data
+      }),
+  })
+
   const [isVerifyDialogOpen, setIsVerifyDialogOpen] = useState(false)
-  const [password, setPassword] = useState('')
   const [totpURI, setTotpURI] = useState('')
   const [code, setCode] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleEnableClick = () => {
-    setIsPasswordDialogOpen(true)
-    setPassword('')
-  }
-
-  const handlePasswordSubmit = async () => {
-    if (!password) {
-      toast.error('Password is required')
-      return
-    }
-    setLoading(true)
-    const { data, error } = await authClient.twoFactor.enable({
-      password,
-    })
-
-    setLoading(false)
-
-    if (error) {
-      toast.error(error.message || 'Failed to verify password')
+  const enable2FA = async () => {
+    const result = await confirmEnable() // <--- así se usa
+    if (!result) {
+      toast.error('Failed to verify password')
       return
     }
 
-    if (data?.totpURI) {
-      setTotpURI(data.totpURI)
-      setIsPasswordDialogOpen(false)
-      setIsVerifyDialogOpen(true)
-    } else {
-      toast.error('Failed to generate 2FA URI')
-    }
+    setTotpURI(result.totpURI)
+    setIsVerifyDialogOpen(true)
   }
 
   const handleVerifySubmit = async () => {
@@ -130,7 +119,7 @@ export default function TwoFASettings() {
         ) : (
           <button
             disabled={loading}
-            onClick={handleEnableClick}
+            onClick={enable2FA}
             className='w-full py-3 bg-primary text-white rounded-lg font-label-caps hover:bg-primary-container transition-all flex items-center justify-center gap-2 disabled:opacity-50'
           >
             <span className='material-symbols-outlined text-[18px]'>settings_authenticator</span>
@@ -139,30 +128,7 @@ export default function TwoFASettings() {
         )}
       </div>
 
-      <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Enter Password</DialogTitle>
-            <DialogDescription>
-              Please enter your current password to setup Two-Factor Authentication.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setIsPasswordDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handlePasswordSubmit} disabled={loading}>
-              Continue
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {enableDialog}
 
       <Dialog open={isVerifyDialogOpen} onOpenChange={setIsVerifyDialogOpen}>
         <DialogContent className='sm:max-w-md'>
