@@ -5,6 +5,7 @@ type PersonalInfomationSettingsProps = {
     id: string
     name: string
     email: string
+    twoFactorEnabled?: boolean | null
   }
 }
 export default function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
@@ -26,9 +27,15 @@ export default function ProfileBadgeSettings({ user }: PersonalInfomationSetting
         <h1 className='text-3xl text-white uppercase'>{user?.name}</h1>
         <p className='text-white'>{user?.email}</p>
         <div className='mt-4 flex gap-2 justify-center md:justify-start'>
-          <span className='px-3 py-1 bg-primary text-sm text-primary-foreground rounded-full border border-primary/30'>
-            2FA Enabled
-          </span>
+          {user?.twoFactorEnabled ? (
+            <span className='px-3 py-1 bg-primary text-sm text-primary-foreground rounded-full border border-primary/30'>
+              2FA Enabled
+            </span>
+          ) : (
+            <span className='px-3 py-1 bg-destructive text-sm text-destructive-foreground rounded-full border border-destructive/30'>
+              2FA Disabled
+            </span>
+          )}
         </div>
       </div>
     </section>

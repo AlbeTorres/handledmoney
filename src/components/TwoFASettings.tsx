@@ -1,7 +1,7 @@
 'use client'
 import { PasswordConfirmDialog, useConfirmAction } from '@/hooks/use-confirm-password'
 import { authClient } from '@/lib/auth-client'
-import { LucideShieldCheck } from 'lucide-react'
+import { LucideShieldCheck, UserCog } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import BackupCodeDialog from './BackupCodeDialog'
@@ -123,7 +123,7 @@ export default function TwoFASettings() {
             onClick={enable2FA}
             className='w-full py-3 bg-primary text-white rounded-lg font-label-caps hover:bg-primary-container transition-all flex items-center justify-center gap-2 disabled:opacity-50'
           >
-            <span className='material-symbols-outlined text-[18px]'>settings_authenticator</span>
+            <UserCog size={20} />
             Enable 2FA
           </Button>
         )}
