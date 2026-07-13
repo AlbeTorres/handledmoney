@@ -6,7 +6,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/in
 import { authClient } from '@/lib/auth-client'
 import { SettingsPasswordSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { EyeIcon, EyeOffIcon, LucideLock } from 'lucide-react'
+import { EyeIcon, EyeOffIcon, KeyIcon, LucideLock } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -58,7 +58,7 @@ export default function UpdatePasswordSettings() {
         <LucideLock size={20} />
         <h3 className='font-bold text-foreground'>Security Settings</h3>
       </div>
-      
+
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <FieldGroup>
           {/* Current Password */}
@@ -67,7 +67,10 @@ export default function UpdatePasswordSettings() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor='current-password' className='font-label-caps text-on-surface-variant'>
+                <FieldLabel
+                  htmlFor='current-password'
+                  className='font-label-caps text-on-surface-variant'
+                >
                   CURRENT PASSWORD
                 </FieldLabel>
                 <InputGroup>
@@ -85,12 +88,16 @@ export default function UpdatePasswordSettings() {
                     <button
                       type='button'
                       data-testid='toggle-current-password'
-                      onClick={() => setShowCurrent((prev) => !prev)}
+                      onClick={() => setShowCurrent(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
                       aria-label={showCurrent ? 'Hide password' : 'Show password'}
                     >
-                      {showCurrent ? <EyeIcon className='size-4' /> : <EyeOffIcon className='size-4' />}
+                      {showCurrent ? (
+                        <EyeIcon className='size-4' />
+                      ) : (
+                        <EyeOffIcon className='size-4' />
+                      )}
                     </button>
                   </InputGroupAddon>
                 </InputGroup>
@@ -105,7 +112,10 @@ export default function UpdatePasswordSettings() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor='new-password' className='font-label-caps text-on-surface-variant'>
+                <FieldLabel
+                  htmlFor='new-password'
+                  className='font-label-caps text-on-surface-variant'
+                >
                   NEW PASSWORD
                 </FieldLabel>
                 <InputGroup>
@@ -122,7 +132,7 @@ export default function UpdatePasswordSettings() {
                     <button
                       type='button'
                       data-testid='toggle-new-password'
-                      onClick={() => setShowNew((prev) => !prev)}
+                      onClick={() => setShowNew(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
                       aria-label={showNew ? 'Hide password' : 'Show password'}
@@ -142,7 +152,10 @@ export default function UpdatePasswordSettings() {
             control={form.control}
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
-                <FieldLabel htmlFor='confirm-password' className='font-label-caps text-on-surface-variant'>
+                <FieldLabel
+                  htmlFor='confirm-password'
+                  className='font-label-caps text-on-surface-variant'
+                >
                   CONFIRM NEW PASSWORD
                 </FieldLabel>
                 <InputGroup>
@@ -159,12 +172,16 @@ export default function UpdatePasswordSettings() {
                     <button
                       type='button'
                       data-testid='toggle-confirm-password'
-                      onClick={() => setShowConfirm((prev) => !prev)}
+                      onClick={() => setShowConfirm(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
                       aria-label={showConfirm ? 'Hide password' : 'Show password'}
                     >
-                      {showConfirm ? <EyeIcon className='size-4' /> : <EyeOffIcon className='size-4' />}
+                      {showConfirm ? (
+                        <EyeIcon className='size-4' />
+                      ) : (
+                        <EyeOffIcon className='size-4' />
+                      )}
                     </button>
                   </InputGroupAddon>
                 </InputGroup>
@@ -180,9 +197,7 @@ export default function UpdatePasswordSettings() {
             disabled={isPending}
             className='w-full py-3 bg-primary text-white rounded-lg font-label-caps hover:bg-primary/90 transition-all flex items-center justify-center gap-2'
           >
-            <span className='material-symbols-outlined text-[18px]' data-icon='key'>
-              key
-            </span>
+            <KeyIcon className='size-4' />
             {isPending ? 'Updating...' : 'Update Password'}
           </Button>
         </div>
