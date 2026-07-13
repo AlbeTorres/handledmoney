@@ -2,6 +2,7 @@
 import { PasswordConfirmDialog, useConfirmAction } from '@/hooks/use-confirm-password'
 import { authClient } from '@/lib/auth-client'
 import { LucideShieldCheck, UserCog } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import BackupCodeDialog from './BackupCodeDialog'
@@ -9,6 +10,7 @@ import QRDialog from './QRDialog'
 import { Button } from './ui/button'
 
 export default function TwoFASettings() {
+  const t = useTranslations('handledmoney.settings.two_fa')
   const { data: session } = authClient.useSession()
   const is2FAEnabled = session?.user?.twoFactorEnabled ?? false
 
@@ -21,21 +23,21 @@ export default function TwoFASettings() {
   const [copied, setCopied] = useState(false)
 
   const { confirm: confirmEnable, dialogProps: enableDialogProps } = useConfirmAction({
-    title: 'Enter Password',
-    description: 'Please enter your current password to setup 2FA.',
+    title: t('confirm_enable_title'),
+    description: t('confirm_enable_description'),
     onSubmit: password =>
       authClient.twoFactor.enable({ password }).then(r => {
-        if (r.error) throw new Error(r.error.message ?? 'Failed to verify password')
+        if (r.error) throw new Error(r.error.message ?? t('toast.verify_failed'))
         return r.data
       }),
   })
 
   const { confirm: confirmDisable, dialogProps: disableDialogProps } = useConfirmAction({
-    title: 'Enter Password',
-    description: 'Please enter your current password to disable 2FA.',
+    title: t('confirm_disable_title'),
+    description: t('confirm_disable_description'),
     onSubmit: password =>
       authClient.twoFactor.disable({ password }).then(r => {
-        if (r.error) throw new Error(r.error.message ?? 'Failed to disable 2FA')
+        if (r.error) throw new Error(r.error.message ?? t('toast.disable_failed'))
         return r.data
       }),
   })
@@ -43,7 +45,7 @@ export default function TwoFASettings() {
   const enable2FA = async () => {
     const result = await confirmEnable() // <--- así se usa
     if (!result) {
-      toast.error('Failed to verify password')
+      toast.error(t('toast.verify_failed'))
       return
     }
 
@@ -55,16 +57,16 @@ export default function TwoFASettings() {
   const handleDisableClick = async () => {
     const result = await confirmDisable() // <--- así se usa
     if (!result) {
-      toast.error('Failed to verify password')
+      toast.error(t('toast.verify_failed'))
       return
     }
 
-    toast.success('Two-Factor Authentication disabled successfully')
+    toast.success(t('toast.disabled_success'))
   }
 
   const handleVerifySubmit = async () => {
     if (!code || code.length !== 6) {
-      toast.error('Please enter a valid 6-digit code')
+      toast.error(t('toast.invalid_code'))
       return
     }
     setLoading(true)
@@ -74,11 +76,11 @@ export default function TwoFASettings() {
     setLoading(false)
 
     if (error) {
-      toast.error(error.message || 'Invalid code')
+      toast.error(error.message || t('toast.invalid_code_fallback'))
       return
     }
 
-    toast.success('Two-Factor Authentication enabled successfully')
+    toast.success(t('toast.enabled_success'))
     setCode('')
     setTotpURI('')
     setIsVerifyDialogOpen(false)
@@ -89,11 +91,10 @@ export default function TwoFASettings() {
     <div className='bg-white shadow-sm p-6 rounded-xl flex flex-col gap-5 md:col-span-2'>
       <div className='flex items-center gap-2 mb-base'>
         <LucideShieldCheck size={20} />
-        <h3 className='font-bold text-foreground'>Two-Factor Authentication (2FA)</h3>
+        <h3 className='font-bold text-foreground'>{t('heading')}</h3>
       </div>
       <p className=''>
-        Add an extra layer of security to your account by requiring more than just a password to log
-        in.
+        {t('description')}
       </p>
 
       <div className='flex items-center justify-between px-4 py-2 bg-secondary/5 border border-secondary/20 rounded-lg'>
@@ -102,10 +103,10 @@ export default function TwoFASettings() {
             className={`w-2.5 h-2.5 rounded-full ${is2FAEnabled ? 'bg-secondary' : 'bg-gray-400'}`}
           ></span>
           <span className='font-body-lg font-bold text-on-surface'>
-            {is2FAEnabled ? 'Currently Enabled' : 'Currently Disabled'}
+            {is2FAEnabled ? t('status_enabled') : t('status_disabled')}
           </span>
         </div>
-        {is2FAEnabled && <span className='text-label-caps text-secondary font-bold'>SECURE</span>}
+        {is2FAEnabled && <span className='text-label-caps text-secondary font-bold'>{t('secure_badge')}</span>}
       </div>
 
       <div className='pt-2'>
@@ -115,7 +116,7 @@ export default function TwoFASettings() {
             onClick={handleDisableClick}
             className='w-full py-3 bg-destructive text-white rounded-lg font-label-caps hover:bg-destructive/90 transition-all flex items-center justify-center gap-2 disabled:opacity-50'
           >
-            Disable 2FA
+            {t('disable_button')}
           </Button>
         ) : (
           <Button
@@ -124,7 +125,7 @@ export default function TwoFASettings() {
             className='w-full py-3 bg-primary text-white rounded-lg font-label-caps hover:bg-primary-container transition-all flex items-center justify-center gap-2 disabled:opacity-50'
           >
             <UserCog size={20} />
-            Enable 2FA
+            {t('enable_button')}
           </Button>
         )}
       </div>

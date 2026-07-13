@@ -62,6 +62,90 @@
         "password_reset": "Contraseña restablecida exitosamente"
       },
       "reset_password": "Restablecer contraseña"
+    },
+    "settings": {
+      "profile": {
+        "2fa_enabled": "2FA Activado",
+        "2fa_disabled": "2FA Desactivado"
+      },
+      "personal_info": {
+        "heading": "Información Personal",
+        "edit_button": "EDITAR",
+        "full_name_label": "NOMBRE COMPLETO",
+        "full_name_placeholder": "Tu nombre completo",
+        "email_label": "CORREO ELECTRÓNICO",
+        "email_placeholder": "tu@email.com",
+        "phone_label": "NÚMERO DE TELÉFONO",
+        "phone_placeholder": "Próximamente",
+        "cancel_button": "CANCELAR",
+        "save_button": "GUARDAR CAMBIOS",
+        "saving": "Guardando...",
+        "confirm_email_title": "Cambiar Correo",
+        "confirm_email_description": "¿Estás seguro de que quieres cambiar tu correo? Esta acción no se puede deshacer.",
+        "toast": {
+          "profile_update_failed": "Error al actualizar el perfil. Por favor, intenta de nuevo.",
+          "email_update_failed": "Error al actualizar el correo. Por favor, intenta de nuevo.",
+          "email_verification_sent": "Se ha enviado un correo de verificación a tu nueva dirección. Los cambios se aplicarán después de la verificación.",
+          "profile_updated": "Perfil actualizado exitosamente.",
+          "password_verification_failed": "Error al verificar la contraseña"
+        }
+      },
+      "update_password": {
+        "heading": "Configuración de Seguridad",
+        "current_password_label": "CONTRASEÑA ACTUAL",
+        "new_password_label": "NUEVA CONTRASEÑA",
+        "confirm_password_label": "CONFIRMAR NUEVA CONTRASEÑA",
+        "update_button": "Actualizar Contraseña",
+        "updating": "Actualizando...",
+        "show_password": "Mostrar contraseña",
+        "hide_password": "Ocultar contraseña",
+        "toast": {
+          "password_updated": "Contraseña actualizada exitosamente.",
+          "incorrect_password": "La contraseña actual es incorrecta. Por favor, intenta de nuevo."
+        }
+      },
+      "two_fa": {
+        "heading": "Autenticación de Dos Factores (2FA)",
+        "description": "Agrega una capa extra de seguridad a tu cuenta requiriendo más que solo una contraseña para iniciar sesión.",
+        "status_enabled": "Actualmente Activado",
+        "status_disabled": "Actualmente Desactivado",
+        "secure_badge": "SEGURO",
+        "enable_button": "Activar 2FA",
+        "disable_button": "Desactivar 2FA",
+        "confirm_enable_title": "Ingresar Contraseña",
+        "confirm_enable_description": "Por favor ingresa tu contraseña actual para configurar 2FA.",
+        "confirm_disable_title": "Ingresar Contraseña",
+        "confirm_disable_description": "Por favor ingresa tu contraseña actual para desactivar 2FA.",
+        "toast": {
+          "verify_failed": "Error al verificar la contraseña",
+          "disable_failed": "Error al desactivar 2FA",
+          "disabled_success": "Autenticación de Dos Factores desactivada exitosamente",
+          "invalid_code": "Por favor ingresa un código de 6 dígitos válido",
+          "invalid_code_fallback": "Código inválido",
+          "enabled_success": "Autenticación de Dos Factores activada exitosamente"
+        }
+      },
+      "preferences": {
+        "heading": "Preferencias del Sistema",
+        "language_label": "IDIOMA DE VISUALIZACIÓN",
+        "timezone_label": "ZONA HORARIA",
+        "currency_label": "FORMATO DE MONEDA",
+        "info_text": "Cambiar estas preferencias actualizará tu panel y vistas de reportes inmediatamente. El formato de datos históricos permanecerá consistente con los estándares de tu organización."
+      },
+      "notifications": {
+        "heading": "Canales de Notificación",
+        "balance_alerts_title": "Alertas de Saldo",
+        "balance_alerts_description": "Notificarme cuando mi saldo caiga por debajo de un umbral.",
+        "weekly_summaries_title": "Resúmenes Semanales",
+        "weekly_summaries_description": "Un reporte completo de tus gastos semanales.",
+        "marketing_title": "Comunicaciones de Marketing",
+        "marketing_description": "Mantente actualizado sobre nuevas funciones y consejos de inversión."
+      },
+      "danger_zone": {
+        "heading": "Zona de Peligro",
+        "description": "Elimina permanentemente tu cuenta y todos los datos financieros asociados.",
+        "delete_button": "ELIMINAR CUENTA"
+      }
     }
   }
 }

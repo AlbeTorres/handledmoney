@@ -1,3 +1,4 @@
+import { getTranslations } from 'next-intl/server'
 import { LucideEdit2 } from 'lucide-react'
 
 type PersonalInfomationSettingsProps = {
@@ -8,7 +9,9 @@ type PersonalInfomationSettingsProps = {
     twoFactorEnabled?: boolean | null
   }
 }
-export default function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
+export default async function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
+  const t = await getTranslations('handledmoney.settings.profile')
+
   return (
     <section className='mb-8 relative overflow-hidden rounded-xl bg-foreground p-6 flex flex-col md:flex-row items-center gap-6'>
       <div className='relative z-10'>
@@ -29,11 +32,11 @@ export default function ProfileBadgeSettings({ user }: PersonalInfomationSetting
         <div className='mt-4 flex gap-2 justify-center md:justify-start'>
           {user?.twoFactorEnabled ? (
             <span className='px-3 py-1 bg-primary text-sm text-primary-foreground rounded-full border border-primary/30'>
-              2FA Enabled
+              {t('2fa_enabled')}
             </span>
           ) : (
             <span className='px-3 py-1 bg-destructive text-sm text-destructive-foreground rounded-full border border-destructive/30'>
-              2FA Disabled
+              {t('2fa_disabled')}
             </span>
           )}
         </div>

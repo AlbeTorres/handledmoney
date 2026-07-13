@@ -9,6 +9,7 @@ import { authClient } from '@/lib/auth-client'
 import { UpdatePersonalInfoSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LucideUserPen } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -27,13 +28,14 @@ type PersonalInfomationSettingsProps = {
 
 export default function PersonalInfomationSettings({ user }: PersonalInfomationSettingsProps) {
   const router = useRouter()
+  const t = useTranslations('handledmoney.settings.personal_info')
 
   const { confirm, dialogProps } = useConfirmAction({
-    title: 'Change Email',
-    description: 'Are you sure you want to change your email? This action cannot be undone.',
+    title: t('confirm_email_title'),
+    description: t('confirm_email_description'),
     onSubmit: password =>
       authClient.twoFactor.enable({ password }).then(r => {
-        if (r.error) throw new Error(r.error.message ?? 'Failed to verify password')
+        if (r.error) throw new Error(r.error.message ?? t('toast.password_verification_failed'))
         return r.data
       }),
   })
@@ -68,7 +70,7 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
 
     if (updateError) {
       setIsPending(false)
-      toast.error('Failed to update profile. Please try again.')
+      toast.error(t('toast.profile_update_failed'))
       return
     }
 
@@ -87,20 +89,18 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
       setIsPending(false)
 
       if (emailError) {
-        toast.error('Failed to update email. Please try again.')
+        toast.error(t('toast.email_update_failed'))
         return
       }
 
-      toast.success(
-        'A verification email has been sent to your new address. Changes will apply after verification.',
-      )
+      toast.success(t('toast.email_verification_sent'))
       setIsEditing(false)
       router.refresh()
       return
     }
 
     setIsPending(false)
-    toast.success('Profile updated successfully.')
+    toast.success(t('toast.profile_updated'))
     setIsEditing(false)
     router.refresh()
   }
@@ -110,7 +110,7 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
       <div className='flex justify-between items-center mb-5'>
         <div className='flex items-center gap-2'>
           <LucideUserPen size={20} />
-          <h3 className='font-bold text-foreground'>Personal Information</h3>
+          <h3 className='font-bold text-foreground'>{t('heading')}</h3>
         </div>
         {!isEditing && (
           <Button
@@ -120,7 +120,7 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
             className='text-secondary font-label-caps px-0 h-auto'
             onClick={handleEdit}
           >
-            EDIT
+            {t('edit_button')}
           </Button>
         )}
       </div>
@@ -138,17 +138,17 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
                   htmlFor='personal-name'
                   className='font-label-caps text-on-surface-variant'
                 >
-                  FULL NAME
+                  {t('full_name_label')}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='personal-name'
-                    aria-label='Full Name'
+                    aria-label={t('full_name_label')}
                     aria-invalid={fieldState.invalid}
                     readOnly={!isEditing}
                     disabled={isPending}
-                    placeholder='Your full name'
+                    placeholder={t('full_name_placeholder')}
                     autoComplete='name'
                   />
                 </InputGroup>
@@ -167,18 +167,18 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
                   htmlFor='personal-email'
                   className='font-label-caps text-on-surface-variant'
                 >
-                  EMAIL ADDRESS
+                  {t('email_label')}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='personal-email'
-                    aria-label='Email Address'
+                    aria-label={t('email_label')}
                     aria-invalid={fieldState.invalid}
                     type='email'
                     readOnly={!isEditing}
                     disabled={isPending}
-                    placeholder='your@email.com'
+                    placeholder={t('email_placeholder')}
                     autoComplete='email'
                   />
                 </InputGroup>
@@ -193,16 +193,16 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
               htmlFor='personal-phone'
               className='font-label-caps text-on-surface-variant'
             >
-              PHONE NUMBER
+              {t('phone_label')}
             </FieldLabel>
             <InputGroup>
               <InputGroupInput
                 id='personal-phone'
-                aria-label='Phone Number'
+                aria-label={t('phone_label')}
                 type='tel'
                 readOnly
                 disabled
-                placeholder='Coming soon'
+                placeholder={t('phone_placeholder')}
                 value=''
               />
             </InputGroup>
@@ -219,10 +219,10 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
               disabled={isPending}
               onClick={handleCancel}
             >
-              CANCEL
+              {t('cancel_button')}
             </Button>
             <Button type='submit' size='sm' disabled={isPending}>
-              {isPending ? 'Saving...' : 'SAVE CHANGES'}
+              {isPending ? t('saving') : t('save_button')}
             </Button>
           </div>
         )}
