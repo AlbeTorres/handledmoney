@@ -17,6 +17,7 @@ export const TwoFactorForm = () => {
   const router = useRouter()
   const t = useTranslations('handledmoney.auth')
   const [isPending, startLoading] = useState(false)
+  const [isBackupMode, setIsBackupMode] = useState(false)
 
   const form = useForm<z.infer<typeof TwoFactorSchema>>({
     resolver: zodResolver(TwoFactorSchema),
@@ -34,9 +35,9 @@ export const TwoFactorForm = () => {
       return
     }
 
-    const { error } = await authClient.twoFactor.verifyTotp({
-      code: data.code,
-    })
+    const { error } = isBackupMode
+      ? await authClient.twoFactor.verifyBackupCode({ code: data.code })
+      : await authClient.twoFactor.verifyTotp({ code: data.code })
 
     startLoading(false)
 
@@ -56,16 +57,18 @@ export const TwoFactorForm = () => {
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor='form-signin-code'>Authenticator Code</FieldLabel>
+              <FieldLabel htmlFor='form-signin-code'>
+                {isBackupMode ? t('backup_code_label') : t('authenticator_label')}
+              </FieldLabel>
               <InputGroup className='w-full border rounded-md focus:outline-none focus:ring-1! focus:ring-blue-600!'>
                 <InputGroupInput
                   {...field}
                   id='form-signin-code'
                   aria-invalid={fieldState.invalid}
-                  placeholder='000000'
+                  placeholder={isBackupMode ? 'a1b2c3d4e5' : '000000'}
                   autoComplete='off'
                   type='text'
-                  maxLength={6}
+                  maxLength={isBackupMode ? 11 : 6}
                   disabled={isPending}
                   className='tracking-widest'
                 />
@@ -85,6 +88,20 @@ export const TwoFactorForm = () => {
       >
         {isPending ? 'Verifying...' : t('confirm')}
       </Button>
+
+      <div className='mt-4 text-center'>
+        <button
+          type='button'
+          onClick={() => {
+            setIsBackupMode(!isBackupMode)
+            form.reset()
+          }}
+          disabled={isPending}
+          className='text-sm text-secondary hover:underline transition-all'
+        >
+          {isBackupMode ? t('use_authenticator') : t('use_backup_code')}
+        </button>
+      </div>
     </form>
   )
 }

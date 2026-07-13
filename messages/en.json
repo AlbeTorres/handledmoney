@@ -34,6 +34,10 @@
       "forgot_password_title": "Forgot your password",
       "send_reset_email": "Send reset email",
       "password_reset_email_sent": "We have sent you a recovery email.",
+      "use_backup_code": "Use backup code",
+      "use_authenticator": "Use authenticator app",
+      "backup_code_label": "Backup Code",
+      "authenticator_label": "Authenticator Code",
       "error": {
         "email_in_use": "Email already in use",
         "email_sent": "Email sent",
