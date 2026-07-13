@@ -3,7 +3,8 @@
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
-import { useConfirmPassword } from '@/hooks/use-confirm-password'
+import { PasswordConfirmDialog, useConfirmAction } from '@/hooks/use-confirm-password'
+
 import { authClient } from '@/lib/auth-client'
 import { UpdatePersonalInfoSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -26,11 +27,16 @@ type PersonalInfomationSettingsProps = {
 
 export default function PersonalInfomationSettings({ user }: PersonalInfomationSettingsProps) {
   const router = useRouter()
-  const [ConfirmationDialog, confirm] = useConfirmPassword(
-    user.email,
-    'Change Email',
-    'Are you sure you want to change your email? This action cannot be undone.',
-  )
+
+  const { confirm, dialogProps } = useConfirmAction({
+    title: 'Change Email',
+    description: 'Are you sure you want to change your email? This action cannot be undone.',
+    onSubmit: password =>
+      authClient.twoFactor.enable({ password }).then(r => {
+        if (r.error) throw new Error(r.error.message ?? 'Failed to verify password')
+        return r.data
+      }),
+  })
 
   const [isEditing, setIsEditing] = useState(false)
   const [isPending, setIsPending] = useState(false)
@@ -100,7 +106,7 @@ export default function PersonalInfomationSettings({ user }: PersonalInfomationS
   }
   return (
     <div className='bg-white shadow-sm p-6 rounded-xl flex flex-col gap-2'>
-      <ConfirmationDialog />
+      <PasswordConfirmDialog {...dialogProps} />
       <div className='flex justify-between items-center mb-5'>
         <div className='flex items-center gap-2'>
           <LucideUserPen size={20} />
