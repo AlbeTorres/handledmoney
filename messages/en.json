@@ -64,6 +64,90 @@
         "password_reset": "Password reset successfully"
       },
       "reset_password": "Reset password"
+    },
+    "settings": {
+      "profile": {
+        "2fa_enabled": "2FA Enabled",
+        "2fa_disabled": "2FA Disabled"
+      },
+      "personal_info": {
+        "heading": "Personal Information",
+        "edit_button": "EDIT",
+        "full_name_label": "FULL NAME",
+        "full_name_placeholder": "Your full name",
+        "email_label": "EMAIL ADDRESS",
+        "email_placeholder": "your@email.com",
+        "phone_label": "PHONE NUMBER",
+        "phone_placeholder": "Coming soon",
+        "cancel_button": "CANCEL",
+        "save_button": "SAVE CHANGES",
+        "saving": "Saving...",
+        "confirm_email_title": "Change Email",
+        "confirm_email_description": "Are you sure you want to change your email? This action cannot be undone.",
+        "toast": {
+          "profile_update_failed": "Failed to update profile. Please try again.",
+          "email_update_failed": "Failed to update email. Please try again.",
+          "email_verification_sent": "A verification email has been sent to your new address. Changes will apply after verification.",
+          "profile_updated": "Profile updated successfully.",
+          "password_verification_failed": "Failed to verify password"
+        }
+      },
+      "update_password": {
+        "heading": "Security Settings",
+        "current_password_label": "CURRENT PASSWORD",
+        "new_password_label": "NEW PASSWORD",
+        "confirm_password_label": "CONFIRM NEW PASSWORD",
+        "update_button": "Update Password",
+        "updating": "Updating...",
+        "show_password": "Show password",
+        "hide_password": "Hide password",
+        "toast": {
+          "password_updated": "Password updated successfully.",
+          "incorrect_password": "Incorrect current password. Please try again."
+        }
+      },
+      "two_fa": {
+        "heading": "Two-Factor Authentication (2FA)",
+        "description": "Add an extra layer of security to your account by requiring more than just a password to log in.",
+        "status_enabled": "Currently Enabled",
+        "status_disabled": "Currently Disabled",
+        "secure_badge": "SECURE",
+        "enable_button": "Enable 2FA",
+        "disable_button": "Disable 2FA",
+        "confirm_enable_title": "Enter Password",
+        "confirm_enable_description": "Please enter your current password to setup 2FA.",
+        "confirm_disable_title": "Enter Password",
+        "confirm_disable_description": "Please enter your current password to disable 2FA.",
+        "toast": {
+          "verify_failed": "Failed to verify password",
+          "disable_failed": "Failed to disable 2FA",
+          "disabled_success": "Two-Factor Authentication disabled successfully",
+          "invalid_code": "Please enter a valid 6-digit code",
+          "invalid_code_fallback": "Invalid code",
+          "enabled_success": "Two-Factor Authentication enabled successfully"
+        }
+      },
+      "preferences": {
+        "heading": "System Preferences",
+        "language_label": "DISPLAY LANGUAGE",
+        "timezone_label": "TIMEZONE",
+        "currency_label": "CURRENCY FORMAT",
+        "info_text": "Changing these preferences will update your dashboard and report views immediately. Historical data formatting will remain consistent with your organizational standards."
+      },
+      "notifications": {
+        "heading": "Notification Channels",
+        "balance_alerts_title": "Balance Alerts",
+        "balance_alerts_description": "Notify me when my balance falls below a threshold.",
+        "weekly_summaries_title": "Weekly Summaries",
+        "weekly_summaries_description": "A comprehensive report of your weekly spending.",
+        "marketing_title": "Marketing Communications",
+        "marketing_description": "Stay updated on new features and investment tips."
+      },
+      "danger_zone": {
+        "heading": "Danger Zone",
+        "description": "Permanently delete your account and all associated financial data.",
+        "delete_button": "DELETE ACCOUNT"
+      }
     }
   }
 }

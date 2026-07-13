@@ -7,6 +7,7 @@ import { authClient } from '@/lib/auth-client'
 import { SettingsPasswordSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeIcon, EyeOffIcon, KeyIcon, LucideLock } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
@@ -15,6 +16,7 @@ import { z } from 'zod'
 type FormValues = z.infer<typeof SettingsPasswordSchema>
 
 export default function UpdatePasswordSettings() {
+  const t = useTranslations('handledmoney.settings.update_password')
   const [isPending, setIsPending] = useState(false)
   const [showCurrent, setShowCurrent] = useState(false)
   const [showNew, setShowNew] = useState(false)
@@ -41,11 +43,11 @@ export default function UpdatePasswordSettings() {
     setIsPending(false)
 
     if (error) {
-      toast.error(error.message || 'Incorrect current password. Please try again.')
+      toast.error(error.message || t('toast.incorrect_password'))
       return
     }
 
-    toast.success('Password updated successfully.')
+    toast.success(t('toast.password_updated'))
     form.reset()
     setShowCurrent(false)
     setShowNew(false)
@@ -56,7 +58,7 @@ export default function UpdatePasswordSettings() {
     <div className='bg-white shadow-sm p-6 rounded-xl flex flex-col gap-2'>
       <div className='flex items-center gap-2 mb-5'>
         <LucideLock size={20} />
-        <h3 className='font-bold text-foreground'>Security Settings</h3>
+        <h3 className='font-bold text-foreground'>{t('heading')}</h3>
       </div>
 
       <form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -71,13 +73,13 @@ export default function UpdatePasswordSettings() {
                   htmlFor='current-password'
                   className='font-label-caps text-on-surface-variant'
                 >
-                  CURRENT PASSWORD
+                  {t('current_password_label')}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='current-password'
-                    aria-label='Current Password'
+                    aria-label={t('current_password_label')}
                     aria-invalid={fieldState.invalid}
                     type={showCurrent ? 'text' : 'password'}
                     disabled={isPending}
@@ -91,7 +93,7 @@ export default function UpdatePasswordSettings() {
                       onClick={() => setShowCurrent(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
-                      aria-label={showCurrent ? 'Hide password' : 'Show password'}
+                      aria-label={showCurrent ? t('hide_password') : t('show_password')}
                     >
                       {showCurrent ? (
                         <EyeIcon className='size-4' />
@@ -116,13 +118,13 @@ export default function UpdatePasswordSettings() {
                   htmlFor='new-password'
                   className='font-label-caps text-on-surface-variant'
                 >
-                  NEW PASSWORD
+                  {t('new_password_label')}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='new-password'
-                    aria-label='New Password'
+                    aria-label={t('new_password_label')}
                     aria-invalid={fieldState.invalid}
                     type={showNew ? 'text' : 'password'}
                     disabled={isPending}
@@ -135,7 +137,7 @@ export default function UpdatePasswordSettings() {
                       onClick={() => setShowNew(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
-                      aria-label={showNew ? 'Hide password' : 'Show password'}
+                      aria-label={showNew ? t('hide_password') : t('show_password')}
                     >
                       {showNew ? <EyeIcon className='size-4' /> : <EyeOffIcon className='size-4' />}
                     </button>
@@ -156,13 +158,13 @@ export default function UpdatePasswordSettings() {
                   htmlFor='confirm-password'
                   className='font-label-caps text-on-surface-variant'
                 >
-                  CONFIRM NEW PASSWORD
+                  {t('confirm_password_label')}
                 </FieldLabel>
                 <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='confirm-password'
-                    aria-label='Confirm New Password'
+                    aria-label={t('confirm_password_label')}
                     aria-invalid={fieldState.invalid}
                     type={showConfirm ? 'text' : 'password'}
                     disabled={isPending}
@@ -175,7 +177,7 @@ export default function UpdatePasswordSettings() {
                       onClick={() => setShowConfirm(prev => !prev)}
                       disabled={isPending}
                       className='text-muted-foreground hover:text-foreground pl-1.5 transition-colors'
-                      aria-label={showConfirm ? 'Hide password' : 'Show password'}
+                      aria-label={showConfirm ? t('hide_password') : t('show_password')}
                     >
                       {showConfirm ? (
                         <EyeIcon className='size-4' />
@@ -198,7 +200,7 @@ export default function UpdatePasswordSettings() {
             className='w-full py-3 bg-primary text-white rounded-lg font-label-caps hover:bg-primary/90 transition-all flex items-center justify-center gap-2'
           >
             <KeyIcon className='size-4' />
-            {isPending ? 'Updating...' : 'Update Password'}
+            {isPending ? t('updating') : t('update_button')}
           </Button>
         </div>
       </form>

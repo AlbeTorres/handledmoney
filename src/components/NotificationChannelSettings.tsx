@@ -1,20 +1,23 @@
+import { getTranslations } from 'next-intl/server'
 import { LucideMail } from 'lucide-react'
 
-export default function NotificationChannelSettings() {
+export default async function NotificationChannelSettings() {
+  const t = await getTranslations('handledmoney.settings.notifications')
+
   return (
     <div className='bg-white shadow-sm p-5 rounded-xl flex flex-col gap-2 md:col-span-2'>
       <div className='flex justify-between items-center mb-base'>
         <div className='flex items-center gap-2'>
           <LucideMail size={20} />
-          <h3 className='font-bold text-foreground'>Notification Channels</h3>
+          <h3 className='font-bold text-foreground'>{t('heading')}</h3>
         </div>
       </div>
       <div className='divide-y divide-outline-variant'>
         <div className='py-4 flex justify-between items-center'>
           <div>
-            <p className='font-body-lg text-body-lg font-bold text-primary'>Balance Alerts</p>
+            <p className='font-body-lg text-body-lg font-bold text-primary'>{t('balance_alerts_title')}</p>
             <p className='font-body-sm text-body-sm text-on-surface-variant'>
-              Notify me when my balance falls below a threshold.
+              {t('balance_alerts_description')}
             </p>
           </div>
           <div className='relative inline-flex items-center cursor-pointer'>
@@ -24,9 +27,9 @@ export default function NotificationChannelSettings() {
         </div>
         <div className='py-4 flex justify-between items-center'>
           <div>
-            <p className='font-body-lg text-body-lg font-bold text-primary'>Weekly Summaries</p>
+            <p className='font-body-lg text-body-lg font-bold text-primary'>{t('weekly_summaries_title')}</p>
             <p className='font-body-sm text-body-sm text-on-surface-variant'>
-              A comprehensive report of your weekly spending.
+              {t('weekly_summaries_description')}
             </p>
           </div>
           <div className='relative inline-flex items-center cursor-pointer'>
@@ -37,10 +40,10 @@ export default function NotificationChannelSettings() {
         <div className='py-4 flex justify-between items-center'>
           <div>
             <p className='font-body-lg text-body-lg font-bold text-primary'>
-              Marketing Communications
+              {t('marketing_title')}
             </p>
             <p className='font-body-sm text-body-sm text-on-surface-variant'>
-              Stay updated on new features and investment tips.
+              {t('marketing_description')}
             </p>
           </div>
           <div className='relative inline-flex items-center cursor-pointer'>
