@@ -1,5 +1,4 @@
-'use client'
-
+// hooks/use-confirm-password.ts
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -9,138 +8,157 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import { Field, FieldLabel } from '@/components/ui/field'
-import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
-import { authClient } from '@/lib/auth-client'
-import { LockIcon } from 'lucide-react'
-import { JSX, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { Field, FieldError, FieldLabel } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { ChangePasswordSchema } from '@/lib/schema'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { EyeIcon, EyeOffIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+import z from 'zod'
 
-/**
- * useConfirmPassword
- *
- * Hook que muestra un Dialog pidiendo la contraseña actual del usuario.
- * Llama a `authClient.signIn.email` para validarla contra el backend.
- * Solo resuelve con `true` si la contraseña es correcta.
- *
- * @param userEmail - Email del usuario logueado (necesario para re-autenticar)
- * @param title - Título del dialog
- * @param message - Descripción de la acción que se está protegiendo
- *
- *
- */
+type ConfirmDialogProps = {
+  open: boolean
+  title: string
+  description: string
+  submitLabel?: string
+  fieldLabel?: string
+  isPending: boolean
+  onCancel: () => void
+  onSubmit: (password: string) => void
+}
 
-type FormValues = { password: string }
+// Componente real, declarado una sola vez a nivel de módulo.
+// Reference estable → React nunca lo confunde con "otro componente".
+export function PasswordConfirmDialog({
+  open,
+  title,
+  description,
+  submitLabel,
+  fieldLabel,
+  isPending,
+  onCancel,
+  onSubmit,
+}: ConfirmDialogProps) {
+  const [showPassword, setShowPassword] = useState(false)
+  const t = useTranslations('handledmoney.auth')
 
-export const useConfirmPassword = (
-  userEmail: string,
-  title: string,
-  message: string,
-): [() => JSX.Element, () => Promise<boolean>] => {
-  const [promise, setPromise] = useState<{
-    resolve: (value: boolean) => void
-  } | null>(null)
-
-  const [isValidating, setIsValidating] = useState(false)
-
-  const form = useForm<FormValues>({
-    defaultValues: {
-      password: '',
-    },
+  const form = useForm<z.infer<typeof ChangePasswordSchema>>({
+    resolver: zodResolver(ChangePasswordSchema),
+    defaultValues: { password: '' },
   })
 
-  // Abre el dialog y devuelve una Promise que se resuelve cuando el usuario
-  // confirma (con contraseña válida) o cancela.
-  const confirm = (): Promise<boolean> =>
-    new Promise(resolve => {
-      setPromise({ resolve })
-    })
-
-  const handleClose = () => {
-    setPromise(null)
-    form.reset()
-  }
-
-  const handleCancel = () => {
-    promise?.resolve(false)
-    handleClose()
-  }
-
-  // Valida la contraseña contra el backend antes de confirmar.
-  // Usa signIn.email como mecanismo de re-autenticación — si responde OK,
-  // la contraseña es correcta. No crea sesión nueva: la sesión actual permanece.
-  const handleConfirm = async (values: FormValues) => {
-    setIsValidating(true)
-
-    const { error: signInError } = await authClient.signIn.email(
-      {
-        email: userEmail,
-        password: values.password,
-        callbackURL: undefined as unknown as string,
-        rememberMe: false,
-      },
-      {
-        // Evitamos que better-auth redirija; solo nos interesa el resultado
-        onRequest: () => {},
-      },
-    )
-
-    setIsValidating(false)
-
-    if (signInError) {
-      toast.error('Incorrect password. Please try again.')
-      return
+  useEffect(() => {
+    if (!open) {
+      form.reset()
+      setShowPassword(false)
     }
+  }, [open, form])
 
-    promise?.resolve(true)
-    handleClose()
-  }
-
-  const ConfirmPasswordDialog = () => (
-    <Dialog open={promise !== null}>
-      <DialogContent showCloseButton={false}>
+  return (
+    <Dialog open={open} onOpenChange={v => !v && onCancel()}>
+      <DialogContent>
         <DialogHeader>
-          <div className='flex items-center gap-2'>
-            <LockIcon size={18} className='text-muted-foreground' />
-            <DialogTitle>{title}</DialogTitle>
-          </div>
-          <DialogDescription>{message}</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <form id='confirm-password-form' onSubmit={form.handleSubmit(handleConfirm)}>
-          <Field>
-            <FieldLabel htmlFor='confirm-password-input'>Current Password</FieldLabel>
-            <InputGroup>
-              <InputGroupInput
-                id='confirm-password-input'
-                type={'password'}
-                {...form.register('password')}
-                onChange={e => {
-                  form.setValue('password', e.target.value)
-                }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter') handleConfirm(form.getValues())
-                }}
-                placeholder='Enter your current password'
-                disabled={isValidating}
-                autoFocus
-                autoComplete='current-password'
-              />
-            </InputGroup>
-          </Field>
+        <form id='confirm-password-form' onSubmit={form.handleSubmit(v => onSubmit(v.password))}>
+          <Controller
+            name='password'
+            control={form.control}
+            render={({ field, fieldState }) => (
+              <Field data-invalid={fieldState.invalid}>
+                <FieldLabel htmlFor='form-signin-password'>
+                  {fieldLabel ?? t('password')}
+                </FieldLabel>
+                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                  <InputGroupInput
+                    {...field}
+                    id='form-signin-password'
+                    aria-invalid={fieldState.invalid}
+                    placeholder={t('password_placeholder')}
+                    autoComplete='off'
+                    type={showPassword ? 'text' : 'password'}
+                    disabled={isPending}
+                  />
+                  <InputGroupAddon>
+                    <button
+                      type='button'
+                      onClick={() => setShowPassword(v => !v)}
+                      disabled={isPending}
+                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                    >
+                      {showPassword ? (
+                        <EyeIcon className='w-4 h-4' />
+                      ) : (
+                        <EyeOffIcon className='w-4 h-4' />
+                      )}
+                    </button>
+                  </InputGroupAddon>
+                </InputGroup>
+                {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+              </Field>
+            )}
+          />
         </form>
-
         <DialogFooter className='pt-2'>
-          <Button onClick={handleCancel} variant='outline' disabled={isValidating}>
+          <Button onClick={onCancel} variant='outline' disabled={isPending} type='button'>
             Cancel
           </Button>
-          <Button type='submit' form='confirm-password-form'>
-            {isValidating ? 'Verifying...' : 'Confirm'}
+          <Button type='submit' form='confirm-password-form' disabled={isPending}>
+            {isPending ? 'Verifying...' : (submitLabel ?? 'Continue')}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   )
+}
 
-  return [ConfirmPasswordDialog, confirm]
+type UseConfirmActionOptions<TResult> = {
+  title: string
+  description: string
+  submitLabel?: string
+  fieldLabel?: string
+  onSubmit: (password: string) => Promise<TResult>
+}
+
+// El hook SOLO maneja estado y lógica. Cero JSX.
+export function useConfirmAction<TResult>(opts: UseConfirmActionOptions<TResult>) {
+  const [promise, setPromise] = useState<{ resolve: (v: TResult | null) => void } | null>(null)
+  const [isPending, setIsPending] = useState(false)
+
+  const confirm = () => new Promise<TResult | null>(resolve => setPromise({ resolve }))
+
+  const handleCancel = () => {
+    promise?.resolve(null)
+    setPromise(null)
+  }
+
+  const handleSubmit = async (password: string) => {
+    setIsPending(true)
+    try {
+      const result = await opts.onSubmit(password)
+      promise?.resolve(result)
+      setPromise(null)
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : 'Something went wrong')
+    } finally {
+      setIsPending(false)
+    }
+  }
+
+  const dialogProps: ConfirmDialogProps = {
+    open: promise !== null,
+    title: opts.title,
+    description: opts.description,
+    submitLabel: opts.submitLabel,
+    fieldLabel: opts.fieldLabel,
+    isPending,
+    onCancel: handleCancel,
+    onSubmit: handleSubmit,
+  }
+
+  return { confirm, dialogProps }
 }
