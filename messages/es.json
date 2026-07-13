@@ -34,6 +34,10 @@
       "forgot_password_title": "Olvidé mi contraseña",
       "send_reset_email": "Enviar correo de recuperación",
       "password_reset_email_sent": "Te enviamos un correo de recuperación.",
+      "use_backup_code": "Usar código de respaldo",
+      "use_authenticator": "Usar aplicación de autenticación",
+      "backup_code_label": "Código de respaldo",
+      "authenticator_label": "Código de autenticación",
       "error": {
         "email_in_use": "El correo electrónico ya está en uso",
         "email_sent": "Correo electrónico enviado",
