@@ -76,7 +76,7 @@ describe('RegisterForm', () => {
 
     expect(await screen.findByText('error.name_required')).toBeTruthy()
     expect(await screen.findByText('error.email_required')).toBeTruthy()
-    expect(await screen.findByText('error.password_too_short')).toBeTruthy()
+    expect(await screen.findByText('error.password_no_secure')).toBeTruthy()
     expect(signUpEmailMock).not.toHaveBeenCalled()
   })
 
@@ -88,7 +88,7 @@ describe('RegisterForm', () => {
 
     await user.type(screen.getByLabelText('name'), 'Jane Doe')
     await user.type(screen.getByLabelText('email'), 'jane@example.com')
-    await user.type(screen.getByLabelText('password'), 'password123')
+    await user.type(screen.getByLabelText('password'), 'Password123!')
     await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'signup' }))
 
@@ -96,7 +96,7 @@ describe('RegisterForm', () => {
       expect(signUpEmailMock).toHaveBeenCalledWith({
         role: 'user',
         email: 'jane@example.com',
-        password: 'password123',
+        password: 'Password123!',
         name: 'Jane Doe',
         termsAcceptedAt: expect.any(Date),
         callbackURL: '/auth/new-verification?redirect=false',
@@ -114,7 +114,7 @@ describe('RegisterForm', () => {
 
     await user.type(screen.getByLabelText('name'), 'Jane Doe')
     await user.type(screen.getByLabelText('email'), 'jane@example.com')
-    await user.type(screen.getByLabelText('password'), 'password123')
+    await user.type(screen.getByLabelText('password'), 'Password123!')
     await user.click(screen.getByRole('checkbox'))
     await user.click(screen.getByRole('button', { name: 'signup' }))
 

@@ -3,10 +3,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { pushMock, signInEmailMock, toastErrorMock } = vi.hoisted(() => ({
+const { pushMock, signInEmailMock, toastErrorMock, toastSuccessMock } = vi.hoisted(() => ({
   pushMock: vi.fn(),
   signInEmailMock: vi.fn(),
   toastErrorMock: vi.fn(),
+  toastSuccessMock: vi.fn(),
 }))
 
 vi.mock('next/navigation', () => ({
@@ -22,6 +23,7 @@ vi.mock('next-intl', () => ({
 vi.mock('react-hot-toast', () => ({
   default: {
     error: toastErrorMock,
+    success: toastSuccessMock,
   },
 }))
 
@@ -34,7 +36,7 @@ vi.mock('@/lib/auth-client', () => ({
 }))
 
 type SignInCallbacks = {
-  onSuccess: () => void
+  onSuccess: (ctx: { data: { twoFactorRedirect?: boolean } | null }) => void
   onError: (ctx: { error: { status: number } }) => Promise<void>
 }
 
@@ -122,7 +124,7 @@ describe('LoginForm', () => {
   it('calls signIn.email with correct payload on valid submit', async () => {
     const user = userEvent.setup()
     signInEmailMock.mockImplementation(async (_data: unknown, callbacks: SignInCallbacks) => {
-      callbacks.onSuccess()
+      callbacks.onSuccess({ data: null })
     })
 
     render(<LoginForm />)
@@ -150,7 +152,7 @@ describe('LoginForm', () => {
   it('sends rememberMe: true when the checkbox is checked before submitting', async () => {
     const user = userEvent.setup()
     signInEmailMock.mockImplementation(async (_data: unknown, callbacks: SignInCallbacks) => {
-      callbacks.onSuccess()
+      callbacks.onSuccess({ data: null })
     })
 
     render(<LoginForm />)
@@ -165,6 +167,25 @@ describe('LoginForm', () => {
         expect.objectContaining({ rememberMe: true }),
         expect.any(Object),
       )
+    })
+  })
+
+  // ── 2FA ────────────────────────────────────────────────────────────────────
+
+  it('redirects to two-factor page when twoFactorRedirect is true', async () => {
+    const user = userEvent.setup()
+    signInEmailMock.mockImplementation(async (_data: unknown, callbacks: SignInCallbacks) => {
+      callbacks.onSuccess({ data: { twoFactorRedirect: true } })
+    })
+
+    render(<LoginForm />)
+
+    await user.type(screen.getByLabelText('email'), 'user@example.com')
+    await user.type(screen.getByLabelText('password'), 'mypassword')
+    await user.click(screen.getByRole('button', { name: 'signin' }))
+
+    await waitFor(() => {
+      expect(pushMock).toHaveBeenCalledWith('/auth/two-factor') // ajusta la ruta real
     })
   })
 
@@ -203,9 +224,7 @@ describe('LoginForm', () => {
     await user.click(screen.getByRole('button', { name: 'signin' }))
 
     await waitFor(() => {
-      expect(pushMock).toHaveBeenCalledWith(
-        '/auth/new-verification?email=user@example.com',
-      )
+      expect(pushMock).toHaveBeenCalledWith('/auth/new-verification?email=user@example.com')
     })
   })
 
