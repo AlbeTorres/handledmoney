@@ -44,7 +44,7 @@ export const LoginForm = () => {
         onSuccess: ({ data }) => {
           startLoading(false)
           if (data?.twoFactorRedirect) {
-            router.push('/auth/twofactor')
+            router.push('/auth/two-factor')
             toast.success('Please enter your 2FA code')
           }
         },

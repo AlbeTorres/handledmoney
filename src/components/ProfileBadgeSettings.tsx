@@ -1,5 +1,7 @@
-import { getTranslations } from 'next-intl/server'
+'use client'
+
 import { LucideEdit2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 type PersonalInfomationSettingsProps = {
   user: {
@@ -9,8 +11,8 @@ type PersonalInfomationSettingsProps = {
     twoFactorEnabled?: boolean | null
   }
 }
-export default async function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
-  const t = await getTranslations('handledmoney.settings.profile')
+export default function ProfileBadgeSettings({ user }: PersonalInfomationSettingsProps) {
+  const t = useTranslations('handledmoney.settings.profile')
 
   return (
     <section className='mb-8 relative overflow-hidden rounded-xl bg-foreground p-6 flex flex-col md:flex-row items-center gap-6'>
