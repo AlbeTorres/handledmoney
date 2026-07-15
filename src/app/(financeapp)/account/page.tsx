@@ -1,10 +1,8 @@
-import { AccountFilters } from '@/components/AccountFilters'
+import AccountAction from '@/components/AccountAction'
 import { AccountGrid } from '@/components/AccountGrid'
-import { AppHeader } from '@/components/AppHeader'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { Suspense } from 'react'
 
 interface AccountPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -24,14 +22,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const search = (resolvedSearchParams.search as string) || ''
 
   return (
-    <>
-      <AppHeader title='Accounts Overview' />
-      <div className='p-8 space-y-8 container'>
-        <Suspense fallback={<div className='h-10 w-full bg-slate-200 animate-pulse rounded-lg' />}>
-          <AccountFilters />
-        </Suspense>
-        <AccountGrid userId={session.user.id} tab={tab} sort={sort} search={search} />
-      </div>
-    </>
+    <div className='  px-8 py-10 my-5 flex flex-col gap-y-10 container'>
+      <AccountAction />
+      <AccountGrid userId={session.user.id} tab={tab} sort={sort} search={search} />
+    </div>
   )
 }

@@ -1,4 +1,3 @@
-import { DashboardHeader } from '@/components/DashboardHeader'
 import { RecentTransactions } from '@/components/RecentTransactions'
 import { SummaryStats } from '@/components/SummaryStats'
 import { auth } from '@/lib/auth'
@@ -14,14 +13,8 @@ export default async function Dashboard() {
     return <>no session</>
   }
 
-  // Assuming session.user has name and image. Hardcoded fallback as in original.
-  const userName = session.user?.name || 'User'
-  const avatarUrl = session.user?.image || null
-
   return (
     <section className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-      <DashboardHeader userName={userName} avatarUrl={avatarUrl} />
-
       <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
         <SummaryStats />
 
