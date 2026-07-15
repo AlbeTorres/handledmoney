@@ -1,4 +1,5 @@
 import { DashboardFooter } from '@/components/DashboardFooter'
+import { DashboardHeader } from '@/components/DashboardHeader'
 import { AppSidebar } from '@/components/Sidemenu'
 
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
@@ -15,6 +16,7 @@ export default async function HandledMoneyLayout({
           <AppSidebar />
           <section className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
             <SidebarTrigger className='absolute z-40' />
+            <DashboardHeader userName={'Usuario Ejemplo'} avatarUrl={null} />
             {children}
             <DashboardFooter />
           </section>
