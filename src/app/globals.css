@@ -42,84 +42,187 @@
 }
 
 :root {
-  --background: #fcfdfd;
-  --foreground: #152028;
+  --background: #fcfdfc;
+  --foreground: #152817;
   --card: #ffffff;
-  --card-foreground: #152028;
+  --card-foreground: #152817;
   --popover: #ffffff;
-  --popover-foreground: #152028;
-  --primary: #5ab4f6;
+  --popover-foreground: #152817;
+  --primary: #62b46a;
   --primary-foreground: #0a0a0a;
-  --secondary: #398bcd;
+  --secondary: #317b41;
   --secondary-foreground: #ffffff;
-  --muted: #f2f5f7;
-  --muted-foreground: #627484;
-  --accent: #f6525a;
+  --muted: #f2f7f3;
+  --muted-foreground: #628469;
+  --accent: #3183a4;
   --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #e0e6eb;
-  --input: #e0e6eb;
-  --ring: #55b3f6;
-  --chart-1: #5ab4f6;
-  --chart-2: #398bcd;
-  --chart-3: #f6525a;
-  --chart-4: #5ab4f6;
-  --chart-5: #398bcd;
-  --sidebar: #ffffff;
-  --sidebar-foreground: #152028;
-  --sidebar-primary: #5ab4f6;
-  --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #f2f5f7;
-  --sidebar-accent-foreground: #152028;
-  --sidebar-border: #e0e6eb;
-  --sidebar-ring: #55b3f6;
+  --border: #e0ebe1;
+  --input: #e0ebe1;
+  --ring: #64b46c;
+  --chart-1: #62b46a;
+  --chart-2: #317b41;
+  --chart-3: #3183a4;
+  --chart-4: #62b46a;
+  --chart-5: #317b41;
+  --sidebar: var(--secondary);
+  --sidebar-foreground: var(--muted);
+  --sidebar-primary: #62b46a;
+  --sidebar-primary-foreground: var(--secondary-foreground);
+  --sidebar-accent: var(--primary);
+  --sidebar-accent-foreground: var(--secondary-foreground);
+  --sidebar-border: #e0ebe1;
+  --sidebar-ring: #64b46c;
+  /* --sidebar: #ffffff; */
+  /* --sidebar-foreground: #152817; */
+  /* --sidebar-primary: #62b46a; */
+  /* --sidebar-primary-foreground: #0a0a0a; */
+  /* --sidebar-accent: #f2f7f3; */
+  /* --sidebar-accent-foreground: #152817; */
+  /* --sidebar-border: #e0ebe1;
+  --sidebar-ring: #64b46c; */
 }
 
 .dark {
-  --background: #14181a;
-  --foreground: #f4f5f6;
-  --card: #1b2227;
-  --card-foreground: #f4f5f6;
-  --popover: #1b2227;
-  --popover-foreground: #f4f5f6;
-  --primary: #5ab5f6;
+  --background: #141a14;
+  --foreground: #f4f6f4;
+  --card: #1b271c;
+  --card-foreground: #f4f6f4;
+  --popover: #1b271c;
+  --popover-foreground: #f4f6f4;
+  --primary: #64b46c;
   --primary-foreground: #0a0a0a;
-  --secondary: #4793d1;
-  --secondary-foreground: #ffffff;
-  --muted: #252f37;
-  --muted-foreground: #98a7b3;
-  --accent: #f65159;
-  --accent-foreground: #ffffff;
+  --secondary: #5bbe70;
+  --secondary-foreground: #0a0a0a;
+  --muted: #253729;
+  --muted-foreground: #98b39e;
+  --accent: #4ea7ca;
+  --accent-foreground: #0a0a0a;
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
-  --border: #2d3a43;
-  --input: #2d3a43;
-  --ring: #5ab5f6;
-  --chart-1: #5ab4f6;
-  --chart-2: #398bcd;
-  --chart-3: #f6525a;
-  --chart-4: #5ab4f6;
-  --chart-5: #398bcd;
-  --sidebar: #1b2227;
-  --sidebar-foreground: #f4f5f6;
-  --sidebar-primary: #5ab5f6;
+  --border: #2d432f;
+  --input: #2d432f;
+  --ring: #64b46c;
+  --chart-1: #62b46a;
+  --chart-2: #317b41;
+  --chart-3: #3183a4;
+  --chart-4: #62b46a;
+  --chart-5: #317b41;
+  --sidebar: #1b271c;
+  --sidebar-foreground: #f4f6f4;
+  --sidebar-primary: #64b46c;
   --sidebar-primary-foreground: #0a0a0a;
-  --sidebar-accent: #252f37;
-  --sidebar-accent-foreground: #f4f5f6;
-  --sidebar-border: #2d3a43;
-  --sidebar-ring: #5ab5f6;
+  --sidebar-accent: #253729;
+  --sidebar-accent-foreground: #f4f6f4;
+  --sidebar-border: #2d432f;
+  --sidebar-ring: #64b46c;
 }
 
+/* ─────────────────────────────────────────────
+   BASE STYLES
+   ───────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans), system-ui, sans-serif;
+    font-feature-settings: 'tnum' 1; /* tabular figures — decimales alineados */
+  }
+
+  /* ── Escala tipográfica ZenMoney ── */
+  .display-lg {
+    font-family: var(--font-anton), sans-serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 56px;
+    letter-spacing: 0.02em;
+  }
+
+  .headline-lg {
+    font-family: var(--font-anton), sans-serif;
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 40px;
+    letter-spacing: 0.01em;
+  }
+
+  .headline-lg-mobile {
+    font-family: var(--font-anton), sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+  }
+
+  .title-md {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+
+  .body-lg {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+  }
+
+  .body-sm {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .label-caps {
+    font-family: var(--font-geist-sans), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 16px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* Importantísimo: tabular figures para montos financieros */
+  .mono-data {
+    font-family: var(--font-geist-sans), monospace;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    font-feature-settings: 'tnum' 1;
   }
 }
 
+/* ─────────────────────────────────────────────
+   LAYOUT
+   ───────────────────────────────────────────── */
 .container {
   @apply max-w-7xl mx-auto w-full;
+}
+
+/* ─────────────────────────────────────────────
+   ELEVATION — Tonal Layering (sin shadows agresivas)
+   Level 0: background
+   Level 1: card + 1px border (outline-variant)
+   Level 2: card + 1px border + ambient navy-tinted shadow
+   ───────────────────────────────────────────── */
+.elevation-0 {
+  background-color: var(--background);
+}
+
+.elevation-1 {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+}
+
+.elevation-2 {
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 4px 6px -1px rgba(26, 43, 60, 0.05),
+    0 2px 4px -1px rgba(26, 43, 60, 0.03);
 }

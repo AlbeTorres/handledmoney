@@ -44,7 +44,7 @@ export function AppSidebar() {
               {/* This block is auto-hidden when collapsed */}
               <div>
                 <h1 className='text-lg font-bold tracking-tight'>FintechPro</h1>
-                <p className='text-xs text-slate-500 dark:text-slate-400'>Premium Plan</p>
+                <p className='text-xs'>Premium Plan</p>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>

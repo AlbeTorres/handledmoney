@@ -10,7 +10,7 @@ const BELL_ICON = <Bell aria-hidden='true' />
 
 export function DashboardHeader({ userName, avatarUrl }: DashboardHeaderProps) {
   return (
-    <header className='sticky top-0 z-10 flex items-center justify-between px-8 py-4 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
+    <header className='sticky top-0 z-10 flex items-center justify-between px-8 py-4 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
       <div className='flex items-center gap-8'>
         <h2 className='text-xl font-bold tracking-tight'>Accounts Overview</h2>
       </div>
