@@ -22,8 +22,8 @@ export default function ActionBar({
   buttonText,
 }: Props) {
   return (
-    <div className='flex flex-col md:flex-row items-center justify-center gap-4 mb-6'>
-      <InputGroup className='w-full max-w-md border rounded-md focus-within:ring-1 focus-within:ring-blue-600 transition-all'>
+    <div className='flex flex-col md:flex-row items-center justify-center gap-4'>
+      <InputGroup className='w-full max-w-md border rounded-md'>
         <InputGroupInput
           id={id}
           aria-label={ariaLabel}
@@ -40,7 +40,7 @@ export default function ActionBar({
 
       <Link
         href={href}
-        className='flex items-center gap-2 bg-primary text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-all'
+        className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105'
       >
         <Plus className='size-4' />
         {buttonText}
