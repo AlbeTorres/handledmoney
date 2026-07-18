@@ -51,6 +51,7 @@ export function CreateAccountForm() {
       }
     } catch (error) {
       console.log(error, 'error')
+      toast.error('Something went wrong')
     } finally {
       setIsPending(false)
       router.push('/account')

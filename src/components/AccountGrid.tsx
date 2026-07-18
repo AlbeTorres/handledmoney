@@ -1,24 +1,14 @@
-import { getBankAccountsByUser } from '@/repository/account'
+import { Account } from '@/interfaces'
 import { AccountCardWrapper } from './AccountCardWrapper'
 
 interface AccountGridProps {
-  userId: string
+  accounts: Account[]
   tab?: string
   sort?: string
   search?: string
 }
 
-export async function AccountGrid({ userId, tab, sort, search }: AccountGridProps) {
-  const accounts = await getBankAccountsByUser(userId)
-
-  if (!accounts || accounts.length === 0) {
-    return (
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-        <p>No accounts found</p>
-      </div>
-    )
-  }
-
+export async function AccountGrid({ accounts, tab, sort, search }: AccountGridProps) {
   const otherAccountsList = accounts.map(a => ({ id: a.id, name: a.name ?? 'Unnamed' }))
 
   const filteredAccounts = accounts

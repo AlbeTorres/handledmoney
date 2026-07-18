@@ -35,7 +35,7 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
               aria-pressed={isSelected}
               onClick={() => onChange(color.hex)}
               style={{ backgroundColor: `#${color.hex}`, touchAction: 'manipulation' }}
-              className={`size-8 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 ${
+              className={`size-8 rounded-full transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-slate-900 ${
                 isSelected
                   ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-slate-900'
                   : 'hover:scale-110'

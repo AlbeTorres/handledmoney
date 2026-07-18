@@ -1,17 +1,43 @@
-import { Suspense } from 'react'
-import { SearchInput } from './SearchInput'
+import { Bell } from 'lucide-react'
+import Image from 'next/image'
 
-export function AppHeader({ title }: { title: string }) {
+interface AppHeaderProps {
+  userName: string
+  avatarUrl: string | null
+}
+
+const BELL_ICON = <Bell aria-hidden='true' />
+
+export function AppHeader({ userName, avatarUrl }: AppHeaderProps) {
   return (
-    <header className='sticky top-0 z-10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
-      <div className='flex gap-4 flex-col sm:flex-row items-center justify-center sm:justify-between px-8 py-4 container mx-auto'>
-        <h2 className='text-xl font-bold tracking-tight text-center sm:text-left w-full'>
-          {title}
-        </h2>
-        <div className='w-60'>
-          <Suspense fallback={<div className='h-10 w-48 bg-slate-200 animate-pulse rounded-md' />}>
-            <SearchInput />
-          </Suspense>
+    <header className='sticky shadow-sm top-0 z-10 flex items-center justify-between px-8 py-4 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
+      <div className='flex items-center gap-8'>
+        <h2 className='text-xl font-bold tracking-tight'>Accounts Overview</h2>
+      </div>
+      <div className='flex items-center gap-3'>
+        <button
+          className='p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors relative focus-visible:ring-2 focus-visible:ring-slate-400 outline-none'
+          aria-label='Notifications'
+        >
+          {BELL_ICON}
+          <span className='absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark'></span>
+        </button>
+        <div className='size-9 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border border-slate-300 dark:border-slate-600 relative'>
+          {avatarUrl && (
+            <Image
+              alt={`${userName} Profile`}
+              className='w-full h-full object-cover'
+              src={avatarUrl}
+              width={36}
+              height={36}
+              priority
+            />
+          )}
+          {!avatarUrl && (
+            <div className='w-full h-full flex items-center justify-center text-slate-500 dark:text-slate-400'>
+              {userName.charAt(0).toUpperCase()}
+            </div>
+          )}
         </div>
       </div>
     </header>

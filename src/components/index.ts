@@ -1,4 +1,4 @@
-export * from './AuthMessage'
+export * from './_AuthMessage_'
 export * from './CardWrapper'
 export * from './ChangePassword'
 export * from './LoginForm'

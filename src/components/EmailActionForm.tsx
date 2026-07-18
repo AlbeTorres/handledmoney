@@ -7,13 +7,12 @@ import { useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import z from 'zod'
 
+import { useCooldown } from '@/hooks/use-cooldown'
+import toast from 'react-hot-toast'
 import { CardWrapper } from './CardWrapper'
 import { Button } from './ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from './ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
-import { AuthMessage } from './AuthMessage'
-import { useCooldown } from '@/hooks/use-cooldown'
-import toast from 'react-hot-toast'
 
 type Props = {
   initialEmail?: string
@@ -24,7 +23,9 @@ type Props = {
   cooldownKey?: string
   submitButtonLabelKey: string
   showFieldLabel?: boolean
-  onSubmit: (email: string) => Promise<{ error?: string | null; successMessage?: string; triggerCooldown?: boolean }>
+  onSubmit: (
+    email: string,
+  ) => Promise<{ error?: string | null; successMessage?: string; triggerCooldown?: boolean }>
 }
 
 const COOLDOWN_SECONDS = 60
@@ -49,7 +50,6 @@ export function EmailActionForm({
   const t = useTranslations('handledmoney.auth')
   const [isPending, setLoading] = useState(false)
 
-
   const { cooldownSeconds, start: startCooldown } = useCooldown(COOLDOWN_SECONDS, cooldownKey)
 
   const isCooldownActive = cooldownSeconds > 0
@@ -62,14 +62,14 @@ export function EmailActionForm({
 
   const buttonLabel = useMemo(() => {
     if (isPending) return t('sending')
-    if (isCooldownActive) return t('resend_email_cooldown', { time: formatCooldown(cooldownSeconds) })
+    if (isCooldownActive)
+      return t('resend_email_cooldown', { time: formatCooldown(cooldownSeconds) })
     return t(submitButtonLabelKey as any)
   }, [cooldownSeconds, isCooldownActive, isPending, t, submitButtonLabelKey])
 
   const handleFormSubmit = async (data: z.infer<typeof ResetSchema>) => {
     if (isSubmitDisabled) return
     setLoading(true)
-
 
     const result = await onSubmit(data.email)
 
@@ -105,7 +105,9 @@ export function EmailActionForm({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  {showFieldLabel && <FieldLabel htmlFor='form-signup-email'>{t('email')}</FieldLabel>}
+                  {showFieldLabel && (
+                    <FieldLabel htmlFor='form-signup-email'>{t('email')}</FieldLabel>
+                  )}
                   <InputGroup>
                     <InputGroupInput
                       {...field}
