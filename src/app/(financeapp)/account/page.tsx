@@ -22,7 +22,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const search = (resolvedSearchParams.search as string) || ''
 
   return (
-    <div className='  px-8 py-10 my-5 flex flex-col gap-y-10 container'>
+    <div className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>
       <AccountAction />
       <AccountGrid userId={session.user.id} tab={tab} sort={sort} search={search} />
     </div>
