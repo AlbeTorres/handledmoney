@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AccountCard } from './AccountCard'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
+import { TiltCardWrapper } from './TiltCardWrapper'
 
 interface AccountCardWrapperProps {
   account: {
@@ -29,6 +30,10 @@ export function AccountCardWrapper({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const router = useRouter()
 
+  const handleDetails = () => {
+    router.push(`/account/${account.id}`)
+  }
+
   const handleEdit = () => {
     router.push(`/account/${account.id}/edit`)
   }
@@ -42,27 +47,30 @@ export function AccountCardWrapper({
 
   return (
     <>
-      <AccountCard
-        id={account.id}
-        institution={account.bank ?? 'Unknown Bank'}
-        name={account.name ?? 'Unnamed Account'}
-        balance={
-          account.balance
-            ? parseFloat(account.balance).toLocaleString('en-US', {
-                style: 'currency',
-                currency: account.currency ?? 'USD',
-              })
-            : '$0.00'
-        }
-        currency={account.currency ?? 'USD'}
-        detail={account.type ?? 'General'}
-        status='Active' // Hardcoded for now as per current design
-        statusVariant='active'
-        accentColor={account.color ? `#${account.color}` : '#3b82f6'}
-        Icon={iconComponent}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <TiltCardWrapper>
+        <AccountCard
+          id={account.id}
+          institution={account.bank ?? 'Unknown Bank'}
+          name={account.name ?? 'Unnamed Account'}
+          balance={
+            account.balance
+              ? parseFloat(account.balance).toLocaleString('en-US', {
+                  style: 'currency',
+                  currency: account.currency ?? 'USD',
+                })
+              : '$0.00'
+          }
+          currency={account.currency ?? 'USD'}
+          detail={account.type ?? 'General'}
+          status='Active' // Hardcoded for now as per current design
+          statusVariant='active'
+          accentColor={account.color ? `#${account.color}` : '#3b82f6'}
+          Icon={iconComponent}
+          onDetails={handleDetails}
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+        />
+      </TiltCardWrapper>
 
       <DeleteAccountDialog
         id={account.id}
