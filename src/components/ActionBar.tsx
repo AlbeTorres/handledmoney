@@ -40,7 +40,7 @@ export default function ActionBar({
 
       <Link
         href={href}
-        className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105'
+        className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-md text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105'
       >
         <Plus className='size-4' />
         {buttonText}

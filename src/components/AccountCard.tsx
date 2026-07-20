@@ -1,5 +1,4 @@
 import { LucideIcon, MoreVertical } from 'lucide-react'
-import Link from 'next/link'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +20,7 @@ export interface AccountCardProps {
   Icon: LucideIcon
   onEdit?: () => void
   onDelete?: () => void
+  onDetails?: () => void
 }
 
 export function AccountCard({
@@ -37,36 +37,43 @@ export function AccountCard({
   Icon,
   onEdit,
   onDelete,
+  onDetails,
 }: AccountCardProps) {
   const statusColors =
     statusVariant === 'due' ? 'bg-amber-500 text-amber-500' : 'bg-emerald-500 text-emerald-500'
 
   return (
     <div
-      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 hover:shadow-xl transition-all cursor-pointer relative`}
+      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 transition-all relative`}
       style={{ borderLeftColor: accentColor }}
     >
       <div className='flex justify-between items-start mb-6'>
-        <Link href={`/account/${id}`}>
-          <div
-            className='size-12 rounded-xl flex items-center justify-center'
-            style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
-          >
-            <Icon className='size-7' />
-          </div>
-        </Link>
+        <div
+          className='size-12 rounded-xl flex items-center justify-center'
+          style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
+        >
+          <Icon className='size-7' />
+        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1'
+              className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1 cursor-pointer'
               aria-label='Account options'
               onClick={e => e.stopPropagation()}
             >
-              <MoreVertical className='size-5' />
+              <MoreVertical className='size-5 ' />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align='end'>
+            <DropdownMenuItem
+              onClick={e => {
+                e.stopPropagation()
+                onDetails?.()
+              }}
+            >
+              Details
+            </DropdownMenuItem>
             <DropdownMenuItem
               onClick={e => {
                 e.stopPropagation()
