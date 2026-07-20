@@ -1,7 +1,7 @@
 'use client'
 
-import { ReactNode, useRef } from 'react'
 import { useTilt } from '@/hooks/use-tilt'
+import { ReactNode, useRef } from 'react'
 
 interface TiltCardWrapperProps {
   children: ReactNode
@@ -22,7 +22,7 @@ export function TiltCardWrapper({ children, maxTilt, scale }: TiltCardWrapperPro
 
   return (
     <div className='tilt-container'>
-      <div ref={tiltRef} className='tilt-card'>
+      <div ref={tiltRef} className='tilt-card rounded-xl'>
         {children}
       </div>
     </div>
