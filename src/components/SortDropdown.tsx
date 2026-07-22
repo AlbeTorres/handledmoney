@@ -1,6 +1,7 @@
 // components/SortDropdown.tsx
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { ArrowUpDown, Check } from 'lucide-react'
 import { Button } from './ui/button'
@@ -29,8 +30,10 @@ export default function SortDropdown({
   options,
   selected,
   onChange,
-  defaultLabel = 'Sort by',
+  defaultLabel,
 }: Props) {
+  const t = useTranslations('handledmoney.account')
+  const resolvedDefaultLabel = defaultLabel ?? t('sort.by')
   const activeOption = options.find(o => o.value === selected)
 
   return (
@@ -44,12 +47,12 @@ export default function SortDropdown({
           )}
         >
           <ArrowUpDown className='size-4' />
-          {activeOption ? activeOption.label : defaultLabel}
+          {activeOption ? activeOption.label : resolvedDefaultLabel}
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align='start' className='w-48'>
-        <DropdownMenuLabel>Sort by</DropdownMenuLabel>
+        <DropdownMenuLabel>{t('sort.by')}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {options.map(option => {
           const isSelected = option.value === selected

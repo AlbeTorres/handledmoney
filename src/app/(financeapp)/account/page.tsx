@@ -5,11 +5,13 @@ import { auth } from '@/lib/auth'
 import { getBankAccountsByUser } from '@/repository/account'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 
 interface AccountPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 export default async function AccountPage({ searchParams }: AccountPageProps) {
+  const t = await getTranslations('handledmoney.account')
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -31,12 +33,12 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
     return (
       <div className='m-auto flex  flex-col justify-center items-center gap-4'>
         <EmptyState
-          title='No accounts linked yet'
-          description="To start tracking your financial health and gaining clarity on your spending, you'll need to link your bank accounts or manually create a tracking account."
-          primaryActionText='Add Your First Account'
+          title={t('empty_state.title')}
+          description={t('empty_state.description')}
+          primaryActionText={t('empty_state.add_first_account')}
           onPrimaryActionHref='/account/create'
           showImportButton={true}
-          importActionText='Import Data'
+          importActionText={t('empty_state.import_data')}
           onImportAction='/transaction/bulk'
         />
       </div>

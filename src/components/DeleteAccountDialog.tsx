@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 
@@ -39,10 +40,11 @@ export function DeleteAccountDialog({
 }: DeleteAccountDialogProps) {
   const [isPending, setIsPending] = useState(false)
   const [transferToAccountId, setTransferToAccountId] = useState<string | undefined>()
+  const t = useTranslations('handledmoney.account')
 
   const onDelete = async () => {
     if (hasTransactions && !transferToAccountId) {
-      toast.error('Please select an account to transfer transactions to.')
+      toast.error(t('delete.error_no_transfer'))
       return
     }
 
@@ -56,7 +58,7 @@ export function DeleteAccountDialog({
         toast.error(res.message)
       }
     } catch (error) {
-      toast.error('Something went wrong')
+      toast.error(t('delete.error_generic'))
     } finally {
       setIsPending(false)
     }
@@ -66,23 +68,22 @@ export function DeleteAccountDialog({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Account</DialogTitle>
+          <DialogTitle>{t('delete.title')}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete <strong>{name}</strong>? This action cannot be undone.
+            {t('delete.description', { name })}
           </DialogDescription>
         </DialogHeader>
 
         {hasTransactions && (
           <div className='py-4 space-y-4'>
             <p className='text-sm text-amber-600 font-medium'>
-              This account has active transactions. You must transfer them to another account before
-              deleting.
+              {t('delete.has_transactions_warning')}
             </p>
             <div className='space-y-2'>
-              <label className='text-sm font-semibold'>Transfer to:</label>
+              <label className='text-sm font-semibold'>{t('delete.transfer_to')}</label>
               <Select onValueChange={setTransferToAccountId} value={transferToAccountId}>
                 <SelectTrigger>
-                  <SelectValue placeholder='Select an account' />
+                  <SelectValue placeholder={t('delete.select_account')} />
                 </SelectTrigger>
                 <SelectContent>
                   {otherAccounts.map(account => (
@@ -98,16 +99,16 @@ export function DeleteAccountDialog({
 
         {!hasTransactions && (
           <div className='py-4'>
-            <p className='text-sm text-slate-500'>This account has no transactions.</p>
+            <p className='text-sm text-slate-500'>{t('delete.no_transactions')}</p>
           </div>
         )}
 
         <DialogFooter>
           <Button variant='outline' onClick={onClose} disabled={isPending}>
-            Cancel
+            {t('delete.cancel')}
           </Button>
           <Button variant='destructive' onClick={onDelete} disabled={isPending}>
-            {isPending ? 'Deleting...' : 'Delete Account'}
+            {isPending ? t('delete.deleting') : t('delete.confirm_button')}
           </Button>
         </DialogFooter>
       </DialogContent>

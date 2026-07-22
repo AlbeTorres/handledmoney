@@ -6,6 +6,7 @@ import { InfoCard } from '@/components/InfoCard'
 
 import { auth } from '@/lib/auth'
 import { ArrowDown, ArrowRightLeft, ArrowUp, TrendingUp } from 'lucide-react'
+import { getTranslations } from 'next-intl/server'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
@@ -22,6 +23,8 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
   if (!session) {
     redirect('/auth/login')
   }
+
+  const t = await getTranslations('handledmoney.account')
 
   const resolvedParams = await params
   const { id } = resolvedParams
@@ -50,7 +53,7 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
   if (!accountData || !transactionsData) {
     return (
       <div className='flex items-center justify-center h-screen'>
-        <p>Error</p>
+        <p>{t('detail.error')}</p>
       </div>
     )
   }
@@ -75,34 +78,34 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
           <div className='p-8 container space-y-8'>
             <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
               <InfoCard
-                title='Total Income'
+                title={t('detail.total_income')}
                 value={totalIncome}
                 icon={<ArrowDown className='size-4 text-emerald-500' />}
                 category='income'
               />
 
               <InfoCard
-                title='Total Expenses'
+                title={t('detail.total_expenses')}
                 value={totalExpenses}
                 icon={<ArrowUp className='size-4 text-rose-500' />}
                 category='expense'
               />
 
               <InfoCard
-                title='Net Flow'
+                title={t('detail.net_flow')}
                 value={netFlow}
                 icon={<ArrowRightLeft className='size-4 text-primary' />}
               />
 
               <InfoCard
-                title='Avg Daily Spend'
+                title={t('detail.avg_daily_spend')}
                 value={avgDailySpend}
                 icon={<TrendingUp className='size-4 text-slate-400' />}
               />
             </div>
 
             <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
-              <h3 className='font-bold text-lg mb-4'>Transactions for {accountData.name}</h3>
+              <h3 className='font-bold text-lg mb-4'>{t('detail.transactions_for', { name: accountData.name })}</h3>
               <AccountTransactionTable
                 data={transactionsData}
                 totalPages={totalPages}

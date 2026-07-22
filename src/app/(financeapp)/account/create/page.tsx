@@ -1,14 +1,16 @@
 import { CreateAccountForm } from '@/components/CreateAccountForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import { getTranslations } from 'next-intl/server'
 
-export default function CreateAccountPage() {
+export default async function CreateAccountPage() {
+  const t = await getTranslations('handledmoney.account')
   return (
     <FormWrapper
-      title='Create Account'
-      description='Set up your account details.'
+      title={t('create.title')}
+      description={t('create.description')}
       oldPath='/account'
-      oldPathTitle='Accounts'
-      pathTitle='Create'
+      oldPathTitle={t('breadcrumbs.accounts')}
+      pathTitle={t('breadcrumbs.create')}
     >
       <CreateAccountForm />
     </FormWrapper>

@@ -146,6 +146,106 @@
         "description": "Elimina permanentemente tu cuenta y todos los datos financieros asociados.",
         "delete_button": "ELIMINAR CUENTA"
       }
+    },
+    "account": {
+      "breadcrumbs": {
+        "accounts": "Cuentas",
+        "create": "Crear",
+        "edit": "Editar"
+      },
+      "empty_state": {
+        "title": "Aún no tenés cuentas vinculadas",
+        "description": "Para empezar a seguir tu salud financiero y tener claridad en tus gastos, necesitás vincular tus cuentas bancarias o crear una cuenta de seguimiento manual.",
+        "add_first_account": "Agregá tu primera cuenta",
+        "import_data": "Importar datos"
+      },
+      "action": {
+        "search_placeholder": "Buscar cuentas...",
+        "new_account": "Nueva cuenta",
+        "filter_currency": "Moneda",
+        "sort_highest_balance": "Mayor saldo",
+        "sort_account_name": "Nombre de cuenta",
+        "sort_recently_added": "Agregadas recientemente"
+      },
+      "card": {
+        "details": "Detalles",
+        "edit_account": "Editar cuenta",
+        "delete_account": "Eliminar cuenta",
+        "options_aria": "Opciones de cuenta",
+        "unknown_bank": "Banco desconocido",
+        "unnamed_account": "Cuenta sin nombre",
+        "general_type": "General",
+        "add_new_account": "Agregar nueva cuenta",
+        "connect_description": "Conectar un banco o billetera"
+      },
+      "info": {
+        "current_balance": "Saldo actual",
+        "export_csv": "Exportar CSV"
+      },
+      "detail": {
+        "error": "Error",
+        "total_income": "Ingresos totales",
+        "total_expenses": "Gastos totales",
+        "net_flow": "Flujo neto",
+        "avg_daily_spend": "Gasto diario promedio",
+        "transactions_for": "Transacciones de {name}"
+      },
+      "form": {
+        "account_name": "Nombre de cuenta",
+        "account_name_placeholder": "ej., Caja de ahorro principal",
+        "account_name_description": "Debe ser un nombre único en tus registros.",
+        "update_name_description": "Actualizá el nombre en tus registros.",
+        "bank_name": "Nombre del banco",
+        "bank_name_placeholder": "ej., Banco Nación",
+        "account_type": "Tipo de cuenta",
+        "select_placeholder": "Seleccionar",
+        "currency": "Moneda",
+        "appearance": "Apariencia de la cuenta",
+        "select_icon": "Seleccionar ícono",
+        "account_color": "Color de la cuenta",
+        "create_button": "Crear cuenta",
+        "creating": "Creando\u2026",
+        "update_button": "Actualizar cuenta",
+        "updating": "Actualizando\u2026",
+        "error_generic": "Algo salió mal"
+      },
+      "delete": {
+        "title": "Eliminar cuenta",
+        "description": "¿Estás seguro de que querés eliminar {name}? Esta acción no se puede deshacer.",
+        "has_transactions_warning": "Esta cuenta tiene transacciones activas. Necesitás transferirlas a otra cuenta antes de eliminar.",
+        "transfer_to": "Transferir a:",
+        "select_account": "Seleccionar una cuenta",
+        "no_transactions": "Esta cuenta no tiene transacciones.",
+        "cancel": "Cancelar",
+        "confirm_button": "Eliminar cuenta",
+        "deleting": "Eliminando...",
+        "error_no_transfer": "Por favor seleccioná una cuenta a la que transferir las transacciones.",
+        "error_generic": "Algo salió mal"
+      },
+      "table": {
+        "confirm_title": "¿Estás seguro?",
+        "confirm_description": "Vas a realizar una eliminación masiva.",
+        "no_results": "Sin resultados.",
+        "rows_selected": "{selected} de {total} fila(s) seleccionada(s).",
+        "previous": "Anterior",
+        "next": "Siguiente"
+      },
+      "filter": {
+        "clear": "Limpiar filtro"
+      },
+      "sort": {
+        "by": "Ordenar por"
+      },
+      "create": {
+        "title": "Crear cuenta",
+        "description": "Configurá los datos de tu cuenta."
+      },
+      "edit": {
+        "title": "Editar cuenta",
+        "description": "Actualizá los datos de tu cuenta.",
+        "not_found": "Cuenta no encontrada",
+        "go_back": "Volver a las cuentas"
+      }
     }
   }
 }

@@ -12,6 +12,7 @@ import {
 import { ACCOUNT_TYPES, CURRENCIES } from '@/lib/data'
 import { CreateAccountSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -25,6 +26,7 @@ type CreateAccountValues = z.infer<typeof CreateAccountSchema>
 export function CreateAccountForm() {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
+  const t = useTranslations('handledmoney.account')
 
   const form = useForm<CreateAccountValues>({
     resolver: zodResolver(CreateAccountSchema),
@@ -51,7 +53,7 @@ export function CreateAccountForm() {
       }
     } catch (error) {
       console.log(error, 'error')
-      toast.error('Something went wrong')
+      toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
       router.push('/account')
@@ -75,19 +77,19 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-name'>Account Name</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-name'>{t('form.account_name')}</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
                         id='form-create-account-name'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., Main Savings'
+                        placeholder={t('form.account_name_placeholder')}
                         autoComplete='off'
                         spellCheck={false}
                         disabled={isPending}
                       />
                     </InputGroup>
-                    <FieldDescription>Must be a unique name for your records.</FieldDescription>
+                    <FieldDescription>{t('form.account_name_description')}</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -97,13 +99,13 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-bank'>Bank Name</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-bank'>{t('form.bank_name')}</FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
                         id='form-create-account-bank'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., Chase Bank'
+                        placeholder={t('form.bank_name_placeholder')}
                         autoComplete='organization'
                         disabled={isPending}
                       />
@@ -120,19 +122,19 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-type'>Account Type</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-type'>{t('form.account_type')}</FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id='form-create-account-type'
                         aria-invalid={fieldState.invalid}
                         className='w-full'
                       >
-                        <SelectValue placeholder='Select' />
+                        <SelectValue placeholder={t('form.select_placeholder')} />
                       </SelectTrigger>
                       <SelectContent position='item-aligned'>
-                        {ACCOUNT_TYPES.map(t => (
-                          <SelectItem key={t.value} value={t.value}>
-                            {t.label}
+                        {ACCOUNT_TYPES.map(accountType => (
+                          <SelectItem key={accountType.value} value={accountType.value}>
+                            {accountType.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -146,14 +148,14 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-currency'>Currency</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-currency'>{t('form.currency')}</FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id='form-create-account-currency'
                         aria-invalid={fieldState.invalid}
                         className='w-full'
                       >
-                        <SelectValue placeholder='Select' />
+                        <SelectValue placeholder={t('form.select_placeholder')} />
                       </SelectTrigger>
                       <SelectContent position='item-aligned'>
                         {CURRENCIES.map(c => (
@@ -185,8 +187,8 @@ export function CreateAccountForm() {
         <FormActions
           onCancel={handleCancel}
           isPending={isPending}
-          text='Create Account'
-          loadingText='Creating…'
+          text={t('form.create_button')}
+          loadingText={t('form.creating')}
         />
       </form>
     </div>

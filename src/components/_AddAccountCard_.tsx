@@ -1,9 +1,14 @@
+'use client'
+
 import { PlusIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 
 const PLUS_ICON = <PlusIcon aria-hidden='true' />
 
 export function AddAccountCard() {
+  const t = useTranslations('handledmoney.account')
+
   return (
     <Link
       href='/account/create'
@@ -13,8 +18,8 @@ export function AddAccountCard() {
         {PLUS_ICON}
       </div>
       <div className='text-center'>
-        <p className='font-bold text-slate-600 dark:text-slate-300'>Add New Account</p>
-        <p className='text-xs text-slate-400'>Connect a bank or wallet</p>
+        <p className='font-bold text-slate-600 dark:text-slate-300'>{t('card.add_new_account')}</p>
+        <p className='text-xs text-slate-400'>{t('card.connect_description')}</p>
       </div>
     </Link>
   )
