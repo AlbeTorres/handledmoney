@@ -1,10 +1,9 @@
 import AccountAction from '@/components/AccountAction'
 import { AccountGrid } from '@/components/AccountGrid'
+import { EmptyState } from '@/components/EmptyState'
 import { auth } from '@/lib/auth'
 import { getBankAccountsByUser } from '@/repository/account'
-import { Plus } from 'lucide-react'
 import { headers } from 'next/headers'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 interface AccountPageProps {
@@ -21,21 +20,25 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   const accounts = (await getBankAccountsByUser(session.user.id)) || []
 
   const resolvedSearchParams = await searchParams
-  const tab = (resolvedSearchParams.tab as string) || 'default'
+
+  const currency = resolvedSearchParams.currency
+    ? (resolvedSearchParams.currency as string).split(',')
+    : []
   const sort = (resolvedSearchParams.sort as string) || 'default'
   const search = (resolvedSearchParams.search as string) || ''
 
   if (!accounts || accounts.length === 0) {
     return (
       <div className='m-auto flex  flex-col justify-center items-center gap-4'>
-        <p>No accounts found</p>
-        <Link
-          href={'/account/create'}
-          className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
-        >
-          <Plus className='size-4' />
-          New Account
-        </Link>
+        <EmptyState
+          title='No accounts linked yet'
+          description="To start tracking your financial health and gaining clarity on your spending, you'll need to link your bank accounts or manually create a tracking account."
+          primaryActionText='Add Your First Account'
+          onPrimaryActionHref='/account/create'
+          showImportButton={true}
+          importActionText='Import Data'
+          onImportAction='/transaction/bulk'
+        />
       </div>
     )
   }
@@ -43,7 +46,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   return (
     <div className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>
       <AccountAction />
-      <AccountGrid accounts={accounts} tab={tab} sort={sort} search={search} />
+      <AccountGrid accounts={accounts} currency={currency} sort={sort} search={search} />
     </div>
   )
 }

@@ -3,24 +3,24 @@ import { AccountCardWrapper } from './AccountCardWrapper'
 
 interface AccountGridProps {
   accounts: Account[]
-  tab?: string
+  currency?: string[]
   sort?: string
   search?: string
 }
 
-export async function AccountGrid({ accounts, tab, sort, search }: AccountGridProps) {
+export async function AccountGrid({ accounts, currency, sort, search }: AccountGridProps) {
   const otherAccountsList = accounts.map(a => ({ id: a.id, name: a.name ?? 'Unnamed' }))
 
   const filteredAccounts = accounts
     .filter(a => {
-      const matchesTab = tab === 'All' || tab === 'default' || a.currency === tab
+      const matchesCurrency = !currency || currency.length === 0 || currency.includes(a.currency)
       const matchesSearch = !search || (a.name ?? '').toLowerCase().includes(search.toLowerCase())
-      return matchesTab && matchesSearch
+      return matchesCurrency && matchesSearch
     })
     .sort((a, b) => {
-      if (sort === 'Highest Balance') return (Number(b.balance) ?? 0) - (Number(a.balance) ?? 0)
-      if (sort === 'Account Name') return (a.name ?? '').localeCompare(b.name ?? '')
-      if (sort === 'Recently Added') return b.createdAt.getTime() - a.createdAt.getTime()
+      if (sort === 'highest_balance') return (Number(b.balance) ?? 0) - (Number(a.balance) ?? 0)
+      if (sort === 'account_name') return (a.name ?? '').localeCompare(b.name ?? '')
+      if (sort === 'recently_added') return b.createdAt.getTime() - a.createdAt.getTime()
       return 0
     })
 

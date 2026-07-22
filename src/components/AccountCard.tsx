@@ -7,7 +7,6 @@ import {
 } from './ui/dropdown-menu'
 
 export interface AccountCardProps {
-  id: string
   institution: string
   name: string
   balance: string
@@ -24,24 +23,17 @@ export interface AccountCardProps {
 }
 
 export function AccountCard({
-  id,
   institution,
   name,
   balance,
-  decimal = '.00',
   currency,
   detail,
-  status,
-  statusVariant,
   accentColor,
   Icon,
   onEdit,
   onDelete,
   onDetails,
 }: AccountCardProps) {
-  const statusColors =
-    statusVariant === 'due' ? 'bg-amber-500 text-amber-500' : 'bg-emerald-500 text-emerald-500'
-
   return (
     <div
       className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 transition-all relative`}
