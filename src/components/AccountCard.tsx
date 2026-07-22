@@ -1,4 +1,7 @@
+'use client'
+
 import { LucideIcon, MoreVertical } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -34,6 +37,8 @@ export function AccountCard({
   onDelete,
   onDetails,
 }: AccountCardProps) {
+  const t = useTranslations('handledmoney.account')
+
   return (
     <div
       className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 transition-all relative`}
@@ -51,7 +56,7 @@ export function AccountCard({
           <DropdownMenuTrigger asChild>
             <button
               className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1 cursor-pointer'
-              aria-label='Account options'
+              aria-label={t('card.options_aria')}
               onClick={e => e.stopPropagation()}
             >
               <MoreVertical className='size-5 ' />
@@ -64,7 +69,7 @@ export function AccountCard({
                 onDetails?.()
               }}
             >
-              Details
+              {t('card.details')}
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={e => {
@@ -72,7 +77,7 @@ export function AccountCard({
                 onEdit?.()
               }}
             >
-              Edit Account
+              {t('card.edit_account')}
             </DropdownMenuItem>
             <DropdownMenuItem
               variant='destructive'
@@ -81,7 +86,7 @@ export function AccountCard({
                 onDelete?.()
               }}
             >
-              Delete Account
+              {t('card.delete_account')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -91,9 +96,9 @@ export function AccountCard({
           {institution}
         </p>
         <h3 className='text-xl font-bold text-slate-900 dark:text-white mb-4'>{name}</h3>
-        <div className='flex text-2xl gap-x-2'>
-          <p className=' font-medium uppercase tracking-wider'>{detail}</p>
-          <p>**** **** 8869</p>
+        <div className='flex text-xl gap-x-2'>
+          <p className=' font-medium uppercase'>{detail}</p>
+          <p>**** **** **** ****</p>
         </div>
       </div>
       <div className='mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 w-full'>

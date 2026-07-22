@@ -24,6 +24,7 @@ import {
 } from '@tanstack/react-table'
 import { Trash } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { useCallback, useMemo, useState } from 'react'
 
 // TODO:
@@ -55,6 +56,7 @@ export function DataTable<TData, TValue>({
   currentPage,
   pageSize = 10,
 }: DataTableProps<TData, TValue>) {
+  const t = useTranslations('handledmoney.account')
   const searchParams = useSearchParams()
   const startFromEnd = searchParams.get('startFromEnd') === '1'
 
@@ -97,8 +99,8 @@ export function DataTable<TData, TValue>({
   })
 
   const [ConfirmDialog, confirm] = useConfirm(
-    'Are you sure?',
-    'You are about to perform a bulk delete.',
+    t('table.confirm_title'),
+    t('table.confirm_description'),
   )
   const router = useRouter()
 
@@ -194,7 +196,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className='h-24 text-center'>
-                  No results.
+                  {t('table.no_results')}
                 </TableCell>
               </TableRow>
             )}
@@ -202,8 +204,10 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
       <div className='flex-1 text-sm mt-2 text-muted-foreground'>
-        {table.getFilteredSelectedRowModel().rows.length} of{' '}
-        {table.getFilteredRowModel().rows.length} row(s) selected.
+        {t('table.rows_selected', {
+          selected: table.getFilteredSelectedRowModel().rows.length,
+          total: table.getFilteredRowModel().rows.length,
+        })}
       </div>
       <div className='flex items-center justify-end space-x-2 py-4 px-2'>
         <Button
@@ -212,7 +216,7 @@ export function DataTable<TData, TValue>({
           onClick={handlePrev}
           disabled={!table.getCanPreviousPage() && currentPage === 1}
         >
-          Previous
+          {t('table.previous')}
         </Button>
         <Button
           variant='outline'
@@ -220,7 +224,7 @@ export function DataTable<TData, TValue>({
           onClick={handleNext}
           disabled={!table.getCanNextPage() && currentPage === totalPages}
         >
-          Next
+          {t('table.next')}
         </Button>
       </div>
     </div>

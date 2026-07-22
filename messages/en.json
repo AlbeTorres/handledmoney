@@ -148,6 +148,106 @@
         "description": "Permanently delete your account and all associated financial data.",
         "delete_button": "DELETE ACCOUNT"
       }
+    },
+    "account": {
+      "breadcrumbs": {
+        "accounts": "Accounts",
+        "create": "Create",
+        "edit": "Edit"
+      },
+      "empty_state": {
+        "title": "No accounts linked yet",
+        "description": "To start tracking your financial health and gaining clarity on your spending, you'll need to link your bank accounts or manually create a tracking account.",
+        "add_first_account": "Add Your First Account",
+        "import_data": "Import Data"
+      },
+      "action": {
+        "search_placeholder": "Search accounts...",
+        "new_account": "New Account",
+        "filter_currency": "Currency",
+        "sort_highest_balance": "Highest Balance",
+        "sort_account_name": "Account Name",
+        "sort_recently_added": "Recently Added"
+      },
+      "card": {
+        "details": "Details",
+        "edit_account": "Edit Account",
+        "delete_account": "Delete Account",
+        "options_aria": "Account options",
+        "unknown_bank": "Unknown Bank",
+        "unnamed_account": "Unnamed Account",
+        "general_type": "General",
+        "add_new_account": "Add New Account",
+        "connect_description": "Connect a bank or wallet"
+      },
+      "info": {
+        "current_balance": "Current Balance",
+        "export_csv": "Export CSV"
+      },
+      "detail": {
+        "error": "Error",
+        "total_income": "Total Income",
+        "total_expenses": "Total Expenses",
+        "net_flow": "Net Flow",
+        "avg_daily_spend": "Avg Daily Spend",
+        "transactions_for": "Transactions for {name}"
+      },
+      "form": {
+        "account_name": "Account Name",
+        "account_name_placeholder": "e.g., Main Savings",
+        "account_name_description": "Must be a unique name for your records.",
+        "update_name_description": "Update the name for your records.",
+        "bank_name": "Bank Name",
+        "bank_name_placeholder": "e.g., Chase Bank",
+        "account_type": "Account Type",
+        "select_placeholder": "Select",
+        "currency": "Currency",
+        "appearance": "Account Appearance",
+        "select_icon": "Select Icon",
+        "account_color": "Account Color",
+        "create_button": "Create Account",
+        "creating": "Creating\u2026",
+        "update_button": "Update Account",
+        "updating": "Updating\u2026",
+        "error_generic": "Something went wrong"
+      },
+      "delete": {
+        "title": "Delete Account",
+        "description": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "has_transactions_warning": "This account has active transactions. You must transfer them to another account before deleting.",
+        "transfer_to": "Transfer to:",
+        "select_account": "Select an account",
+        "no_transactions": "This account has no transactions.",
+        "cancel": "Cancel",
+        "confirm_button": "Delete Account",
+        "deleting": "Deleting...",
+        "error_no_transfer": "Please select an account to transfer transactions to.",
+        "error_generic": "Something went wrong"
+      },
+      "table": {
+        "confirm_title": "Are you sure?",
+        "confirm_description": "You are about to perform a bulk delete.",
+        "no_results": "No results.",
+        "rows_selected": "{selected} of {total} row(s) selected.",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "filter": {
+        "clear": "Clear filter"
+      },
+      "sort": {
+        "by": "Sort by"
+      },
+      "create": {
+        "title": "Create Account",
+        "description": "Set up your account details."
+      },
+      "edit": {
+        "title": "Edit Account",
+        "description": "Update your account details.",
+        "not_found": "Account not found",
+        "go_back": "Go back to accounts"
+      }
     }
   }
 }

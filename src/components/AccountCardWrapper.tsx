@@ -1,6 +1,7 @@
 'use client'
 
 import { getIconComponent } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AccountCard } from './AccountCard'
@@ -29,6 +30,7 @@ export function AccountCardWrapper({
 }: AccountCardWrapperProps) {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const router = useRouter()
+  const t = useTranslations('handledmoney.account')
 
   const handleDetails = () => {
     router.push(`/account/${account.id}`)
@@ -49,8 +51,8 @@ export function AccountCardWrapper({
     <>
       <TiltCardWrapper>
         <AccountCard
-          institution={account.bank ?? 'Unknown Bank'}
-          name={account.name ?? 'Unnamed Account'}
+          institution={account.bank ?? t('card.unknown_bank')}
+          name={account.name ?? t('card.unnamed_account')}
           balance={
             account.balance
               ? parseFloat(account.balance).toLocaleString('en-US', {
@@ -60,7 +62,7 @@ export function AccountCardWrapper({
               : '$0.00'
           }
           currency={account.currency ?? 'USD'}
-          detail={account.type ?? 'General'}
+          detail={account.type ?? t('card.general_type')}
           status='Active' // Hardcoded for now as per current design
           statusVariant='active'
           accentColor={account.color ? `#${account.color}` : '#3b82f6'}
@@ -73,7 +75,7 @@ export function AccountCardWrapper({
 
       <DeleteAccountDialog
         id={account.id}
-        name={account.name ?? 'Unnamed Account'}
+        name={account.name ?? t('card.unnamed_account')}
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         hasTransactions={hasTransactions}

@@ -1,6 +1,7 @@
 // components/FilterDropdown.tsx
 'use client'
 
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { Check, ChevronDown, ListFilter } from 'lucide-react'
 import { Badge } from './ui/badge'
@@ -27,6 +28,8 @@ type Props = {
 }
 
 export default function FilterDropdown({ label, options, selected, onChange }: Props) {
+  const t = useTranslations('handledmoney.account')
+
   const toggle = (value: string) => {
     if (selected.includes(value)) {
       onChange(selected.filter(v => v !== value))
@@ -84,7 +87,7 @@ export default function FilterDropdown({ label, options, selected, onChange }: P
               onSelect={clear}
               className='text-muted-foreground cursor-pointer justify-center'
             >
-              Clear filter
+              {t('filter.clear')}
             </DropdownMenuItem>
           </>
         )}

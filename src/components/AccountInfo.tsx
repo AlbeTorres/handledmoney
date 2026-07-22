@@ -1,3 +1,6 @@
+'use client'
+
+import { useTranslations } from 'next-intl'
 import { fmt, getIconComponent } from '@/lib/utils'
 
 import { Download } from 'lucide-react'
@@ -10,6 +13,7 @@ type AccountInfoProps = {
 }
 
 export const AccountInfo = ({ account }: AccountInfoProps) => {
+  const t = useTranslations('handledmoney.account')
   const Icon = getIconComponent(account.icon ?? 'account_balance')
 
   return (
@@ -39,7 +43,7 @@ export const AccountInfo = ({ account }: AccountInfoProps) => {
         </div>
         <div className='text-right'>
           <p className='text-xs font-bold text-slate-400 uppercase tracking-widest mb-1'>
-            Current Balance
+            {t('info.current_balance')}
           </p>
           <div className='flex items-baseline justify-end gap-1'>
             <span className='text-4xl font-black text-slate-900 dark:text-white'>
@@ -52,7 +56,7 @@ export const AccountInfo = ({ account }: AccountInfoProps) => {
         <div className='flex items-center gap-3'>
           <Button>
             <Download className='size-4' />
-            <span>Export CSV</span>
+            <span>{t('info.export_csv')}</span>
           </Button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { getBankAccountByIdAction } from '@/actions/account/get-account'
 import { EditAccountForm } from '@/components/EditAccountForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 
@@ -11,6 +12,8 @@ interface EditAccountPageProps {
 export default async function EditAccountPage({ params }: EditAccountPageProps) {
   const { id } = await params
 
+  const t = await getTranslations('handledmoney.account')
+
   const response = await getBankAccountByIdAction(id)
 
   if (!response.success || !response.data) {
@@ -18,15 +21,15 @@ export default async function EditAccountPage({ params }: EditAccountPageProps) 
     toast.error(response.message)
     return (
       <FormWrapper
-        title='Edit Account'
-        description='Update your account details.'
+        title={t('edit.title')}
+        description={t('edit.description')}
         oldPath='/account'
-        oldPathTitle='Accounts'
-        pathTitle='Edit'
+        oldPathTitle={t('breadcrumbs.accounts')}
+        pathTitle={t('breadcrumbs.edit')}
       >
         <div className='flex items-center justify-center'>
-          <p>Account not found</p>
-          <Link href='/account'>Go back to accounts</Link>
+          <p>{t('edit.not_found')}</p>
+          <Link href='/account'>{t('edit.go_back')}</Link>
         </div>
       </FormWrapper>
     )
@@ -46,11 +49,11 @@ export default async function EditAccountPage({ params }: EditAccountPageProps) 
 
   return (
     <FormWrapper
-      title='Edit Account'
-      description='Update your account details.'
+      title={t('edit.title')}
+      description={t('edit.description')}
       oldPath='/account'
-      oldPathTitle='Accounts'
-      pathTitle='Edit'
+      oldPathTitle={t('breadcrumbs.accounts')}
+      pathTitle={t('breadcrumbs.edit')}
     >
       <EditAccountForm initialValues={initialValues} />
     </FormWrapper>
