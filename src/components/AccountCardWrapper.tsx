@@ -49,7 +49,6 @@ export function AccountCardWrapper({
     <>
       <TiltCardWrapper>
         <AccountCard
-          id={account.id}
           institution={account.bank ?? 'Unknown Bank'}
           name={account.name ?? 'Unnamed Account'}
           balance={

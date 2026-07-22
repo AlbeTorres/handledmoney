@@ -10,6 +10,7 @@ type Props = {
   placeholder: string
   ariaLabel: string
   buttonText: string
+  children?: React.ReactNode
 }
 
 export default function ActionBar({
@@ -20,6 +21,7 @@ export default function ActionBar({
   placeholder,
   ariaLabel,
   buttonText,
+  children,
 }: Props) {
   return (
     <div className='flex flex-col md:flex-row items-center justify-center gap-4'>
@@ -37,6 +39,8 @@ export default function ActionBar({
           <Search className='size-4 text-slate-400' aria-hidden='true' />
         </InputGroupAddon>
       </InputGroup>
+
+      {children && <div className='flex flex-wrap items-center gap-2'>{children}</div>}
 
       <Link
         href={href}

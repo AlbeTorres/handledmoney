@@ -1,33 +1,29 @@
 'use client'
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useDebouncedSearchParam } from '@/hooks/use-debounced-search-params'
+import { useFilterParam } from '@/hooks/use-filter-params'
+import { useSortParam } from '@/hooks/use-sort-params'
 import ActionBar from './ActionBar'
+import FilterDropdown from './FilterDropdown'
+import SortDropdown from './SortDropdown'
+
+const CURRENCY_OPTIONS = [
+  { label: 'USD', value: 'USD' },
+  { label: 'EUR', value: 'EUR' },
+  { label: 'ARS', value: 'ARS' },
+  { label: 'GBP', value: 'GBP' },
+]
+
+const SORT_OPTIONS = [
+  { label: 'Highest Balance', value: 'highest_balance' },
+  { label: 'Account Name', value: 'account_name' },
+  { label: 'Recently Added', value: 'recently_added' },
+]
 
 export default function AccountAction() {
-  const router = useRouter()
-  const pathname = usePathname()
-  const searchParams = useSearchParams()
-
-  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString())
-      if (searchTerm) {
-        params.set('search', searchTerm)
-      } else {
-        params.delete('search')
-      }
-
-      const newQueryString = params.toString()
-      if (newQueryString !== searchParams.toString()) {
-        router.push(`${pathname}?${newQueryString}`, { scroll: false })
-      }
-    }, 300)
-
-    return () => clearTimeout(timeoutId)
-  }, [searchTerm, pathname, router, searchParams])
+  const [searchTerm, setSearchTerm] = useDebouncedSearchParam('search')
+  const [currency, setCurrency] = useFilterParam('currency')
+  const [sort, setSort] = useSortParam('sort')
   return (
     <>
       <ActionBar
@@ -38,7 +34,15 @@ export default function AccountAction() {
         placeholder='Search accounts...'
         ariaLabel='Search accounts'
         buttonText='New Account'
-      />
+      >
+        <FilterDropdown
+          label='Currency'
+          options={CURRENCY_OPTIONS}
+          selected={currency}
+          onChange={setCurrency}
+        />
+        <SortDropdown options={SORT_OPTIONS} selected={sort} onChange={setSort} />
+      </ActionBar>
     </>
   )
 }

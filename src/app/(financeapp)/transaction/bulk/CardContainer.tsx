@@ -23,15 +23,9 @@ export const CardContainer = ({ accounts }: Props) => {
       return toast.error('Please select an account to continue.')
     }
 
-    console.log('values', values)
-
     const data = values.map(value => ({ ...value, accountId: accountId as string }))
 
-    console.log('data', data)
-
     const response = await createTransactionsBulkAction(data)
-
-    console.log('response', response)
 
     if (!response.success) {
       toast.error(response.message)
