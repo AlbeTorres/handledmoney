@@ -35,6 +35,7 @@ export const createBankAccount = async ({
 }
 
 export const getBankAccountsByUser = async (userId: string) => {
+  //TODO: make this function to dont need props, just return the accounts of the current user using the session like in the getCategoriesByUserAction
   try {
     const accounts = await db
       .select()

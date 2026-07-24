@@ -1,7 +1,7 @@
 type Props = {
-  activeView: string
-  onViewChange: (view: string) => void
-  tabs: string[]
+  activeView: 'expense' | 'income'
+  onViewChange: (view: 'expense' | 'income') => void
+  tabs: ['expense', 'income']
 }
 
 export const Tab = ({ activeView, onViewChange, tabs }: Props) => {
