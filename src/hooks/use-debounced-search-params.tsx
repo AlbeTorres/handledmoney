@@ -18,7 +18,8 @@ export function useDebouncedSearchParam(key: string, delay = 300) {
       }
       const newQueryString = params.toString()
       if (newQueryString !== searchParams.toString()) {
-        router.push(`${pathname}?${newQueryString}`, { scroll: false })
+        const url = newQueryString ? `${pathname}?${newQueryString}` : pathname
+        router.push(url, { scroll: false })
       }
     }, delay)
 
