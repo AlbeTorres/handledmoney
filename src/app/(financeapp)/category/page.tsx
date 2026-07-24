@@ -11,7 +11,7 @@ interface CategoryPageProps {
 export default async function CategoryPage({ searchParams }: CategoryPageProps) {
   const result = await getCategoriesByUserAction()
 
-  const t = await getTranslations('handledmoney.account')
+  const t = await getTranslations('handledmoney.category')
 
   const categories = result.data || []
   const resolvedSearchParams = await searchParams
@@ -23,8 +23,8 @@ export default async function CategoryPage({ searchParams }: CategoryPageProps) 
     return (
       <div className='m-auto flex  flex-col justify-center items-center gap-4'>
         <EmptyState
-          title={t('empty_state.add_first_category_title')}
-          description={t('empty_state.add_first_category_description')}
+          title={t('empty_state.title')}
+          description={t('empty_state.description')}
           primaryActionText={t('empty_state.add_first_category')}
           onPrimaryActionHref='/category/create'
           showImportButton={false}

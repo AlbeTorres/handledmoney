@@ -3,9 +3,11 @@
 import { deleteCategoryAction } from '@/actions/category/delete-category'
 import { updateCategoryAction } from '@/actions/category/update-category'
 import { useConfirm } from '@/hooks/use-confirm'
+
 import { ICONS } from '@/lib/data'
 import { UpdateCategorySchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -22,10 +24,8 @@ type EditCategoryValues = z.infer<typeof UpdateCategorySchema>
 export function EditCategoryForm({ initialValues }: { initialValues: EditCategoryValues }) {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
-  const [ConfirmationDialog, confirm] = useConfirm(
-    'Delete Category',
-    'Are you sure you want to delete this category? This action cannot be undone.',
-  )
+  const t = useTranslations('handledmoney.category')
+  const [ConfirmationDialog, confirm] = useConfirm(t('delete.title'), t('delete.description'))
 
   const form = useForm<EditCategoryValues>({
     resolver: zodResolver(UpdateCategorySchema),
@@ -47,7 +47,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
         toast.error(response.message)
       }
     } catch (error) {
-      toast.error('Something went wrong')
+      toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
     }
@@ -68,7 +68,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
         toast.error(response.message)
       }
     } catch (error) {
-      toast.error('Something went wrong')
+      toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
     }
@@ -97,19 +97,21 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-name'>Account Name</FieldLabel>
+                    <FieldLabel htmlFor='form-edit-category-name'>
+                      {t('form.category_name')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-create-account-name'
+                        id='form-edit-category-name'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., Main Savings'
+                        placeholder={t('form.category_name_placeholder')}
                         autoComplete='off'
                         spellCheck={false}
                         disabled={isPending}
                       />
                     </InputGroup>
-                    <FieldDescription>Must be a unique name for your records.</FieldDescription>
+                    <FieldDescription>{t('form.update_name_description')}</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -121,7 +123,9 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor='form-create-account-name'>Transaction Type</FieldLabel>
+                      <FieldLabel htmlFor='form-edit-category-type'>
+                        {t('form.transaction_type')}
+                      </FieldLabel>
                       <div className='flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl'>
                         <button
                           type='button'
@@ -132,7 +136,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                               : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                           }`}
                         >
-                          Expense
+                          {t('form.type_expense')}
                         </button>
                         <button
                           type='button'
@@ -143,7 +147,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                               : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                           }`}
                         >
-                          Income
+                          {t('form.type_income')}
                         </button>
                       </div>
                     </Field>
@@ -168,8 +172,8 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
             onCancel={handleCancel}
             handleDelete={handleDelete}
             isPending={isPending}
-            text='Update Category'
-            loadingText='Updating…'
+            text={t('form.update_button')}
+            loadingText={t('form.updating')}
           />
         </form>
       </div>

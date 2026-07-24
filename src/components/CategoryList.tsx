@@ -1,6 +1,7 @@
 'use client'
 
 import { CategorySelect } from '@/repository/categories'
+import { useTranslations } from 'next-intl'
 import { Search } from 'lucide-react'
 
 import { CategoryCard } from './CategoryCard'
@@ -10,14 +11,16 @@ interface CategoryListProps {
 }
 
 export function CategoryList({ categories }: CategoryListProps) {
+  const t = useTranslations('handledmoney.category')
+
   if (categories.length === 0) {
     return (
       <div className='flex flex-col items-center justify-center py-20 text-center opacity-50'>
         <div className='size-16 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4'>
           <Search className='size-8 text-slate-400' />
         </div>
-        <p className='text-sm text-slate-500 font-medium'>No categories found</p>
-        <p className='text-xs text-slate-400 mt-1'>Try adjusting your search</p>
+        <p className='text-sm text-slate-500 font-medium'>{t('list.no_results')}</p>
+        <p className='text-xs text-slate-400 mt-1'>{t('list.try_adjusting_search')}</p>
       </div>
     )
   }

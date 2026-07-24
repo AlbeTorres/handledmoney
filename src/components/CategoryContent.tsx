@@ -19,7 +19,7 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
       return matchesType && matchesSearch
     })
     .sort((a, b) => {
-      if (sort === 'account_name') return (a.name ?? '').localeCompare(b.name ?? '')
+      if (sort === 'category_name') return (a.name ?? '').localeCompare(b.name ?? '')
       if (sort === 'recently_added') return b.createdAt.getTime() - a.createdAt.getTime()
       return 0
     })

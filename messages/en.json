@@ -248,6 +248,95 @@
         "not_found": "Account not found",
         "go_back": "Go back to accounts"
       }
+    },
+    "category": {
+      "breadcrumbs": {
+        "categories": "Categories",
+        "create": "Create",
+        "edit": "Edit"
+      },
+      "empty_state": {
+        "title": "No categories yet",
+        "description": "Create categories to organize your transactions and gain clarity on your spending patterns.",
+        "add_first_category": "Add Your First Category"
+      },
+      "action": {
+        "search_placeholder": "Search categories...",
+        "new_category": "New Category",
+        "filter_view": "Type",
+        "sort_category_name": "Category Name",
+        "sort_recently_added": "Recently Added",
+        "unauthorized_user": "Unauthorized User",
+        "invalid_fields": "Invalid fields!",
+        "category_already_exists": "A category with this name already exists for this type",
+        "max_hierarchy_depth": "Maximum hierarchy depth reached (2 levels)",
+        "category_created_success": "Category created successfully",
+        "category_not_found": "Category not found",
+        "delete_subcategories_first": "Please delete subcategories first",
+        "category_deleted_success": "Category deleted successfully",
+        "category_updated_success": "Category updated successfully",
+        "something_went_wrong": "Something went wrong"
+      },
+      "card": {
+        "category_name": "Category Name",
+        "type": "Type",
+        "uncategorized": "Uncategorized"
+      },
+      "form": {
+        "category_name": "Category Name",
+        "category_name_placeholder": "e.g., Groceries",
+        "category_name_description": "Must be a unique name for your records.",
+        "update_name_description": "Update the name for your records.",
+        "transaction_type": "Transaction Type",
+        "type_expense": "Expense",
+        "type_income": "Income",
+        "create_button": "Create Category",
+        "creating": "Creating\u2026",
+        "update_button": "Update Category",
+        "updating": "Updating\u2026",
+        "error_generic": "Something went wrong"
+      },
+      "delete": {
+        "title": "Delete Category",
+        "description": "Are you sure you want to delete this category? This action cannot be undone.",
+        "confirm_button": "Delete Category",
+        "cancel_button": "Cancel",
+        "deleting": "Deleting\u2026",
+        "error_generic": "Something went wrong"
+      },
+      "filter": {
+        "expenses": "Expenses",
+        "income": "Income"
+      },
+      "sort": {
+        "category_name": "Category Name",
+        "recently_added": "Recently Added"
+      },
+      "preview": {
+        "live_preview": "Live Preview",
+        "category_name": "Category Name",
+        "type": "Type"
+      },
+      "column": {
+        "uncategorized": "Uncategorized"
+      },
+      "list": {
+        "no_results": "No categories found",
+        "try_adjusting_search": "Try adjusting your search"
+      },
+      "create": {
+        "title": "Create Category",
+        "description": "Define a new category to organize your finances.",
+        "button": "Create"
+      },
+      "edit": {
+        "title": "Edit Category",
+        "description": "Update your category details or hierarchy.",
+        "button": "Edit",
+        "not_found": "Category not found",
+        "not_found_description": "The category you are trying to edit does not exist.",
+        "go_back": "Go back to categories"
+      }
     }
   }
 }
