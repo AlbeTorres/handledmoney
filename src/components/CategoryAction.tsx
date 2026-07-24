@@ -8,20 +8,20 @@ import ActionBar from './ActionBar'
 import FilterDropdown from './FilterDropdown'
 import SortDropdown from './SortDropdown'
 
-const VIEW_OPTIONS = [
-  { label: 'EXPENSES', value: 'expenses' },
-  { label: 'INCOME', value: 'income' },
-]
-
 export default function CategoryAction() {
   const [searchTerm, setSearchTerm] = useDebouncedSearchParam('search')
   const [sort, setSort] = useSortParam('sort')
   const [type, setType] = useFilterParam('type')
-  const t = useTranslations('handledmoney.account')
+  const t = useTranslations('handledmoney.category')
+
+  const VIEW_OPTIONS = [
+    { label: t('filter.expenses'), value: 'expenses' },
+    { label: t('filter.income'), value: 'income' },
+  ]
 
   const SORT_OPTIONS = [
-    { label: t('action.sort_account_name'), value: 'account_name' },
-    { label: t('action.sort_recently_added'), value: 'recently_added' },
+    { label: t('sort.category_name'), value: 'category_name' },
+    { label: t('sort.recently_added'), value: 'recently_added' },
   ]
 
   return (

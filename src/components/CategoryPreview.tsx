@@ -1,4 +1,7 @@
+'use client'
+
 import { LucideIcon } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 type CategoryPreviewProps = {
   name: string
@@ -8,11 +11,13 @@ type CategoryPreviewProps = {
 }
 
 export const CategoryPreview = ({ name, color, type, Icon }: CategoryPreviewProps) => {
+  const t = useTranslations('handledmoney.category')
+
   return (
     <div className='pt-8 border-t border-slate-100 dark:border-slate-800'>
       <div className='max-w-sm mx-auto p-2'>
         <label className='block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 text-center'>
-          Live Preview
+          {t('preview.live_preview')}
         </label>
         <div
           className='flex items-center p-5 rounded-2xl border transition-all shadow-sm'
@@ -32,10 +37,10 @@ export const CategoryPreview = ({ name, color, type, Icon }: CategoryPreviewProp
           </div>
           <div>
             <h4 className='font-bold text-base' style={{ color: '#0f172a' }}>
-              {name || 'Category Name'}
+              {name || t('preview.category_name')}
             </h4>
             <p className='text-xs font-semibold' style={{ color: '#' + color }}>
-              {type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Type'}
+              {type ? type.charAt(0).toUpperCase() + type.slice(1) : t('preview.type')}
             </p>
           </div>
         </div>

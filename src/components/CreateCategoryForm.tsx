@@ -4,6 +4,7 @@ import { createCategoryAction } from '@/actions/category/create-category'
 import { ICONS } from '@/lib/data'
 import { CategoryFormData, categorySchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -20,6 +21,7 @@ type CreateCategoryValues = z.infer<typeof categorySchema>
 export function CreateCategoryForm() {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
+  const t = useTranslations('handledmoney.category')
 
   const form = useForm<CreateCategoryValues>({
     resolver: zodResolver(categorySchema),
@@ -47,7 +49,7 @@ export function CreateCategoryForm() {
         toast.error(response.message)
       }
     } catch (error) {
-      toast.error('Something went wrong')
+      toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
     }
@@ -75,19 +77,21 @@ export function CreateCategoryForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-name'>Account Name</FieldLabel>
+                    <FieldLabel htmlFor='form-create-category-name'>
+                      {t('form.category_name')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-create-account-name'
+                        id='form-create-category-name'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., Main Savings'
+                        placeholder={t('form.category_name_placeholder')}
                         autoComplete='off'
                         spellCheck={false}
                         disabled={isPending}
                       />
                     </InputGroup>
-                    <FieldDescription>Must be a unique name for your records.</FieldDescription>
+                    <FieldDescription>{t('form.category_name_description')}</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -99,7 +103,9 @@ export function CreateCategoryForm() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor='form-create-account-name'>Transaction Type</FieldLabel>
+                      <FieldLabel htmlFor='form-create-category-type'>
+                        {t('form.transaction_type')}
+                      </FieldLabel>
                       <div className='flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl'>
                         <button
                           type='button'
@@ -110,7 +116,7 @@ export function CreateCategoryForm() {
                               : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                           }`}
                         >
-                          Expense
+                          {t('form.type_expense')}
                         </button>
                         <button
                           type='button'
@@ -121,7 +127,7 @@ export function CreateCategoryForm() {
                               : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
                           }`}
                         >
-                          Income
+                          {t('form.type_income')}
                         </button>
                       </div>
                     </Field>
@@ -145,8 +151,8 @@ export function CreateCategoryForm() {
           <FormActions
             onCancel={handleCancel}
             isPending={isPending}
-            text='Create Account'
-            loadingText='Creating…'
+            text={t('form.create_button')}
+            loadingText={t('form.creating')}
           />
         </form>
       </div>

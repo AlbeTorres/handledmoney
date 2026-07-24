@@ -3,6 +3,7 @@
 import { ICONS } from '@/lib/data'
 import { CategorySelect } from '@/repository/categories'
 import { ChevronRight } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 interface CategoryCardProps {
@@ -10,6 +11,7 @@ interface CategoryCardProps {
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {
+  const t = useTranslations('handledmoney.category')
   const IconData =
     ICONS.find(i => i.name === category.icon) || ICONS.find(i => i.name === 'more_horizontal')
   const Icon = IconData?.icon || ICONS[0].icon
@@ -38,12 +40,12 @@ export function CategoryCard({ category }: CategoryCardProps) {
           </div>
           <div>
             <h4 className='font-bold text-base' style={{ color: '#0f172a' }}>
-              {category.name || 'Category Name'}
+              {category.name || t('card.category_name')}
             </h4>
             <p className='text-xs font-semibold' style={{ color: color }}>
               {category.type
                 ? category.type.charAt(0).toUpperCase() + category.type.slice(1)
-                : 'Type'}
+                : t('card.type')}
             </p>
           </div>
         </div>

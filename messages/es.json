@@ -246,6 +246,95 @@
         "not_found": "Cuenta no encontrada",
         "go_back": "Volver a las cuentas"
       }
+    },
+    "category": {
+      "breadcrumbs": {
+        "categories": "Categorías",
+        "create": "Crear",
+        "edit": "Editar"
+      },
+      "empty_state": {
+        "title": "Aún no tenés categorías",
+        "description": "Creá categorías para organizar tus transacciones y tener claridad en tus patrones de gasto.",
+        "add_first_category": "Agregá tu primera categoría"
+      },
+      "action": {
+        "search_placeholder": "Buscar categorías...",
+        "new_category": "Nueva categoría",
+        "filter_view": "Tipo",
+        "sort_category_name": "Nombre de categoría",
+        "sort_recently_added": "Agregadas recientemente",
+        "unauthorized_user": "Usuario no autorizado",
+        "invalid_fields": "¡Campos inválidos!",
+        "category_already_exists": "Ya existe una categoría con este nombre para este tipo",
+        "max_hierarchy_depth": "Se alcanzó la profundidad máxima de jerarquía (2 niveles)",
+        "category_created_success": "Categoría creada exitosamente",
+        "category_not_found": "Categoría no encontrada",
+        "delete_subcategories_first": "Por favor eliminá las subcategorías primero",
+        "category_deleted_success": "Categoría eliminada exitosamente",
+        "category_updated_success": "Categoría actualizada exitosamente",
+        "something_went_wrong": "Algo salió mal"
+      },
+      "card": {
+        "category_name": "Nombre de categoría",
+        "type": "Tipo",
+        "uncategorized": "Sin categoría"
+      },
+      "form": {
+        "category_name": "Nombre de categoría",
+        "category_name_placeholder": "ej., Supermercado",
+        "category_name_description": "Debe ser un nombre único en tus registros.",
+        "update_name_description": "Actualizá el nombre en tus registros.",
+        "transaction_type": "Tipo de transacción",
+        "type_expense": "Gasto",
+        "type_income": "Ingreso",
+        "create_button": "Crear categoría",
+        "creating": "Creando\u2026",
+        "update_button": "Actualizar categoría",
+        "updating": "Actualizando\u2026",
+        "error_generic": "Algo salió mal"
+      },
+      "delete": {
+        "title": "Eliminar categoría",
+        "description": "¿Estás seguro de que querés eliminar esta categoría? Esta acción no se puede deshacer.",
+        "confirm_button": "Eliminar categoría",
+        "cancel_button": "Cancelar",
+        "deleting": "Eliminando\u2026",
+        "error_generic": "Algo salió mal"
+      },
+      "filter": {
+        "expenses": "Gastos",
+        "income": "Ingresos"
+      },
+      "sort": {
+        "category_name": "Nombre de categoría",
+        "recently_added": "Agregadas recientemente"
+      },
+      "preview": {
+        "live_preview": "Vista previa",
+        "category_name": "Nombre de categoría",
+        "type": "Tipo"
+      },
+      "column": {
+        "uncategorized": "Sin categoría"
+      },
+      "list": {
+        "no_results": "No se encontraron categorías",
+        "try_adjusting_search": "Intentá ajustar tu búsqueda"
+      },
+      "create": {
+        "title": "Crear categoría",
+        "description": "Definí una nueva categoría para organizar tus finanzas.",
+        "button": "Crear"
+      },
+      "edit": {
+        "title": "Editar categoría",
+        "description": "Actualizá los datos o la jerarquía de tu categoría.",
+        "button": "Editar",
+        "not_found": "Categoría no encontrada",
+        "not_found_description": "La categoría que intentás editar no existe.",
+        "go_back": "Volver a las categorías"
+      }
     }
   }
 }
