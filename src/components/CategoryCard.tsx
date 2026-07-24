@@ -3,7 +3,6 @@
 import { ICONS } from '@/lib/data'
 import { CategorySelect } from '@/repository/categories'
 import { ChevronRight } from 'lucide-react'
-
 import Link from 'next/link'
 
 interface CategoryCardProps {
@@ -17,28 +16,39 @@ export function CategoryCard({ category }: CategoryCardProps) {
 
   // Calculate opacity/tint for background
   const color = '#' + category.color || '#94a3b8'
-  const bgColor = color + '20'
 
   return (
-    <Link
-      href={`/category/${category.id}/edit`}
-      className='flex items-center p-4 rounded-xl hover:shadow-md transition-all cursor-pointer group'
-      style={{
-        backgroundColor: bgColor,
-      }}
-    >
+    <Link href={`/category/${category.id}/edit`} className=''>
       <div
-        className='size-12 rounded-xl text-white flex items-center justify-center mr-4 transition-all'
+        className='flex justify-between items-center p-5 rounded-2xl border duration-300 shadow-sm hover:shadow-md transition-all cursor-pointer group'
         style={{
-          backgroundColor: color,
+          backgroundColor: color + '08',
+          borderColor: color + '30',
         }}
       >
-        <Icon className='size-6 transition-transform group-hover:scale-110' />
+        <div className='flex items-center'>
+          <div
+            className='size-14 rounded-2xl flex items-center justify-center text-white mr-5 shadow-lg shadow-black/5 transition-all'
+            style={{
+              backgroundColor: color,
+              boxShadow: `0 10px 20px -5px ${color}40`,
+            }}
+          >
+            <Icon className='size-6 transition-transform group-hover:scale-110' />
+          </div>
+          <div>
+            <h4 className='font-bold text-base' style={{ color: '#0f172a' }}>
+              {category.name || 'Category Name'}
+            </h4>
+            <p className='text-xs font-semibold' style={{ color: color }}>
+              {category.type
+                ? category.type.charAt(0).toUpperCase() + category.type.slice(1)
+                : 'Type'}
+            </p>
+          </div>
+        </div>
+        <ChevronRight className='size-5 text-slate-400 transition-transform group-hover:translate-x-1' />
       </div>
-      <div className='flex-1'>
-        <h4 className='font-bold text-sm'>{category.name}</h4>
-      </div>
-      <ChevronRight className='size-5 text-slate-400 transition-transform group-hover:translate-x-1' />
     </Link>
   )
 }
