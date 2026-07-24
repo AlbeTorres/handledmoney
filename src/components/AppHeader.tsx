@@ -1,5 +1,7 @@
+'use client'
 import { Bell } from 'lucide-react'
 import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 
 interface AppHeaderProps {
   userName: string
@@ -8,11 +10,29 @@ interface AppHeaderProps {
 
 const BELL_ICON = <Bell aria-hidden='true' />
 
+const TITLE_MAP: Record<string, string> = {
+  category: 'Category Overview',
+  account: 'Accounts Overview',
+  transactions: 'Transactions',
+}
+
+function getTitleFromPathname(pathname: string): string {
+  const segments = pathname.split('/').filter(Boolean) // ["category", "create"]
+  const firstSegment = segments[0]
+
+  if (!firstSegment) return 'Accounts Overview' // fallback para "/"
+
+  return TITLE_MAP[firstSegment] ?? firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1)
+}
+
 export function AppHeader({ userName, avatarUrl }: AppHeaderProps) {
+  const pathname = usePathname()
+  const title = getTitleFromPathname(pathname)
+
   return (
     <header className='sticky shadow-sm top-0 z-10 flex items-center justify-between px-8 py-4 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
       <div className='flex items-center gap-8'>
-        <h2 className='text-xl font-bold tracking-tight'>Accounts Overview</h2>
+        <h2 className='text-xl font-bold tracking-tight'>{title}</h2>
       </div>
       <div className='flex items-center gap-3'>
         <button
