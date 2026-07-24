@@ -45,7 +45,7 @@ describe('LoginForm', () => {
     vi.clearAllMocks()
   })
 
-  // ── Renderizado ─────────────────────────────────────────────────────────────
+  // ── Rendering ─────────────────────────────────────────────────────────────
 
   it('renders email field, password field, remember me checkbox and submit button', () => {
     render(<LoginForm />)
@@ -68,7 +68,7 @@ describe('LoginForm', () => {
     expect(screen.getByLabelText('password')).toHaveAttribute('type', 'password')
   })
 
-  // ── Toggle de contraseña ─────────────────────────────────────────────────────
+  // ── Password toggle ───────────────────────────────────────────────────────
 
   it('toggles password visibility when clicking the eye icon', async () => {
     const user = userEvent.setup()
@@ -87,7 +87,7 @@ describe('LoginForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'password')
   })
 
-  // ── Validación ───────────────────────────────────────────────────────────────
+  // ── Validation ────────────────────────────────────────────────────────────
 
   it('does not call signIn when submitting with empty fields', async () => {
     const user = userEvent.setup()
@@ -119,7 +119,7 @@ describe('LoginForm', () => {
     expect(signInEmailMock).not.toHaveBeenCalled()
   })
 
-  // ── Submit exitoso ───────────────────────────────────────────────────────────
+  // ── Successful submit ─────────────────────────────────────────────────────
 
   it('calls signIn.email with correct payload on valid submit', async () => {
     const user = userEvent.setup()
@@ -189,11 +189,11 @@ describe('LoginForm', () => {
     })
   })
 
-  // ── Estado loading ───────────────────────────────────────────────────────────
+  // ── Loading state ─────────────────────────────────────────────────────────
 
   it('disables email, password and submit button while the request is in flight', async () => {
     const user = userEvent.setup()
-    // Promise que nunca resuelve → mantiene isPending=true
+    // Promise that never resolves → keeps isPending=true
     signInEmailMock.mockImplementation(() => new Promise(() => {}))
 
     render(<LoginForm />)
@@ -209,7 +209,7 @@ describe('LoginForm', () => {
     })
   })
 
-  // ── Error 403 (email sin verificar) ──────────────────────────────────────────
+  // ── 403 error (unverified email) ──────────────────────────────────────────
 
   it('redirects to /auth/new-verification with the user email when status is 403', async () => {
     const user = userEvent.setup()
@@ -245,7 +245,7 @@ describe('LoginForm', () => {
     })
   })
 
-  // ── Error genérico ───────────────────────────────────────────────────────────
+  // ── Generic error ─────────────────────────────────────────────────────────
 
   it('shows an error toast when sign in fails with a non-403 error', async () => {
     const user = userEvent.setup()
