@@ -23,9 +23,9 @@ export function TransactionList({
     try {
       // TODO: Implement bulk delete server action (soft delete)
       console.log('Would delete transactions:', ids)
-      toast.success(`Deleted ${ids.length} transaction(s)`)
+      toast.success(t('table.delete_success', { count: ids.length }))
     } catch {
-      toast.error('Something went wrong!')
+      toast.error(t('form.error_generic'))
     }
   }
 
@@ -33,9 +33,9 @@ export function TransactionList({
     try {
       // TODO: Implement bulk category change server action
       console.log('Would change category to:', categoryId, 'for transactions:', ids)
-      toast.success(`Updated ${ids.length} transaction(s)`)
+      toast.success(t('table.category_update_success', { count: ids.length }))
     } catch {
-      toast.error('Something went wrong!')
+      toast.error(t('form.error_generic'))
     }
   }
 

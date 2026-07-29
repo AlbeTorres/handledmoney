@@ -19,9 +19,8 @@ const Hero = () => {
           <Image
             src={heroImage}
             alt='Personal finance dashboard'
-            layout='fill'
-            objectFit='cover'
-            className='rounded-xl shadow-2xl'
+            fill
+            className='rounded-xl shadow-2xl object-cover'
           />
         </figure>
         <div className='space-x-4'>

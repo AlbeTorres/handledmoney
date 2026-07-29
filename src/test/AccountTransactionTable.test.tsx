@@ -27,7 +27,7 @@ vi.mock('next-intl', () => ({
 vi.mock('@/lib/transaction-types', () => ({
   getTransactionTypeConfig: (type: string) => ({
     value: type,
-    labelKey: `transaction_type.${type}`,
+    labelKey: `transaction_type_${type}`,
     variant: 'secondary',
   }),
 }))

@@ -11,7 +11,6 @@ export const newBankAccount = async ({
   bank,
   type,
   currency,
-  balance,
   icon,
   color,
 }: z.infer<typeof CreateAccountSchema>) => {
@@ -34,7 +33,6 @@ export const newBankAccount = async ({
     bank,
     type,
     currency,
-    balance,
     icon,
     color,
   })
@@ -53,7 +51,6 @@ export const newBankAccount = async ({
       bank,
       type,
       currency,
-      balance,
       icon,
       color,
       userId,

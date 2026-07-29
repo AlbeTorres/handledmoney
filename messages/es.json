@@ -371,8 +371,8 @@
         "pending": "Pendiente",
         "recurring": "Recurrente"
       },
-      "transaction_type.income": "Ingreso",
-      "transaction_type.expense": "Gasto",
+      "transaction_type_income": "Ingreso",
+      "transaction_type_expense": "Gasto",
       "table": {
         "header_date": "Fecha",
         "header_category": "Categoría",
@@ -395,7 +395,11 @@
         "bulk_category_title": "Asignar categoría",
         "bulk_category_count": "Se actualizarán {count} transacciones",
         "bulk_category_select": "Selecciona una categoría",
-        "bulk_category_submit": "Aplicar"
+        "bulk_category_submit": "Aplicar",
+        "select_all": "Seleccionar todo",
+        "select_row": "Seleccionar fila",
+        "delete_success": "{count} transacción(es) eliminada(s)",
+        "category_update_success": "{count} transacción(es) actualizada(s)"
       },
       "row": {
         "view_details": "Ver detalles",

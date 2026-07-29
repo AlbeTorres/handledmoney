@@ -136,7 +136,7 @@ export function DataTable({
                 <Checkbox
                   checked={isAllSelected || (isSomeSelected && 'indeterminate')}
                   onCheckedChange={toggleAll}
-                  aria-label='Select all'
+                  aria-label={t('table.select_all')}
                 />
               </TableHead>
               <TableHead>{t('table.header_date')}</TableHead>
@@ -161,7 +161,7 @@ export function DataTable({
                       <Checkbox
                         checked={selectedIds.has(transaction.id)}
                         onCheckedChange={() => toggleRow(transaction.id)}
-                        aria-label='Select row'
+                        aria-label={t('table.select_row')}
                       />
                     </TableCell>
                     <TableCell>{fmtDate(transaction.date)}</TableCell>

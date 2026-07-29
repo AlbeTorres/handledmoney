@@ -8,9 +8,8 @@ export default async function Layout({ children }: { children: React.ReactNode }
         <Image
           src={authImg}
           alt='Personal finance dashboard'
-          layout='fill'
-          objectFit='cover'
-          className='rounded-lg shadow-md'
+          fill
+          className='rounded-lg shadow-md object-cover'
         />
       </figure>
       {children}

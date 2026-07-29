@@ -12,6 +12,7 @@ interface TransactionPageProps {
 
 export default async function TransactionPage({ searchParams }: TransactionPageProps) {
   const t = await getTranslations('handledmoney.account')
+  const tt = await getTranslations('handledmoney.transaction')
   const resolvedSearchParams = await searchParams
   const page = Number(resolvedSearchParams.page) || 1
   const limit = Number(resolvedSearchParams.limit) || 50
@@ -52,12 +53,12 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
     return (
       <div className='m-auto flex  flex-col justify-center items-center gap-4'>
         <EmptyState
-          title={t('empty_state.title')}
-          description={t('empty_state.description')}
-          primaryActionText={t('empty_state.add_first_account')}
-          onPrimaryActionHref='/account/create'
+          title={tt('empty_state.title')}
+          description={tt('empty_state.description')}
+          primaryActionText={tt('empty_state.add_first_transaction')}
+          onPrimaryActionHref='/transaction/create'
           showImportButton={true}
-          importActionText={t('empty_state.import_data')}
+          importActionText={tt('empty_state.import_data')}
           onImportAction='/transaction/bulk'
         />
       </div>
