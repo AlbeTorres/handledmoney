@@ -3,9 +3,9 @@ import { AccountGrid } from '@/components/AccountGrid'
 import { EmptyState } from '@/components/EmptyState'
 import { auth } from '@/lib/auth'
 import { getBankAccountsByUser } from '@/repository/account'
+import { getTranslations } from 'next-intl/server'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
 
 interface AccountPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
@@ -37,7 +37,7 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
           description={t('empty_state.description')}
           primaryActionText={t('empty_state.add_first_account')}
           onPrimaryActionHref='/account/create'
-          showImportButton={true}
+          showImportButton={false}
           importActionText={t('empty_state.import_data')}
           onImportAction='/transaction/bulk'
         />

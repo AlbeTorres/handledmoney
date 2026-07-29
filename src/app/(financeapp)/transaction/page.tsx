@@ -1,15 +1,17 @@
 import { getBankAccountByUserAction } from '@/actions/account/get-account'
 import { getCategoriesByUserAction } from '@/actions/category/get-categories'
 import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
+import { EmptyState } from '@/components/EmptyState'
 import TransactionActionBar from '@/components/TransactionActionBar'
 import { TransactionList } from '@/components/TransactionList'
-import { TransactionSummaryCards } from '@/components/TransactionSummaryCards'
+import { getTranslations } from 'next-intl/server'
 
 interface TransactionPageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export default async function TransactionPage({ searchParams }: TransactionPageProps) {
+  const t = await getTranslations('handledmoney.account')
   const resolvedSearchParams = await searchParams
   const page = Number(resolvedSearchParams.page) || 1
   const limit = Number(resolvedSearchParams.limit) || 50
@@ -32,26 +34,45 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
 
   const accounts = accountResult.data || []
 
-  // Calculate summary totals from ALL transactions (not just current page)
-  // For now, we calculate from current page data
-  // TODO: Add a separate action for summary totals in the future
-  const totalIncome = transactions
-    .filter(t => t.type === 'income')
-    .reduce((sum, t) => sum + Number(t.amount || 0), 0)
-  const totalExpenses = transactions
-    .filter(t => t.type === 'expense')
-    .reduce((sum, t) => sum + Number(t.amount || 0), 0)
-  const netBalance = totalIncome - totalExpenses
+  if (!accounts || accounts.length === 0) {
+    return (
+      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+        <EmptyState
+          title={t('empty_state.title')}
+          description={t('empty_state.description')}
+          primaryActionText={t('empty_state.add_first_account')}
+          onPrimaryActionHref='/account/create'
+          showImportButton={false}
+        />
+      </div>
+    )
+  }
+
+  if (!transactions || transactions.length === 0) {
+    return (
+      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+        <EmptyState
+          title={t('empty_state.title')}
+          description={t('empty_state.description')}
+          primaryActionText={t('empty_state.add_first_account')}
+          onPrimaryActionHref='/account/create'
+          showImportButton={true}
+          importActionText={t('empty_state.import_data')}
+          onImportAction='/transaction/bulk'
+        />
+      </div>
+    )
+  }
 
   return (
     <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
-      <TransactionSummaryCards
-        totalIncome={totalIncome}
-        totalExpenses={totalExpenses}
-        netBalance={netBalance}
-      />
       <TransactionActionBar categories={categories} transactions={transactions} />
-      <TransactionList data={transactions} totalPages={totalPages} currentPage={currentPage} />
+      <TransactionList
+        data={transactions}
+        categories={categories}
+        totalPages={totalPages}
+        currentPage={currentPage}
+      />
     </div>
   )
 }

@@ -18,10 +18,7 @@ export default function Pagination({ page, totalPages, total, shown, onPageChang
   })
 
   return (
-    <div className='px-6 py-4 bg-slate-50 dark:bg-slate-800/50 flex items-center justify-between border-t border-primary/10'>
-      <span className='text-xs font-medium text-slate-500'>
-        Showing {shown} of {total} records
-      </span>
+    <div className='px-6 py-4 flex items-center justify-end'>
       <div className='flex gap-2 items-center'>
         <button
           onClick={() => onPageChange(page - 1)}

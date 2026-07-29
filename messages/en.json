@@ -373,6 +373,8 @@
         "pending": "Pending",
         "recurring": "Recurring"
       },
+      "transaction_type.income": "Income",
+      "transaction_type.expense": "Expense",
       "table": {
         "header_date": "Date",
         "header_category": "Category",
@@ -389,7 +391,13 @@
         "previous": "Previous",
         "next": "Next",
         "filter_placeholder": "Filter {key}...",
-        "showing": "Showing {shown} of {total} transactions"
+        "showing": "Showing {shown} of {total} transactions",
+        "header_type": "Type",
+        "bulk_category": "Change category ({count})",
+        "bulk_category_title": "Assign category",
+        "bulk_category_count": "{count} transactions will be updated",
+        "bulk_category_select": "Select a category",
+        "bulk_category_submit": "Apply"
       },
       "row": {
         "view_details": "View details",
