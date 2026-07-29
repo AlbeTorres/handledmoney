@@ -10,6 +10,7 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
+import { useTranslations } from 'next-intl'
 import { Tab } from './Tab'
 import { Button } from './ui/button'
 import { Calendar } from './ui/calendar'
@@ -37,6 +38,7 @@ export const TransactionQuickEdit = ({
 }) => {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
+  const t = useTranslations('handledmoney.transaction')
 
   const form = useForm<UpdateTransactionValues>({
     resolver: zodResolver(UpdateTransactionSchema),
@@ -77,14 +79,14 @@ export const TransactionQuickEdit = ({
       const res = await updateTransactionAction(data)
 
       if (res.success) {
-        toast.success('form.update_success')
+        toast.success(t('form.update_success'))
         onClose()
         router.refresh()
       } else {
-        toast.error('form.update_error')
+        toast.error(t('form.update_error'))
       }
     } catch {
-      toast.error('form.update_error')
+      toast.error(t('form.update_error'))
     } finally {
       setIsPending(false)
     }
@@ -96,7 +98,7 @@ export const TransactionQuickEdit = ({
     <Sheet open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <SheetContent side='right'>
         <SheetHeader>
-          <SheetTitle>form.quick_edit</SheetTitle>
+          <SheetTitle>{t('form.quick_edit')}</SheetTitle>
         </SheetHeader>
         <form id='form-quick-edit-transaction' onSubmit={form.handleSubmit(handleSubmit)}>
           <div className='space-y-4 p-4 overflow-y-auto flex-1'>
@@ -105,11 +107,12 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>form.transaction_type</FieldLabel>
+                  <FieldLabel>{t('form.transaction_type')}</FieldLabel>
                   <Tab
                     activeView={field.value}
                     onViewChange={field.onChange}
                     tabs={['income', 'expense']}
+                    labels={{ income: t('form.type_income'), expense: t('form.type_expense') }}
                   />
                 </Field>
               )}
@@ -120,14 +123,14 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>form.date</FieldLabel>
+                  <FieldLabel>{t('form.date')}</FieldLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant='outline'
                         className='data-[empty=true]:text-muted-foreground w-full justify-between text-left font-normal'
                       >
-                        {field.value ? format(field.value, 'PPP') : 'form.date_placeholder'}
+                        {field.value ? format(field.value, 'PPP') : t('form.date_placeholder')}
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent align='start'>
@@ -149,13 +152,13 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='form-quick-edit-amount'>form.amount</FieldLabel>
+                  <FieldLabel htmlFor='form-quick-edit-amount'>{t('form.amount')}</FieldLabel>
                   <InputGroup>
                     <InputGroupInput
                       {...field}
                       id='form-quick-edit-amount'
                       aria-invalid={fieldState.invalid}
-                      placeholder='form.amount_placeholder'
+                      placeholder={t('form.amount_placeholder')}
                       autoComplete='off'
                       spellCheck={false}
                       disabled={isPending}
@@ -171,13 +174,13 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='form-quick-edit-payee'>form.payee</FieldLabel>
+                  <FieldLabel htmlFor='form-quick-edit-payee'>{t('form.payee')}</FieldLabel>
                   <InputGroup>
                     <InputGroupInput
                       {...field}
                       id='form-quick-edit-payee'
                       aria-invalid={fieldState.invalid}
-                      placeholder='form.payee_placeholder'
+                      placeholder={t('form.payee_placeholder')}
                       autoComplete='off'
                       spellCheck={false}
                       disabled={isPending}
@@ -193,13 +196,13 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>form.account</FieldLabel>
+                  <FieldLabel>{t('form.account')}</FieldLabel>
                   <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
                       className='w-full'
                     >
-                      <SelectValue placeholder='form.account_placeholder' />
+                      <SelectValue placeholder={t('form.account_placeholder')} />
                     </SelectTrigger>
                     <SelectContent position='item-aligned'>
                       {accounts.map(acc => (
@@ -219,13 +222,13 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>form.category</FieldLabel>
+                  <FieldLabel>{t('form.category')}</FieldLabel>
                   <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger
                       aria-invalid={fieldState.invalid}
                       className='w-full'
                     >
-                      <SelectValue placeholder='form.category_placeholder' />
+                      <SelectValue placeholder={t('form.category_placeholder')} />
                     </SelectTrigger>
                     <SelectContent position='item-aligned'>
                       {categories.map(cat => (
@@ -245,12 +248,12 @@ export const TransactionQuickEdit = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='form-quick-edit-notes'>form.notes</FieldLabel>
+                  <FieldLabel htmlFor='form-quick-edit-notes'>{t('form.notes')}</FieldLabel>
                   <Textarea
                     {...field}
                     id='form-quick-edit-notes'
                     aria-invalid={fieldState.invalid}
-                    placeholder='form.notes_placeholder'
+                    placeholder={t('form.notes_placeholder')}
                     autoComplete='off'
                     spellCheck={false}
                     disabled={isPending}
@@ -263,7 +266,7 @@ export const TransactionQuickEdit = ({
 
           <div className='p-4 border-t'>
             <Button type='submit' className='w-full' disabled={isPending} data-testid='form-submit'>
-              {isPending ? 'form.updating' : 'form.update_button'}
+              {isPending ? t('form.updating') : t('form.update_button')}
             </Button>
           </div>
         </form>

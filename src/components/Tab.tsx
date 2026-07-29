@@ -1,10 +1,11 @@
 type Props = {
   activeView: 'expense' | 'income'
   onViewChange: (view: 'expense' | 'income') => void
-  tabs: ['expense', 'income']
+  tabs: ['income', 'expense']
+  labels?: Record<string, string>
 }
 
-export const Tab = ({ activeView, onViewChange, tabs }: Props) => {
+export const Tab = ({ activeView, onViewChange, tabs, labels }: Props) => {
   return (
     <div className='flex items-center w-fit gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg'>
       {tabs.map(view => (
@@ -18,7 +19,7 @@ export const Tab = ({ activeView, onViewChange, tabs }: Props) => {
               : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
           }`}
         >
-          {view}
+          {labels?.[view] ?? view}
         </button>
       ))}
     </div>

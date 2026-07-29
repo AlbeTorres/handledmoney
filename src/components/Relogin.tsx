@@ -9,9 +9,8 @@ const ReLogin = () => {
       <Image
         src='/placeholder.svg?height=1080&width=1920&text=Finance+Background'
         alt='Finance Background'
-        layout='fill'
-        objectFit='cover'
-        className='absolute inset-0 mix-blend-overlay opacity-10'
+        fill
+        className='absolute inset-0 object-cover mix-blend-overlay opacity-10'
       />
 
       <div className='flex flex-col items-center gap-y-4 px-4 md:px-6 relative z-10 text-center'>
