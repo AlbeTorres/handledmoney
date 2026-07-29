@@ -26,7 +26,7 @@ export default function TransactionActionBar({ categories, transactions }: Props
   const t = useTranslations('handledmoney.transaction')
 
   const TYPE_OPTIONS = [
-    { label: t('filter.expenses'), value: 'expenses' },
+    { label: t('filter.expenses'), value: 'expense' },
     { label: t('filter.income'), value: 'income' },
   ]
 

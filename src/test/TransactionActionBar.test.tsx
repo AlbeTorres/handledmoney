@@ -38,7 +38,7 @@ const {
   })
 
   const useFilterParamMock = vi.fn((key: string) => {
-    if (key === 'type') return ['expenses', setTypeMock]
+    if (key === 'type') return ['expense', setTypeMock]
     if (key === 'category') return ['cat-1', setCategoryMock]
     return ['', vi.fn()]
   })
@@ -140,7 +140,7 @@ describe('TransactionActionBar', () => {
 
     expect(props.label).toBe('action.filter_type')
     expect(props.options).toEqual([
-      { label: 'filter.expenses', value: 'expenses' },
+      { label: 'filter.expenses', value: 'expense' },
       { label: 'filter.income', value: 'income' },
     ])
   })
@@ -188,7 +188,7 @@ describe('TransactionActionBar', () => {
     const firstCall = mockFilterDropdown.mock.calls[0]
     const props = firstCall[0]
 
-    expect(props.selected).toBe('expenses')
+    expect(props.selected).toBe('expense')
     expect(props.onChange).toBe(setTypeMock)
   })
 

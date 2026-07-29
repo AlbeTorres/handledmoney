@@ -446,6 +446,7 @@
         "error_generic": "Something went wrong"
       },
       "form": {
+        "edit_transaction": "Edit transaction",
         "transaction_type": "Transaction Type",
         "date": "Date",
         "date_placeholder": "Select a date",
