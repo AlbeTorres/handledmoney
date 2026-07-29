@@ -18,8 +18,15 @@ vi.mock('@/components/DataTable', () => ({
   ),
 }))
 
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string, params?: Record<string, unknown>) => {
+    if (params) return `${key}:${JSON.stringify(params)}`
+    return key
+  },
+}))
+
 vi.mock('@/components/columns', () => ({
-  columns: [{ id: 'date', header: 'Date' }],
+  getColumns: () => [{ id: 'date', header: 'Date' }],
 }))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────

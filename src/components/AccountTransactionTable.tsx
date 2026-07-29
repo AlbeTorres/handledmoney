@@ -1,10 +1,10 @@
 'use client'
 
-import { columns } from '@/components/columns'
-
 import { Transaction } from '@/interfaces'
 import { Row } from '@tanstack/react-table'
+import { useTranslations } from 'next-intl'
 import { DataTable } from './DataTable'
+import { getColumns } from './columns'
 
 interface AccountTransactionTableProps {
   data: Transaction[]
@@ -17,6 +17,9 @@ export function AccountTransactionTable({
   totalPages,
   currentPage,
 }: AccountTransactionTableProps) {
+  const t = useTranslations('handledmoney.transaction')
+  const columns = getColumns(t)
+
   function onDelete(rows: Row<Transaction>[]) {
     const ids = rows.map(row => row.original.id)
     console.log('Deleting these ids:', ids)

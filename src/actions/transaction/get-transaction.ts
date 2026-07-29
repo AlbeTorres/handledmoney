@@ -59,6 +59,7 @@ export const getTransactionsPaginatedAction = async (
         transactions: [...transactions],
         totalPages: result.totalPages,
         currentPage: result.page,
+        total: result.total,
       },
     }
   } catch (error) {
