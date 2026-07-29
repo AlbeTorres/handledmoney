@@ -1,7 +1,7 @@
 import { db } from '@/db'
 import { bankAccountsTable, categoriesTable, transactionsTable } from '@/db/schema'
 import { CreateTransactionSchema, UpdateTransactionSchema } from '@/lib/schema'
-import { and, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
+import { and, asc, count, desc, eq, ilike, inArray, or, sql } from 'drizzle-orm'
 import z from 'zod'
 
 type CreateTransactionValues = z.infer<typeof CreateTransactionSchema> & { userId: string }
@@ -14,6 +14,8 @@ export interface PaginatedTransactionsParams {
   limit?: number
   search?: string
   accountId?: string
+  categoryId?: string // comma-separated IDs for multi-select
+  sort?: 'date' | 'amount_high' | 'amount_low' | 'recently_added'
 }
 
 export const createTransaction = async ({
@@ -228,6 +230,8 @@ export const getTransactionsPaginated = async ({
   limit = 20,
   search,
   accountId,
+  categoryId,
+  sort,
 }: PaginatedTransactionsParams) => {
   const offset = (page - 1) * limit
 
@@ -239,12 +243,16 @@ export const getTransactionsPaginated = async ({
     : undefined
 
   const accountCondition = accountId ? eq(transactionsTable.accountId, accountId) : undefined
-  const typeCondition = type ? eq(transactionsTable.type, type) : undefined
+  const typeValues = type ? type.split(',').filter((v): v is 'income' | 'expense' => v === 'income' || v === 'expense') : []
+  const typeCondition = typeValues.length > 0 ? inArray(transactionsTable.type, typeValues) : undefined
+  const categoryIds = categoryId ? categoryId.split(',').filter(Boolean) : []
+  const categoryCondition = categoryIds.length > 0 ? inArray(transactionsTable.categoryId, categoryIds) : undefined
 
   const whereClause = and(
     eq(transactionsTable.userId, userId),
     typeCondition,
     accountCondition,
+    categoryCondition,
     searchCondition,
   )
 
@@ -256,7 +264,19 @@ export const getTransactionsPaginated = async ({
         account: true,
         ...(type === 'income' ? { incomeDetails: true } : { expenseDetails: true }),
       },
-      orderBy: desc(transactionsTable.date),
+      orderBy: (() => {
+        switch (sort) {
+          case 'amount_high':
+            return desc(sql`CAST(${transactionsTable.amount} AS NUMERIC)`)
+          case 'amount_low':
+            return asc(sql`CAST(${transactionsTable.amount} AS NUMERIC)`)
+          case 'recently_added':
+            return desc(transactionsTable.createdAt)
+          case 'date':
+          default:
+            return desc(transactionsTable.date)
+        }
+      })(),
       limit,
       offset,
     }),

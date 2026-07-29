@@ -444,6 +444,7 @@
         "error_generic": "Algo salió mal"
       },
       "form": {
+        "edit_transaction": "Editar transacción",
         "transaction_type": "Tipo de transacción",
         "date": "Fecha",
         "date_placeholder": "Seleccionar fecha",
