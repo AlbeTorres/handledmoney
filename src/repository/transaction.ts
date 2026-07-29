@@ -500,38 +500,38 @@ export const createTransactionsBulk = async (
 
 // // ── Delete ─────────────────────────────────────────────────────────────────────
 
-// export const deleteTransaction = async (id: string, userId: string) => {
-//   return db.transaction(async tx => {
-//     const [transaction] = await tx
-//       .select({
-//         amount: transactionsTable.amount,
-//         type: transactionsTable.type,
-//         accountId: transactionsTable.accountId,
-//       })
-//       .from(transactionsTable)
-//       .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
+export const deleteTransaction = async (id: string, userId: string) => {
+  return db.transaction(async tx => {
+    const [transaction] = await tx
+      .select({
+        amount: transactionsTable.amount,
+        type: transactionsTable.type,
+        accountId: transactionsTable.accountId,
+      })
+      .from(transactionsTable)
+      .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
 
-//     if (!transaction) throw new Error('Transaction not found')
+    if (!transaction) throw new Error('Transaction not found')
 
-//     // Delete base (cascade removes detail rows automatically)
-//     const [deleted] = await tx
-//       .delete(transactionsTable)
-//       .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
-//       .returning()
+    // Delete base (cascade removes detail rows automatically)
+    const [deleted] = await tx
+      .delete(transactionsTable)
+      .where(and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)))
+      .returning()
 
-//     // Reverse balance effect
-//     const sign = transaction.type === 'income' ? '-' : '+'
-//     await tx
-//       .update(bankAccountsTable)
-//       .set({
-//         balance: sql`${bankAccountsTable.balance} ${sql.raw(sign)} ${transaction.amount}`,
-//         transactionsCount: sql`GREATEST(${bankAccountsTable.transactionsCount} - 1, 0)`,
-//       })
-//       .where(eq(bankAccountsTable.id, transaction.accountId))
+    // Reverse balance effect
+    const sign = transaction.type === 'income' ? '-' : '+'
+    await tx
+      .update(bankAccountsTable)
+      .set({
+        balance: sql`${bankAccountsTable.balance} ${sql.raw(sign)} ${transaction.amount}`,
+        transactionsCount: sql`GREATEST(${bankAccountsTable.transactionsCount} - 1, 0)`,
+      })
+      .where(eq(bankAccountsTable.id, transaction.accountId))
 
-//     return deleted
-//   })
-// }
+    return deleted
+  })
+}
 
 // // ── Bulk (legacy — used by account transfer) ───────────────────────────────────
 

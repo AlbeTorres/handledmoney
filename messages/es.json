@@ -335,6 +335,142 @@
         "not_found_description": "La categoría que intentás editar no existe.",
         "go_back": "Volver a las categorías"
       }
+    },
+    "transaction": {
+      "breadcrumbs": {
+        "transactions": "Transacciones",
+        "create": "Crear",
+        "edit": "Editar"
+      },
+      "empty_state": {
+        "title": "Aún no tenés transacciones",
+        "description": "Empezá a registrar tus ingresos y gastos para tener claridad en tu salud financiera.",
+        "add_first_transaction": "Agregá tu primera transacción",
+        "import_data": "Importar datos"
+      },
+      "summary": {
+        "total_income": "Ingresos totales",
+        "total_expenses": "Gastos totales",
+        "net_balance": "Saldo neto"
+      },
+      "action": {
+        "search_placeholder": "Buscar transacciones...",
+        "new_transaction": "Nueva transacción",
+        "filter_type": "Tipo",
+        "filter_category": "Categoría",
+        "filter_status": "Estado",
+        "export_csv": "Exportar CSV",
+        "bulk_add": "Carga Masiva",
+        "sort_date": "Fecha",
+        "sort_amount": "Monto",
+        "sort_recently_added": "Agregadas recientemente",
+        "sort_payee": "Beneficiario"
+      },
+      "status": {
+        "cleared": "Acreditado",
+        "pending": "Pendiente",
+        "recurring": "Recurrente"
+      },
+      "table": {
+        "header_date": "Fecha",
+        "header_category": "Categoría",
+        "header_description": "Descripción",
+        "header_amount": "Monto",
+        "header_account": "Cuenta",
+        "header_notes": "Notas",
+        "confirm_title": "¿Estás seguro?",
+        "confirm_description": "Vas a realizar una eliminación masiva.",
+        "delete": "Eliminar ({count})",
+        "no_results": "No se encontraron transacciones.",
+        "try_adjusting_search": "Intentá ajustar tu búsqueda o filtros.",
+        "rows_selected": "{selected} de {total} fila(s) seleccionada(s).",
+        "previous": "Anterior",
+        "next": "Siguiente",
+        "filter_placeholder": "Filtrar {key}...",
+        "showing": "Mostrando {shown} de {total} transacciones"
+      },
+      "row": {
+        "view_details": "Ver detalles",
+        "edit_transaction": "Editar transacción",
+        "delete_transaction": "Eliminar transacción",
+        "options_aria": "Opciones de transacción"
+      },
+      "category_cell": {
+        "uncategorized": "Sin categoría"
+      },
+      "amount": {
+        "income_prefix": "+",
+        "expense_prefix": "-"
+      },
+      "filter": {
+        "clear": "Limpiar filtro",
+        "expenses": "Gastos",
+        "income": "Ingresos",
+        "all_types": "Todos los tipos",
+        "all_categories": "Todas las categorías",
+        "all_statuses": "Todos los estados"
+      },
+      "sort": {
+        "by": "Ordenar por",
+        "date": "Fecha",
+        "amount_high": "Mayor monto",
+        "amount_low": "Menor monto",
+        "recently_added": "Agregadas recientemente"
+      },
+      "export": {
+        "button": "Exportar",
+        "success": "Transacciones exportadas exitosamente",
+        "error": "Error al exportar transacciones",
+        "filename": "transacciones-{date}.csv"
+      },
+      "delete": {
+        "title": "Eliminar transacción",
+        "description": "¿Estás seguro de que querés eliminar esta transacción? Esta acción no se puede deshacer.",
+        "confirm_button": "Eliminar transacción",
+        "cancel_button": "Cancelar",
+        "deleting": "Eliminando...",
+        "error_generic": "Algo salió mal"
+      },
+      "form": {
+        "transaction_type": "Tipo de transacción",
+        "date": "Fecha",
+        "date_placeholder": "Seleccionar fecha",
+        "amount": "Monto",
+        "amount_placeholder": "ej., 100.00",
+        "payee": "Beneficiario",
+        "payee_placeholder": "ej., Whole Foods Market",
+        "account": "Cuenta",
+        "account_placeholder": "Seleccionar una cuenta",
+        "category": "Categoría",
+        "category_placeholder": "Seleccionar una categoría",
+        "notes": "Notas",
+        "notes_placeholder": "Escribí una nota...",
+        "type_expense": "Gasto",
+        "type_income": "Ingreso",
+        "create_button": "Crear transacción",
+        "creating": "Creando\u2026",
+        "update_button": "Actualizar transacción",
+        "updating": "Actualizando\u2026",
+        "delete_transaction": "Eliminar transacción",
+        "confirm_delete_title": "Eliminar Transacción",
+        "confirm_delete_description": "¿Estás seguro de que querés eliminar esta transacción? Esta acción no se puede deshacer.",
+        "delete_success": "Transacción eliminada",
+        "delete_error": "Error al eliminar la transacción",
+        "error_generic": "Algo salió mal",
+        "quick_edit": "Edición Rápida",
+        "update_success": "Transacción actualizada",
+        "update_error": "Error al actualizar la transacción"
+      },
+      "create": {
+        "title": "Crear transacción",
+        "description": "Registrá un nuevo ingreso o gasto."
+      },
+      "edit": {
+        "title": "Editar transacción",
+        "description": "Actualizá los datos de tu transacción.",
+        "not_found": "Transacción no encontrada",
+        "go_back": "Volver a las transacciones"
+      }
     }
   }
 }

@@ -1,6 +1,5 @@
 'use client'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -23,8 +22,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { Trash } from 'lucide-react'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
 // TODO:
@@ -56,7 +55,7 @@ export function DataTable<TData, TValue>({
   currentPage,
   pageSize = 10,
 }: DataTableProps<TData, TValue>) {
-  const t = useTranslations('handledmoney.account')
+  const t = useTranslations('handledmoney.transaction')
   const searchParams = useSearchParams()
   const startFromEnd = searchParams.get('startFromEnd') === '1'
 
@@ -148,24 +147,16 @@ export function DataTable<TData, TValue>({
     <div>
       <ConfirmDialog />
       <div className='flex items-center py-4'>
-        <Input
-          placeholder={`Filter ${filterKey}...`}
-          value={(table.getColumn(filterKey)?.getFilterValue() as string) ?? ''}
-          onChange={event => table.getColumn(filterKey)?.setFilterValue(event.target.value)}
-          className='max-w-sm'
-        />
-        {table.getFilteredSelectedRowModel().rows.length > 0 && (
-          <Button
-            onClick={handleDelete}
-            disabled={disabled}
-            size='sm'
-            variant='outline'
-            className='ml-auto font-normal text-xs'
-          >
-            <Trash className='size-4 mr-2' />
-            Delete ({table.getFilteredSelectedRowModel().rows.length})
-          </Button>
-        )}
+        <Button
+          onClick={handleDelete}
+          disabled={disabled || table.getFilteredSelectedRowModel().rows.length === 0}
+          size='sm'
+          variant='outline'
+          className='ml-auto font-normal text-xs'
+        >
+          <Trash className='size-4 mr-2' />
+          {t('table.delete', { count: table.getFilteredSelectedRowModel().rows.length })}
+        </Button>
       </div>
       <div className='rounded-md border'>
         <Table>
