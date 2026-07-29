@@ -371,6 +371,8 @@
         "pending": "Pendiente",
         "recurring": "Recurrente"
       },
+      "transaction_type.income": "Ingreso",
+      "transaction_type.expense": "Gasto",
       "table": {
         "header_date": "Fecha",
         "header_category": "Categoría",
@@ -387,7 +389,13 @@
         "previous": "Anterior",
         "next": "Siguiente",
         "filter_placeholder": "Filtrar {key}...",
-        "showing": "Mostrando {shown} de {total} transacciones"
+        "showing": "Mostrando {shown} de {total} transacciones",
+        "header_type": "Tipo",
+        "bulk_category": "Cambiar categoría ({count})",
+        "bulk_category_title": "Asignar categoría",
+        "bulk_category_count": "Se actualizarán {count} transacciones",
+        "bulk_category_select": "Selecciona una categoría",
+        "bulk_category_submit": "Aplicar"
       },
       "row": {
         "view_details": "Ver detalles",

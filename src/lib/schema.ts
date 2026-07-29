@@ -65,6 +65,7 @@ export const CreateAccountSchema = z.object({
   currency: z.enum(['USD', 'EUR', 'GBP', 'JPY', 'CAD'], {
     required_error: 'Currency is required',
   }),
+  balance: z.coerce.number().min(0, 'Balance cannot be negative'),
   icon: z.string().min(1, { message: 'Please select an icon' }),
   color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
 })

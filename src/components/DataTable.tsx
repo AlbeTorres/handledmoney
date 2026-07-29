@@ -1,107 +1,51 @@
 'use client'
-import { Button } from '@/components/ui/button'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table'
+
 import { useConfirm } from '@/hooks/use-confirm'
-import {
-  ColumnDef,
-  ColumnFiltersState,
-  Row,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table'
+import { Transaction } from '@/interfaces'
+import { getTransactionTypeConfig } from '@/lib/transaction-types'
+import { fmtDate } from '@/lib/utils'
 import { Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
+import { BulkCategoryDrawer } from './BulkCategoryDrawer'
+import { CategoryColumn } from './CategoryColumn'
+import Pagination from './Pagination'
+import { Actions } from './actions'
+import { Badge } from './ui/badge'
+import { Button } from './ui/button'
+import { Checkbox } from './ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 
-// TODO:
-
-//Bug : Cuando se presiona f5 el indice de la tabla regresa a al primer o ultimo indice dependiendo de si se presiona startFromEnd y no se queda en el indice de la ui que estaba,
-
-//este componente hace una llamada a db y trae 50 registros es decir esa es una pagina en db pero a su vez pica esos 50 registros en 10 y eso es lo que se muestra en la ui pero da todos estos problemas, creo que mejor seria que se llame directo a la db y se cuenten las paginas desde alla ignorando la ui mezclar paradigmas da muchos problemas y no veo las ventajas
-
-//objetivo principal es minimizar llamadas a la DB por costo y hacer que no se sienta como que la interfaz esta cargando constantemente de 10 en 10 seria una locura y de 50 en 50 me rompe la interfaz y hace que el producto financiero sea dificil de usar para un usuario puesto que ve muchos datos en poco tiempo se frustra y abandona
-
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  filterKey: string
-  onDelete: (rows: Row<TData>[]) => void
+interface DataTableProps {
+  data: Transaction[]
+  categories: { id: string; name: string }[]
+  onBulkDelete: (ids: string[]) => void
+  onBulkCategoryChange: (categoryId: string, ids: string[]) => void
   disabled?: boolean
   totalPages: number
   currentPage: number
-  pageSize?: number
 }
 
-export function DataTable<TData, TValue>({
-  columns,
+export function DataTable({
   data,
-  filterKey,
-  onDelete,
+  categories,
+  onBulkDelete,
+  onBulkCategoryChange,
   disabled,
   totalPages,
   currentPage,
-  pageSize = 10,
-}: DataTableProps<TData, TValue>) {
+}: DataTableProps) {
   const t = useTranslations('handledmoney.transaction')
+  const router = useRouter()
   const searchParams = useSearchParams()
-  const startFromEnd = searchParams.get('startFromEnd') === '1'
-
-  // ✅ Calculamos el índice inicial UNA sola vez en mount, sin efectos.
-  // Como el padre le pasa `key={currentPage}`, el componente se remonta
-  // cuando cambia la página servidor → initialState siempre es fresco.
-  const initialPageIndex = useMemo(() => {
-    if (!startFromEnd) return 0
-    const clientPageCount = Math.ceil(data.length / pageSize)
-    return Math.max(0, clientPageCount - 1)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // deps vacías: solo corre en mount, que es lo que queremos
-
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [rowSelection, setRowSelection] = useState({})
-
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    // ✅ initialState solo aplica en mount → sin re-renders extra
-    initialState: {
-      pagination: {
-        pageIndex: initialPageIndex,
-        pageSize,
-      },
-    },
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-  })
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false)
 
   const [ConfirmDialog, confirm] = useConfirm(
     t('table.confirm_title'),
     t('table.confirm_description'),
   )
-  const router = useRouter()
 
   const createQueryString = useCallback(
     (params: Record<string, string | null>) => {
@@ -115,78 +59,130 @@ export function DataTable<TData, TValue>({
     [searchParams],
   )
 
-  async function handleDelete() {
+  function handlePageChange(page: number) {
+    router.push(`?${createQueryString({ page: page.toString() })}`)
+  }
+
+  function toggleRow(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev)
+      if (next.has(id)) {
+        next.delete(id)
+      } else {
+        next.add(id)
+      }
+      return next
+    })
+  }
+
+  function toggleAll() {
+    if (data.every(t => selectedIds.has(t.id))) {
+      setSelectedIds(new Set())
+    } else {
+      setSelectedIds(new Set(data.map(t => t.id)))
+    }
+  }
+
+  const isAllSelected = data.length > 0 && data.every(t => selectedIds.has(t.id))
+  const isSomeSelected = data.some(t => selectedIds.has(t.id)) && !isAllSelected
+
+  async function handleBulkDelete() {
     const ok = await confirm()
     if (ok) {
-      onDelete(table.getFilteredSelectedRowModel().rows)
-      table.resetRowSelection()
+      onBulkDelete(Array.from(selectedIds))
+      setSelectedIds(new Set())
     }
   }
 
-  const handleNext = () => {
-    if (table.getCanNextPage()) {
-      table.nextPage()
-    } else if (currentPage < totalPages) {
-      router.push(
-        `?${createQueryString({ page: (currentPage + 1).toString(), startFromEnd: null })}`,
-      )
-    }
-  }
-
-  const handlePrev = () => {
-    if (table.getCanPreviousPage()) {
-      table.previousPage()
-    } else if (currentPage > 1) {
-      router.push(
-        `?${createQueryString({ page: (currentPage - 1).toString(), startFromEnd: '1' })}`,
-      )
-    }
+  function handleBulkCategoryChange(categoryId: string, ids: string[]) {
+    onBulkCategoryChange(categoryId, ids)
+    setSelectedIds(new Set())
   }
 
   return (
     <div>
       <ConfirmDialog />
-      <div className='flex items-center py-4'>
-        <Button
-          onClick={handleDelete}
-          disabled={disabled || table.getFilteredSelectedRowModel().rows.length === 0}
-          size='sm'
-          variant='outline'
-          className='ml-auto font-normal text-xs'
-        >
-          <Trash className='size-4 mr-2' />
-          {t('table.delete', { count: table.getFilteredSelectedRowModel().rows.length })}
-        </Button>
+      {/* Bulk action bar */}
+      <div className='flex items-center gap-2 py-4'>
+        {selectedIds.size > 0 && (
+          <>
+            <Button
+              onClick={handleBulkDelete}
+              disabled={disabled}
+              size='sm'
+              variant='outline'
+              className='font-normal text-xs'
+            >
+              <Trash className='size-4 mr-2' />
+              {t('table.delete', { count: selectedIds.size })}
+            </Button>
+            <Button
+              onClick={() => setIsCategoryDrawerOpen(true)}
+              disabled={disabled}
+              size='sm'
+              variant='outline'
+              className='font-normal text-xs'
+            >
+              {t('table.bulk_category', { count: selectedIds.size })}
+            </Button>
+          </>
+        )}
       </div>
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(header.column.columnDef.header, header.getContext())}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableHead className='w-10'>
+                <Checkbox
+                  checked={isAllSelected || (isSomeSelected && 'indeterminate')}
+                  onCheckedChange={toggleAll}
+                  aria-label='Select all'
+                />
+              </TableHead>
+              <TableHead>{t('table.header_date')}</TableHead>
+              <TableHead>{t('table.header_type')}</TableHead>
+              <TableHead>{t('table.header_amount')}</TableHead>
+              <TableHead>{t('table.header_account')}</TableHead>
+              <TableHead>{t('table.header_category')}</TableHead>
+              <TableHead>{t('table.header_notes')}</TableHead>
+              <TableHead className='w-17.5'></TableHead>
+            </TableRow>
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(row => (
-                <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                  {row.getVisibleCells().map(cell => (
-                    <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            {data.length > 0 ? (
+              data.map(transaction => {
+                const config = getTransactionTypeConfig(transaction.type)
+                return (
+                  <TableRow
+                    key={transaction.id}
+                    data-state={selectedIds.has(transaction.id) ? 'selected' : undefined}
+                  >
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(transaction.id)}
+                        onCheckedChange={() => toggleRow(transaction.id)}
+                        aria-label='Select row'
+                      />
                     </TableCell>
-                  ))}
-                </TableRow>
-              ))
+                    <TableCell>{fmtDate(transaction.date)}</TableCell>
+                    <TableCell>
+                      <Badge variant={config.variant}>{t(config.labelKey)}</Badge>
+                    </TableCell>
+                    <TableCell>{transaction.amount}</TableCell>
+                    <TableCell>{transaction.accountName}</TableCell>
+                    <TableCell>
+                      <CategoryColumn categoryName={transaction.categoryName} />
+                    </TableCell>
+                    <TableCell>{transaction.notes}</TableCell>
+                    <TableCell>
+                      <Actions id={transaction.id} />
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-center'>
+                <TableCell colSpan={8} className='h-24 text-center'>
                   {t('table.no_results')}
                 </TableCell>
               </TableRow>
@@ -196,28 +192,25 @@ export function DataTable<TData, TValue>({
       </div>
       <div className='flex-1 text-sm mt-2 text-muted-foreground'>
         {t('table.rows_selected', {
-          selected: table.getFilteredSelectedRowModel().rows.length,
-          total: table.getFilteredRowModel().rows.length,
+          selected: selectedIds.size,
+          total: data.length,
         })}
       </div>
-      <div className='flex items-center justify-end space-x-2 py-4 px-2'>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={handlePrev}
-          disabled={!table.getCanPreviousPage() && currentPage === 1}
-        >
-          {t('table.previous')}
-        </Button>
-        <Button
-          variant='outline'
-          size='sm'
-          onClick={handleNext}
-          disabled={!table.getCanNextPage() && currentPage === totalPages}
-        >
-          {t('table.next')}
-        </Button>
-      </div>
+      <Pagination
+        page={currentPage}
+        totalPages={totalPages}
+        total={totalPages * data.length}
+        shown={data.length}
+        onPageChange={handlePageChange}
+      />
+
+      <BulkCategoryDrawer
+        isOpen={isCategoryDrawerOpen}
+        onClose={() => setIsCategoryDrawerOpen(false)}
+        selectedIds={Array.from(selectedIds)}
+        categories={categories}
+        onSubmit={handleBulkCategoryChange}
+      />
     </div>
   )
 }

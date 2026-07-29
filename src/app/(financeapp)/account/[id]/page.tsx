@@ -1,4 +1,5 @@
 import { getBankAccountByIdAction } from '@/actions/account/get-account'
+import { getCategoriesByUserAction } from '@/actions/category/get-categories'
 import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
 import { AccountInfo } from '@/components/AccountInfo'
 import { AccountTransactionTable } from '@/components/AccountTransactionTable'
@@ -34,7 +35,7 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
   const limit = Number(resolvedSearchParams.limit) || 50
   const search = resolvedSearchParams.search || ''
 
-  const [account, transactions] = await Promise.all([
+  const [account, transactions, categoryResult] = await Promise.all([
     getBankAccountByIdAction(id),
     getTransactionsPaginatedAction({
       accountId: id,
@@ -42,11 +43,17 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
       limit,
       search: '',
     }),
+    getCategoriesByUserAction(),
   ])
 
   const transactionsData = transactions?.data?.transactions || []
   const totalPages = transactions?.data?.totalPages || 0
   const currentPage = transactions?.data?.currentPage || 1
+
+  const categories = (categoryResult.data || []).map(cat => ({
+    id: cat.id,
+    name: cat.name,
+  }))
 
   const { data: accountData } = account
 
@@ -108,6 +115,7 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
               <h3 className='font-bold text-lg mb-4'>{t('detail.transactions_for', { name: accountData.name })}</h3>
               <AccountTransactionTable
                 data={transactionsData}
+                categories={categories}
                 totalPages={totalPages}
                 currentPage={currentPage}
               />

@@ -1,38 +1,37 @@
 'use client'
-
 import { Transaction } from '@/interfaces'
-import { Row } from '@tanstack/react-table'
-import { useTranslations } from 'next-intl'
 import { DataTable } from './DataTable'
-import { getColumns } from './columns'
 
 interface AccountTransactionTableProps {
   data: Transaction[]
+  categories: { id: string; name: string }[]
   totalPages: number
   currentPage: number
 }
 
 export function AccountTransactionTable({
   data,
+  categories,
   totalPages,
   currentPage,
 }: AccountTransactionTableProps) {
-  const t = useTranslations('handledmoney.transaction')
-  const columns = getColumns(t)
-
-  function onDelete(rows: Row<Transaction>[]) {
-    const ids = rows.map(row => row.original.id)
-    console.log('Deleting these ids:', ids)
+  function onDelete(ids: string[]) {
     // TODO: Connect this to actual delete server action if needed
+    console.log('Deleting these ids:', ids)
+  }
+
+  function onBulkCategoryChange(categoryId: string, ids: string[]) {
+    // TODO: Connect this to actual bulk category change server action
+    console.log('Would change category to:', categoryId, 'for ids:', ids)
   }
 
   return (
     <DataTable
       key={currentPage}
-      columns={columns}
       data={data}
-      filterKey='date'
-      onDelete={row => onDelete(row)}
+      categories={categories}
+      onBulkDelete={onDelete}
+      onBulkCategoryChange={onBulkCategoryChange}
       totalPages={totalPages}
       currentPage={currentPage}
     />

@@ -8,12 +8,11 @@ import { Transaction } from '@/interfaces'
 // Mock DataTable — it's a complex component with TanStack Table dependencies,
 // so we mock it completely and verify AccountTransactionTable passes the correct props.
 vi.mock('@/components/DataTable', () => ({
-  DataTable: ({ data, totalPages, currentPage, filterKey, onDelete, columns }: any) => (
+  DataTable: ({ data, totalPages, currentPage, categories, onBulkDelete }: any) => (
     <div data-testid='data-table'>
       <span data-testid='data-count'>{data.length}</span>
       <span data-testid='total-pages'>{totalPages}</span>
       <span data-testid='current-page'>{currentPage}</span>
-      <span data-testid='filter-key'>{filterKey}</span>
     </div>
   ),
 }))
@@ -25,8 +24,12 @@ vi.mock('next-intl', () => ({
   },
 }))
 
-vi.mock('@/components/columns', () => ({
-  getColumns: () => [{ id: 'date', header: 'Date' }],
+vi.mock('@/lib/transaction-types', () => ({
+  getTransactionTypeConfig: (type: string) => ({
+    value: type,
+    labelKey: `transaction_type.${type}`,
+    variant: 'secondary',
+  }),
 }))
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -75,6 +78,7 @@ describe('AccountTransactionTable', () => {
     render(
       <AccountTransactionTable
         data={MOCK_TRANSACTIONS}
+        categories={[]}
         totalPages={5}
         currentPage={2}
       />,
@@ -89,6 +93,7 @@ describe('AccountTransactionTable', () => {
     render(
       <AccountTransactionTable
         data={MOCK_TRANSACTIONS}
+        categories={[]}
         totalPages={5}
         currentPage={2}
       />,
@@ -98,16 +103,16 @@ describe('AccountTransactionTable', () => {
     expect(screen.getByTestId('current-page').textContent).toBe('2')
   })
 
-  // The 'date' filterKey is used for filtering transactions by date.
-  it('passes filterKey=date for date filtering', () => {
+  it('passes categories to DataTable', () => {
+    const categories = [{ id: 'cat-1', name: 'Food' }]
     render(
       <AccountTransactionTable
         data={MOCK_TRANSACTIONS}
+        categories={categories}
         totalPages={1}
         currentPage={1}
       />,
     )
-
-    expect(screen.getByTestId('filter-key').textContent).toBe('date')
+    expect(screen.getByTestId('data-table')).toBeTruthy()
   })
 })

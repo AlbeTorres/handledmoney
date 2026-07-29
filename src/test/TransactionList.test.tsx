@@ -19,10 +19,6 @@ vi.mock('next/navigation', () => ({
   }),
 }))
 
-vi.mock('@/components/ui/input', () => ({
-  Input: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input {...props} />,
-}))
-
 vi.mock('@/components/ui/checkbox', () => ({
   Checkbox: (props: React.InputHTMLAttributes<HTMLInputElement>) => <input type='checkbox' {...props} />,
 }))
@@ -102,6 +98,7 @@ const makeTransaction = (overrides: Partial<Transaction> = {}): Transaction => (
 const DEFAULT_PROPS = {
   totalPages: 5,
   currentPage: 1,
+  categories: [],
 }
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
@@ -161,16 +158,14 @@ describe('TransactionList', () => {
     expect(screen.getByText('table.header_notes')).toBeTruthy()
   })
 
-  it('renders Previous and Next pagination buttons', () => {
+  it('renders pagination with page numbers', () => {
     render(<TransactionList data={[makeTransaction()]} {...DEFAULT_PROPS} />)
 
-    expect(screen.getByText('table.previous')).toBeTruthy()
-    expect(screen.getByText('table.next')).toBeTruthy()
+    // Pagination shows "Showing {shown} of {total} records"
+    expect(screen.getByText(/Showing 1 of 5 records/)).toBeTruthy()
+    // Page number buttons from Pagination component
+    expect(screen.getByText('1')).toBeTruthy()
   })
 
-  it('renders filter placeholder with i18n', () => {
-    render(<TransactionList data={[makeTransaction()]} {...DEFAULT_PROPS} />)
-
-    expect(screen.getByPlaceholderText('table.filter_placeholder:{"key":"date"}')).toBeTruthy()
-  })
 })
+
