@@ -43,6 +43,7 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
           bank: transaction.account.bank,
           name: transaction.account.name,
           currency: transaction.account.currency,
+          icon: transaction.account.icon,
         }}
       />
 
@@ -61,8 +62,10 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
                   billingType: transaction.incomeDetails.billingType,
                   grossAmount: transaction.incomeDetails.grossAmount,
                   taxesWithheld: transaction.incomeDetails.taxesWithheld,
-                  taxBreakdown: (transaction.incomeDetails.taxBreakdown ??
-                    null) as Record<string, number | string> | null,
+                  taxBreakdown: (transaction.incomeDetails.taxBreakdown ?? null) as Record<
+                    string,
+                    number | string
+                  > | null,
                 }
               : null
           }
