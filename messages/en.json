@@ -485,6 +485,33 @@
         "description": "Update your transaction details.",
         "not_found": "Transaction not found",
         "go_back": "Go back to transactions"
+      },
+      "detail": {
+        "back": "Back",
+        "edit": "Edit",
+        "account": "Account",
+        "payee": "Payee",
+        "category": "Category",
+        "tags": "Tags",
+        "notes": "Notes",
+        "income_breakdown": "Income Breakdown",
+        "expense_breakdown": "Expense Breakdown",
+        "gross_amount": "Gross Amount",
+        "taxes_withheld": "Taxes Withheld",
+        "net_amount": "Net Amount",
+        "tax_details": "Tax Details",
+        "tax_federal": "Federal",
+        "tax_state": "State",
+        "tax_fica": "FICA",
+        "tax_medicare": "Medicare",
+        "sales_tax": "Sales Tax",
+        "tax_rate": "Tax Rate",
+        "deductible": "Deductible",
+        "deduction_category": "Deduction Category",
+        "attachments": "Attachments",
+        "attachments_placeholder_note": "Example files shown as placeholders until real attachments are supported.",
+        "transaction_id": "Transaction ID",
+        "added_on": "Added On"
       }
     }
   }
