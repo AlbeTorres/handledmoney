@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { useConfirm } from '@/hooks/use-confirm'
 
 import { Edit, MoreHorizontal, Trash } from 'lucide-react'
-import { useRouter } from 'next/navigation'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import {
   DropdownMenu,
@@ -50,7 +50,7 @@ export const Actions = ({ id }: Props) => {
       <ConfirmDialog />
       <DropdownMenuTrigger asChild>
         <Button variant={'ghost'} className='size-8 p-0'>
-          <MoreHorizontal className='size-4 mr-2' />
+          <MoreHorizontal className='size-4' />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
