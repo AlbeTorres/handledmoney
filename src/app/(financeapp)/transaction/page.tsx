@@ -19,7 +19,12 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
   const search = (resolvedSearchParams.search as string) || ''
   const type = resolvedSearchParams.type as 'income' | 'expense' | undefined
   const categoryId = resolvedSearchParams.category as string | undefined
-  const sort = resolvedSearchParams.sort as 'date' | 'amount_high' | 'amount_low' | 'recently_added' | undefined
+  const sort = resolvedSearchParams.sort as
+    | 'date'
+    | 'amount_high'
+    | 'amount_low'
+    | 'recently_added'
+    | undefined
 
   const [transactionResult, categoryResult, accountResult] = await Promise.all([
     getTransactionsPaginatedAction({ page, limit, search, type, categoryId, sort }),
@@ -55,32 +60,21 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
   const hasActiveFilters = !!(search || type || categoryId)
 
   if (!transactions || transactions.length === 0) {
-    if (hasActiveFilters) {
+    if (!hasActiveFilters) {
       return (
-        <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
-          <TransactionActionBar categories={categories} transactions={transactions} />
-          <TransactionList
-            data={transactions}
-            categories={categories}
-            totalPages={totalPages}
-            currentPage={currentPage}
+        <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+          <EmptyState
+            title={tt('empty_state.title')}
+            description={tt('empty_state.description')}
+            primaryActionText={tt('empty_state.add_first_transaction')}
+            onPrimaryActionHref='/transaction/create'
+            showImportButton={true}
+            importActionText={tt('empty_state.import_data')}
+            onImportAction='/transaction/bulk'
           />
         </div>
       )
     }
-    return (
-      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
-        <EmptyState
-          title={tt('empty_state.title')}
-          description={tt('empty_state.description')}
-          primaryActionText={tt('empty_state.add_first_transaction')}
-          onPrimaryActionHref='/transaction/create'
-          showImportButton={true}
-          importActionText={tt('empty_state.import_data')}
-          onImportAction='/transaction/bulk'
-        />
-      </div>
-    )
   }
 
   return (

@@ -173,7 +173,7 @@ export function DataTable({
                     <TableCell>
                       <CategoryColumn categoryName={transaction.categoryName} />
                     </TableCell>
-                    <TableCell>{transaction.notes}</TableCell>
+                    <TableCell className='max-w-50 truncate'>{transaction.notes}</TableCell>
                     <TableCell>
                       <Actions id={transaction.id} />
                     </TableCell>

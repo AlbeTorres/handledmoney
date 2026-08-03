@@ -65,7 +65,7 @@ export const CreateTransactionForm = ({
       console.log(error, 'error')
     } finally {
       setIsPending(false)
-      router.push('/account')
+      router.push('/transaction')
     }
   }
 
