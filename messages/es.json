@@ -483,6 +483,33 @@
         "description": "Actualizá los datos de tu transacción.",
         "not_found": "Transacción no encontrada",
         "go_back": "Volver a las transacciones"
+      },
+      "detail": {
+        "back": "Volver",
+        "edit": "Editar",
+        "account": "Cuenta",
+        "payee": "Beneficiario",
+        "category": "Categoría",
+        "tags": "Etiquetas",
+        "notes": "Notas",
+        "income_breakdown": "Desglose de ingresos",
+        "expense_breakdown": "Desglose de gastos",
+        "gross_amount": "Monto bruto",
+        "taxes_withheld": "Impuestos retenidos",
+        "net_amount": "Monto neto",
+        "tax_details": "Detalle de impuestos",
+        "tax_federal": "Federal",
+        "tax_state": "Estatal",
+        "tax_fica": "FICA",
+        "tax_medicare": "Medicare",
+        "sales_tax": "Impuesto a las ventas",
+        "tax_rate": "Tasa de impuesto",
+        "deductible": "Deducible",
+        "deduction_category": "Categoría de deducción",
+        "attachments": "Adjuntos",
+        "attachments_placeholder_note": "Archivos de ejemplo mostrados como marcadores de posición hasta que se admitan adjuntos reales.",
+        "transaction_id": "ID de transacción",
+        "added_on": "Añadido el"
       }
     }
   }
