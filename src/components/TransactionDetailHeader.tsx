@@ -4,17 +4,9 @@ import { deleteTransactionAction } from '@/actions/transaction/delete-transactio
 import { TransactionStatusBadge } from '@/components/TransactionStatusBadge'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
-import { fmtDate, formatMoney } from '@/lib/utils'
-import { ArrowLeft, Edit, Trash } from 'lucide-react'
+import { fmtDate, formatMoney, getIconComponent } from '@/lib/utils'
+import { ArrowBigDown, ArrowBigUp, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -27,7 +19,7 @@ interface TransactionDetailHeaderProps {
   amount: string | null
   payee: string
   date: Date
-  account: { bank: string; name: string; currency: string }
+  account: { bank: string; name: string; currency: string; icon?: string }
 }
 
 export function TransactionDetailHeader({
@@ -45,8 +37,9 @@ export function TransactionDetailHeader({
   const [isPending, startTransition] = useTransition()
 
   const typeConfig = getTransactionTypeConfig(type)
-  const prefix =
-    type === 'income' ? tTx('amount.income_prefix') : tTx('amount.expense_prefix')
+  const prefix = type === 'income' ? tTx('amount.income_prefix') : tTx('amount.expense_prefix')
+
+  const Icon = getIconComponent(account.icon ?? 'account_balance')
 
   const handleDelete = () => {
     startTransition(async () => {
@@ -65,66 +58,58 @@ export function TransactionDetailHeader({
   }
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
-      <div className='flex items-center justify-between gap-4'>
+    <section className='bg-background'>
+      <div className='flex items-end justify-end gap-3'>
         <Link
-          href='/transaction'
-          aria-label={t('back')}
-          className='inline-flex size-9 items-center justify-center rounded-md text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-slate-100'
+          className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
+          href={`/transaction/${id}/edit`}
         >
-          <ArrowLeft className='size-5' />
+          {t('edit')}
         </Link>
 
-        <div className='flex flex-wrap items-center gap-2'>
-          {/* PLACEHOLDER: no status column exists yet — replace when schema lands */}
-          <TransactionStatusBadge status='cleared' />
-          <Badge variant={typeConfig.variant}>{tTx(typeConfig.labelKey)}</Badge>
-          <Button asChild variant='outline' size='sm'>
-            <Link href={`/transaction/${id}/edit`}>{t('edit')}</Link>
-          </Button>
-          <Button variant='ghost' size='sm' onClick={() => setOpen(true)}>
-            <Trash className='size-4' />
-            {tTx('row.delete_transaction')}
-          </Button>
-        </div>
+        <Button variant='destructive'>
+          <Trash className='size-4' />
+          {tTx('row.delete_transaction')}
+        </Button>
       </div>
 
-      <div className='mt-5 flex flex-wrap items-start justify-between gap-4'>
-        <div className='min-w-0'>
-          <h1 className='text-2xl font-bold text-slate-900 dark:text-slate-100'>{payee}</h1>
-          <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{fmtDate(date)}</p>
-          <p className='mt-0.5 text-sm text-slate-500 dark:text-slate-400'>
-            {account.bank} · {account.name}
+      <div className='flex mt-5 w-full justify-between items-center'>
+        <div>
+          <div className='flex flex-wrap items-center  gap-2'>
+            <Badge className='text-xs' variant={typeConfig.variant}>
+              {type === 'income' ? <ArrowBigUp /> : <ArrowBigDown />}
+              {tTx(typeConfig.labelKey)}
+            </Badge>
+            <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{fmtDate(date)}</p>
+          </div>
+
+          <div className='py-2'>
+            <h1 className='text-5xl font-semibold tracking-tight  text-slate-900 dark:text-slate-100'>
+              {payee}
+            </h1>
+            <div className='flex items-center gap-2 mt-2'>
+              <Icon className='size-5 text-slate-500 dark:text-slate-400' />
+              <p className='mt-0.5 text-md text-slate-500 dark:text-slate-400'>
+                {account.bank} · {account.name}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className='flex flex-col items-end gap-4'>
+          <p
+            className={`text-5xl tracking-tight font-bold ${
+              type === 'income'
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : 'text-rose-600 dark:text-rose-400'
+            }`}
+          >
+            {prefix}
+            {formatMoney(amount ?? '0', account.currency)}
           </p>
+          <TransactionStatusBadge status='cleared' />
         </div>
-        <p
-          className={`text-3xl font-bold ${
-            type === 'income'
-              ? 'text-emerald-600 dark:text-emerald-400'
-              : 'text-rose-600 dark:text-rose-400'
-          }`}
-        >
-          {prefix}
-          {formatMoney(amount ?? '0', account.currency)}
-        </p>
       </div>
-
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{tTx('delete.title')}</DialogTitle>
-            <DialogDescription>{tTx('delete.description')}</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
-            <Button variant='outline' onClick={() => setOpen(false)} disabled={isPending}>
-              {tTx('delete.cancel_button')}
-            </Button>
-            <Button variant='destructive' onClick={handleDelete} disabled={isPending}>
-              {isPending ? tTx('delete.deleting') : tTx('delete.confirm_button')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </section>
   )
 }
