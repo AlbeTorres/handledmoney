@@ -95,8 +95,7 @@ describe('Actions', () => {
   it('renders the edit menu item', () => {
     render(<Actions id={TRANSACTION_ID} />)
     const items = screen.getAllByTestId('dropdown-item')
-    expect(items.length).toBeGreaterThanOrEqual(1)
-    expect(items[0].textContent).toContain('form.edit_transaction')
+    expect(items.some(item => item.textContent?.includes('form.edit_transaction'))).toBe(true)
   })
 
   it('renders the delete menu item', () => {
@@ -113,10 +112,30 @@ describe('Actions', () => {
     render(<Actions id={TRANSACTION_ID} />)
 
     const items = screen.getAllByTestId('dropdown-item')
-    const editItem = items[0]
+    const editItem = items.find(item => item.textContent?.includes('form.edit_transaction'))!
     await user.click(editItem)
 
     expect(mockPush).toHaveBeenCalledWith(`/transaction/${TRANSACTION_ID}/edit`)
+  })
+
+  it('navigates to detail page when view details menu item is clicked', async () => {
+    const user = userEvent.setup()
+    render(<Actions id={TRANSACTION_ID} />)
+
+    const items = screen.getAllByTestId('dropdown-item')
+    const viewDetailsItem = items.find(item => item.textContent?.includes('row.view_details'))!
+    await user.click(viewDetailsItem)
+
+    expect(mockPush).toHaveBeenCalledWith(`/transaction/${TRANSACTION_ID}`)
+  })
+
+  it('orders the menu items: view details, edit, then delete', () => {
+    render(<Actions id={TRANSACTION_ID} />)
+
+    const items = screen.getAllByTestId('dropdown-item')
+    expect(items[0].textContent).toContain('row.view_details')
+    expect(items[1].textContent).toContain('form.edit_transaction')
+    expect(items[items.length - 1].textContent).toContain('form.delete_transaction')
   })
 
   // ── Delete confirmation ───────────────────────────────────────────────────
