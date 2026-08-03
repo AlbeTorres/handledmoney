@@ -4,7 +4,7 @@ import { deleteTransactionAction } from '@/actions/transaction/delete-transactio
 import { Button } from '@/components/ui/button'
 import { useConfirm } from '@/hooks/use-confirm'
 
-import { Edit, MoreHorizontal, Trash } from 'lucide-react'
+import { Edit, Eye, MoreHorizontal, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
@@ -54,6 +54,14 @@ export const Actions = ({ id }: Props) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        <DropdownMenuItem
+          disabled={false}
+          onClick={() => router.push(`/transaction/${id}`)}
+          className='p-2 cursor-pointer'
+        >
+          <Eye className='size-4 mr-2' />
+          {t('row.view_details')}
+        </DropdownMenuItem>
         <DropdownMenuItem
           disabled={false}
           onClick={() => router.push(`/transaction/${id}/edit`)}
