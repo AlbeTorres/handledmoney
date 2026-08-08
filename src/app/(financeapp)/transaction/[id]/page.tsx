@@ -28,7 +28,7 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
 
   return (
     <div className='container mx-auto space-y-6 p-8'>
-      <div className='flex flex-col md:flex-row items-start md:items-center justify-between'>
+      <div className='flex flex-col md:flex-row md:items-center justify-between'>
         <Breadcrumb
           pathTitle={transaction.payee}
           oldPath='/transaction'
