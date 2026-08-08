@@ -23,7 +23,7 @@ export function TransactionDetailAttachments({
   const t = useTranslations('handledmoney.transaction.detail')
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <section className='rounded-sm  border bg-white p-5 shadow-sm dark:bg-slate-900'>
       <div className='mb-4 flex items-center justify-between'>
         <h2 className='text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
           {t('attachments')}
@@ -41,10 +41,7 @@ export function TransactionDetailAttachments({
       </p>
 
       {files.length === 0 ? (
-        <p
-          data-testid='attachments-empty'
-          className='text-sm text-slate-400 dark:text-slate-500'
-        >
+        <p data-testid='attachments-empty' className='text-sm text-slate-400 dark:text-slate-500'>
           —
         </p>
       ) : (

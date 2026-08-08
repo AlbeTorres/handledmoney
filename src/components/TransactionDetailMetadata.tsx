@@ -1,5 +1,5 @@
-import { useTranslations } from 'next-intl'
 import { fmtDate } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 interface TransactionDetailMetadataProps {
   id: string
@@ -10,13 +10,15 @@ export function TransactionDetailMetadata({ id, createdAt }: TransactionDetailMe
   const t = useTranslations('handledmoney.transaction.detail')
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <section className='rounded-sm border  bg-white p-5 shadow-sm dark:bg-slate-900'>
       <dl className='space-y-3'>
         <div className='flex items-start justify-between gap-4'>
           <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
             {t('transaction_id')}
           </dt>
-          <dd className='font-mono text-sm text-slate-900 dark:text-slate-100'>{id}</dd>
+          <dd className='font-mono  text-sm text-slate-900 dark:text-slate-100'>
+            <p className='wrap-break-word w-full break-all whitespace-pre-wrap text-right'>{id}</p>
+          </dd>
         </div>
         <div className='flex items-start justify-between gap-4'>
           <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>

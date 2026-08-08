@@ -18,12 +18,10 @@ export function TransactionDetailInfoGrid({
   const t = useTranslations('handledmoney.transaction.detail')
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <section className='rounded-sm border bg-white p-5 shadow-sm  dark:bg-slate-900'>
       <dl className='divide-y divide-slate-100 dark:divide-slate-800'>
         <div className='flex items-start justify-between gap-4 py-3'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('payee')}
-          </dt>
+          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('payee')}</dt>
           <dd className='text-sm font-semibold text-slate-900 dark:text-slate-100'>{payee}</dd>
         </div>
         <div className='flex items-start justify-between gap-4 py-3'>
@@ -46,18 +44,18 @@ export function TransactionDetailInfoGrid({
           data-placeholder='true'
           className='flex items-start justify-between gap-4 py-3'
         >
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('tags')}
-          </dt>
+          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('tags')}</dt>
           <dd className='text-sm text-slate-900 dark:text-slate-100'>
             {PLACEHOLDER_TAGS.join(', ')}
           </dd>
         </div>
         <div className='flex items-start justify-between gap-4 py-3'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('notes')}
-          </dt>
-          <dd className='text-sm text-slate-900 dark:text-slate-100'>{notes ?? '—'}</dd>
+          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('notes')}</dt>
+          <dd className='min-w-0 flex-1'>
+            <p className='wrap-break-word whitespace-pre-wrap text-left text-sm text-slate-900 dark:text-slate-100'>
+              {notes ?? '—'}
+            </p>
+          </dd>
         </div>
       </dl>
     </section>

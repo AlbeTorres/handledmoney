@@ -1,5 +1,5 @@
-import { useTranslations } from 'next-intl'
 import { formatMoney } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
 
 // Human-friendly labels for the schema enum values. No i18n keys exist for these
 // domain codes yet, so the labels are defined here as typed constants.
@@ -54,7 +54,7 @@ export function TransactionDetailIncomeBreakdown({
   const billingLabel = labelFor(BILLING_TYPE_LABELS, billingType)
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <section className='rounded-sm border bg-white p-5 shadow-sm dark:bg-slate-900'>
       <h2 className='mb-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
         {t('income_breakdown')}
       </h2>
@@ -112,9 +112,7 @@ export function TransactionDetailIncomeBreakdown({
               if (!(key in taxBreakdown)) return null
               return (
                 <div key={key} className='flex items-start justify-between gap-4'>
-                  <dt className='text-sm text-slate-500 dark:text-slate-400'>
-                    {t(`tax_${key}`)}
-                  </dt>
+                  <dt className='text-sm text-slate-500 dark:text-slate-400'>{t(`tax_${key}`)}</dt>
                   <dd className='text-sm text-slate-900 dark:text-slate-100'>
                     {formatMoney(Number(taxBreakdown[key]))}
                   </dd>
