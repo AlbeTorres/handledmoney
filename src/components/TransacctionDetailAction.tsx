@@ -1,7 +1,7 @@
 'use client'
 import { deleteTransactionAction } from '@/actions/transaction/delete-transaction'
 import { useConfirm } from '@/hooks/use-confirm'
-import { Trash } from 'lucide-react'
+import { Pencil, Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -48,12 +48,12 @@ export default function TransactionDetailActions({ id }: TransactionDetailAction
         className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
         href={`/transaction/${id}/edit`}
       >
-        {t('edit')}
+        <Pencil className='size-4' />
+        {'Edit'}
       </Link>
 
       <Button variant='destructive' disabled={isPending} onClick={handleDelete}>
         <Trash className='size-4' />
-        {t('row.delete_transaction')}
       </Button>
     </div>
   )
