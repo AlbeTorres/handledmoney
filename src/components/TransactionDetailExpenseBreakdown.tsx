@@ -1,6 +1,6 @@
+import { formatMoney } from '@/lib/utils'
 import { Check, Minus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { formatMoney } from '@/lib/utils'
 
 interface ExpenseDetailsSlice {
   salesTax: string | null
@@ -23,7 +23,7 @@ export function TransactionDetailExpenseBreakdown({
   const { salesTax, taxRate, isDeductible, deductionCategory } = expenseDetails
 
   return (
-    <section className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900'>
+    <section className='rounded-sm border  bg-white p-5 shadow-sm dark:bg-slate-900'>
       <h2 className='mb-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
         {t('expense_breakdown')}
       </h2>

@@ -1,17 +1,11 @@
 'use client'
 
-import { deleteTransactionAction } from '@/actions/transaction/delete-transaction'
 import { TransactionStatusBadge } from '@/components/TransactionStatusBadge'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
 import { fmtDate, formatMoney, getIconComponent } from '@/lib/utils'
-import { ArrowBigDown, ArrowBigUp, Trash } from 'lucide-react'
+import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
-import toast from 'react-hot-toast'
 
 interface TransactionDetailHeaderProps {
   id: string
@@ -32,51 +26,18 @@ export function TransactionDetailHeader({
 }: TransactionDetailHeaderProps) {
   const t = useTranslations('handledmoney.transaction.detail')
   const tTx = useTranslations('handledmoney.transaction')
-  const router = useRouter()
-  const [open, setOpen] = useState(false)
-  const [isPending, startTransition] = useTransition()
 
   const typeConfig = getTransactionTypeConfig(type)
   const prefix = type === 'income' ? tTx('amount.income_prefix') : tTx('amount.expense_prefix')
 
   const Icon = getIconComponent(account.icon ?? 'account_balance')
 
-  const handleDelete = () => {
-    startTransition(async () => {
-      try {
-        const res = await deleteTransactionAction({ id })
-        if (res.success) {
-          toast.success(tTx('form.delete_success'))
-          router.push('/transaction')
-        } else {
-          toast.error(tTx('delete.error_generic'))
-        }
-      } catch {
-        toast.error(tTx('delete.error_generic'))
-      }
-    })
-  }
-
   return (
     <section className='bg-background'>
-      <div className='flex items-end justify-end gap-3'>
-        <Link
-          className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
-          href={`/transaction/${id}/edit`}
-        >
-          {t('edit')}
-        </Link>
-
-        <Button variant='destructive'>
-          <Trash className='size-4' />
-          {tTx('row.delete_transaction')}
-        </Button>
-      </div>
-
-      <div className='flex mt-5 w-full justify-between items-center'>
+      <div className='flex flex-col md:flex-row  mt-5  justify-between items-center'>
         <div>
           <div className='flex flex-wrap items-center  gap-2'>
-            <Badge className='text-xs' variant={typeConfig.variant}>
+            <Badge className='rounded-sm text-xs' variant={typeConfig.variant}>
               {type === 'income' ? <ArrowBigUp /> : <ArrowBigDown />}
               {tTx(typeConfig.labelKey)}
             </Badge>
@@ -98,7 +59,7 @@ export function TransactionDetailHeader({
 
         <div className='flex flex-col items-end gap-4'>
           <p
-            className={`text-5xl tracking-tight font-bold ${
+            className={`text-5xl tracking-tighter font-bold ${
               type === 'income'
                 ? 'text-emerald-600 dark:text-emerald-400'
                 : 'text-rose-600 dark:text-rose-400'
