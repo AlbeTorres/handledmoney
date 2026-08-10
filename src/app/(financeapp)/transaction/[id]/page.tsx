@@ -38,7 +38,6 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
       </div>
 
       <TransactionDetailHeader
-        id={transaction.id}
         type={transaction.type}
         amount={transaction.amount}
         payee={transaction.payee}

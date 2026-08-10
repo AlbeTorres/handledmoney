@@ -57,7 +57,7 @@ export default function TransactionActionBar({ categories, transactions }: Props
         <Link
           href='/transaction/bulk'
           data-testid='bulk-add-button'
-          className='inline-flex items-center shadow-lg gap-1.5 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-3 py-1.5 rounded-md text-sm font-medium transition-colors'
+          className='inline-flex items-center shadow-md gap-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-3 py-1.5 rounded-md text-sm font-medium transition-colors'
         >
           <Upload className='size-4' />
           <span>{t('action.bulk_add')}</span>
