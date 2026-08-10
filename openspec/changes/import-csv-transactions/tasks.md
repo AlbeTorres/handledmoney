@@ -48,5 +48,5 @@ Chain strategy: pending
 
 ## Phase 4: i18n & wiring
 
-- [ ] 4.1 Add `handledmoney.transaction.import.*` to `messages/en.json` + `es.json`: upload errors, controls, type modes, formats, flags, bulk, submit/loading, toasts, report
-- [ ] 4.2 Final wiring: grep — no hardcoded accountId, no `tt`; `npx tsc --noEmit` + full vitest run; review rows == submitted rows (CSV-IMP-11)
+- [x] 4.1 Add `handledmoney.transaction.import.*` to `messages/en.json` + `es.json`: upload errors, controls, type modes, formats, flags, bulk, submit/loading, toasts, report
+- [x] 4.2 Final wiring: grep — no hardcoded accountId, no `tt`; `npx tsc --noEmit` + full vitest run; review rows == submitted rows (CSV-IMP-11)
