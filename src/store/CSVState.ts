@@ -4,8 +4,8 @@ import { create } from 'zustand'
 
 /**
  * Typed empty parse result matching papaparse's ParseResult contract
- * (CSV-IMP-07). CardContainer.tsx:17 uses a bare `meta: {}` literal that
- * task 2.5 will replace with this shape.
+ * (CSV-IMP-07). Used for the initial store state and the CardContainer
+ * reset (task 2.5).
  */
 const EMPTY_PARSE_RESULT: IMPORT_RESULT = {
   data: [],
