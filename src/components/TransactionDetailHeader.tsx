@@ -8,7 +8,6 @@ import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface TransactionDetailHeaderProps {
-  id: string
   type: 'income' | 'expense'
   amount: string | null
   payee: string
@@ -17,18 +16,16 @@ interface TransactionDetailHeaderProps {
 }
 
 export function TransactionDetailHeader({
-  id,
   type,
   amount,
   payee,
   date,
   account,
 }: TransactionDetailHeaderProps) {
-  const t = useTranslations('handledmoney.transaction.detail')
-  const tTx = useTranslations('handledmoney.transaction')
+  const t = useTranslations('handledmoney.transaction')
 
   const typeConfig = getTransactionTypeConfig(type)
-  const prefix = type === 'income' ? tTx('amount.income_prefix') : tTx('amount.expense_prefix')
+  const prefix = type === 'income' ? t('amount.income_prefix') : t('amount.expense_prefix')
 
   const Icon = getIconComponent(account.icon ?? 'account_balance')
 
@@ -37,9 +34,9 @@ export function TransactionDetailHeader({
       <div className='flex flex-col md:flex-row  mt-5  justify-between items-center'>
         <div>
           <div className='flex flex-wrap items-center  gap-2'>
-            <Badge className='rounded-sm text-xs' variant={typeConfig.variant}>
+            <Badge variant={typeConfig.variant}>
               {type === 'income' ? <ArrowBigUp /> : <ArrowBigDown />}
-              {tTx(typeConfig.labelKey)}
+              {t(typeConfig.labelKey)}
             </Badge>
             <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{fmtDate(date)}</p>
           </div>
