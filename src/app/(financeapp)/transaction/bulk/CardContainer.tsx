@@ -4,7 +4,7 @@ import { ImportCard } from '@/components/ImportCard'
 import { ReviewImportTable, SubmitResult } from '@/components/ReviewImportTable'
 import { UploadButton } from '@/components/UploadButton'
 import { VARIANTS } from '@/interfaces'
-import type { BulkImportInput, RowError } from '@/lib/csv/types'
+import type { BulkImportInput } from '@/lib/csv/types'
 import { useCSVState } from '@/store/CSVState'
 import { useTranslations } from 'next-intl'
 import toast from 'react-hot-toast'
@@ -26,25 +26,16 @@ export const CardContainer = ({ accounts }: Props) => {
   }
 
   /**
-   * Submits the review payload (CSV-IMP-01/10). Phase 2 adapter: the action
-   * still takes the Phase-1 per-row accountId array, so accountId is injected
-   * per row here; task 3.1 swaps the action to `{ accountId, rows }` (D2).
+   * Submits the review payload (CSV-IMP-01/10). D2: the action takes
+   * `{ accountId, rows }` and the server injects accountId per row.
    */
   const onSubmitImport = async (payload: BulkImportInput): Promise<SubmitResult> => {
-    const rows = payload.rows.map(row => ({ ...row, accountId: payload.accountId }))
-
-    const response = await createTransactionsBulkAction(rows)
+    const response = await createTransactionsBulkAction(payload)
 
     if (!response.success) {
       if (response.errors) {
-        // Old per-row format {index, error} → RowError[] {rowIndex, field, reason}
-        const errors: RowError[] = response.errors.map(error => ({
-          rowIndex: error.index,
-          field: 'unknown',
-          reason: error.error,
-        }))
         toast.error(t('import.toast_failure'))
-        return { success: false, errors }
+        return { success: false, errors: response.errors }
       }
       toast.error(t('import.toast_failure'))
       return { success: false }

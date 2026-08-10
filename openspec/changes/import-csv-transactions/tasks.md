@@ -43,8 +43,8 @@ Chain strategy: pending
 
 ## Phase 3: Backend
 
-- [ ] 3.1 Modify `src/actions/transaction/create-transaction.ts`: `createTransactionsBulkAction({accountId, rows})` — session→`getBankAccountById(accountId, userId)`→cap→per-row `safeParse({...row, accountId})`→`RowError[]` (0-based rowIndex, field, reason)→all-or-nothing→`revalidatePath('/transaction')` + test `src/test/create-transactions-bulk.action.test.ts` (401; foreign account→0 rows; report; cap; success injected accountId; 500) — CSV-IMP-01/05/09
-- [ ] 3.2 Modify `src/repository/transaction.ts`: `createTransactionsBulk(rows, userId)` — insert all in one `db.transaction`; single net UPDATE balance (rounded `String`) + count +N (defect 6) + test `src/test/create-transactions-bulk.repository.test.ts` (db-chain + `db.transaction` mock; inserts; net-balance; count) — D3, CSV-IMP-09
+- [x] 3.1 Modify `src/actions/transaction/create-transaction.ts`: `createTransactionsBulkAction({accountId, rows})` — session→`getBankAccountById(accountId, userId)`→cap→per-row `safeParse({...row, accountId})`→`RowError[]` (0-based rowIndex, field, reason)→all-or-nothing→`revalidatePath('/transaction')` + test `src/test/create-transactions-bulk.action.test.ts` (401; foreign account→0 rows; report; cap; success injected accountId; 500) — CSV-IMP-01/05/09
+- [x] 3.2 Modify `src/repository/transaction.ts`: `createTransactionsBulk(rows, userId)` — insert all in one `db.transaction`; single net UPDATE balance (rounded `String`) + count +N (defect 6) + test `src/test/create-transactions-bulk.repository.test.ts` (db-chain + `db.transaction` mock; inserts; net-balance; count) — D3, CSV-IMP-09
 
 ## Phase 4: i18n & wiring
 
