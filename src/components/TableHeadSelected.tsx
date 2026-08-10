@@ -8,12 +8,16 @@ type Props = {
   onChange: (columnIndex: number, value: string | null) => void
 }
 
-const options = ['amount', 'payee', 'notes', 'date']
+const options = ['amount', 'payee', 'notes', 'date', 'type']
 
 export const TableHeadSelected = ({ columnIndex, selectedColumns, onChange }: Props) => {
   const currentSelection = selectedColumns[`column_${columnIndex}`]
   return (
-    <Select value={currentSelection || ''} onValueChange={value => onChange(columnIndex, value)}>
+    <Select
+      value={currentSelection || ''}
+      onValueChange={value => onChange(columnIndex, value)}
+      data-testid={`mapping-select-${columnIndex}`}
+    >
       <SelectTrigger
         className={cn(
           'focus:ring-offset-0 focus:ring-transparent outline-none border-none bg-transparent capitalize',
