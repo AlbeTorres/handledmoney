@@ -298,16 +298,36 @@ export const createTransactionsBulk = async (
   userId: string,
 ) => {
   return db.transaction(async tx => {
+    // Insert all rows first, then apply a single net balance/count UPDATE (D3).
+    // This fixes defect 6: the old bulk insert never touched the account balance.
     const createdTransactions = await tx
       .insert(transactionsTable)
       .values(
         transactions.map(t => ({
           ...t,
           userId,
-          amount: t.amount.toString(),
+          amount: String(t.amount),
         })),
       )
       .returning()
+
+    if (createdTransactions.length > 0) {
+      // Net balance effect identical to createTransaction (income +, expense −),
+      // accumulated over the whole batch and applied once. Rounded to cents and
+      // stored as a decimal string, mirroring the single-create pattern.
+      const netDelta = transactions.reduce(
+        (sum, t) => sum + (t.type === 'income' ? t.amount : -t.amount),
+        0,
+      )
+      const rounded = Math.round(netDelta * 100) / 100
+      await tx
+        .update(bankAccountsTable)
+        .set({
+          balance: sql`${bankAccountsTable.balance} + ${String(rounded)}`,
+          transactionsCount: sql`${bankAccountsTable.transactionsCount} + ${transactions.length}`,
+        })
+        .where(eq(bankAccountsTable.id, transactions[0].accountId))
+    }
 
     return createdTransactions
   })
