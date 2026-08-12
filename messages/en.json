@@ -159,7 +159,7 @@
         "title": "No accounts linked yet",
         "description": "To start tracking your financial health and gaining clarity on your spending, you'll need to link your bank accounts or manually create a tracking account.",
         "add_first_account": "Add Your First Account",
-        "import_data": "Import Data"
+        "import_data": "Import CSV"
       },
       "action": {
         "search_placeholder": "Search accounts...",
@@ -348,7 +348,7 @@
         "title": "No transactions yet",
         "description": "Start tracking your income and expenses to gain clarity on your financial health.",
         "add_first_transaction": "Add Your First Transaction",
-        "import_data": "Import Data"
+        "import_data": "Import CSV"
       },
       "summary": {
         "total_income": "Total Income",
@@ -362,7 +362,7 @@
         "filter_category": "Category",
         "filter_status": "Status",
         "export_csv": "Export CSV",
-        "bulk_add": "Bulk Add",
+        "bulk_add": "Import CSV",
         "sort_date": "Date",
         "sort_amount": "Amount",
         "sort_recently_added": "Recently Added",
@@ -401,7 +401,8 @@
         "select_all": "Select all",
         "select_row": "Select row",
         "delete_success": "Deleted {count} transaction(s)",
-        "category_update_success": "Updated {count} transaction(s)"
+        "category_update_success": "Updated {count} transaction(s)",
+        "category_update_error": "Could not update the category."
       },
       "row": {
         "view_details": "View details",
@@ -514,7 +515,9 @@
         "added_on": "Added On"
       },
       "import": {
-        "upload_button": "Upload CSV",
+        "upload_button": "Select a file",
+        "dropzone_drag_hint": "Drag and drop your CSV file here, or",
+        "dropzone_hint": "CSV only \u00b7 up to {max} rows",
         "upload_parse_error": "Could not read the file. Check that it is a valid CSV and try again.",
         "upload_too_many_rows": "Too many rows: the file has more than {max} rows. Split the file and import it in parts.",
         "title": "Import transactions",
