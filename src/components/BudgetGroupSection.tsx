@@ -1,130 +1,40 @@
 'use client'
 
-import { deleteBudgetGroupAction } from '@/actions/budget/budget-item'
+import { deleteBudgetGroupAction, updateBudgetGroupAction } from '@/actions/budget/budget-item'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from '@/components/ui/dialog'
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import type { BudgetGroupWithItems } from '@/interfaces'
 import { cn } from '@/lib/utils'
-import { ChevronDown, ChevronRight, Trash2 } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Pencil, Trash2, X } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { AddBudgetItemForm } from './AddBudgetItemForm'
 import { BudgetItemRow } from './BudgetItemRow'
 
-interface BudgetGroupSectionProps {
-  group: BudgetGroupWithItems
-  budgetId: string
-}
+const currency = (n: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
 
-const currency = (n: number) =>
-  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(n)
-
-const TYPE_LABELS: Record<string, { label: string; color: string }> = {
-  income: { label: 'Income', color: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30' },
-  bills: { label: 'Bills', color: 'text-red-600 bg-red-50 dark:bg-red-950/30' },
-  variable_expenses: { label: 'Variable', color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/30' },
-  debt: { label: 'Debt', color: 'text-orange-600 bg-orange-50 dark:bg-orange-950/30' },
-  savings: { label: 'Savings', color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/30' },
-  investments: { label: 'Investments', color: 'text-purple-600 bg-purple-50 dark:bg-purple-950/30' },
-}
-
-export function BudgetGroupSection({ group, budgetId }: BudgetGroupSectionProps) {
+export function BudgetGroupSection({ group, budgetId }: { group: BudgetGroupWithItems; budgetId: string }) {
   const [collapsed, setCollapsed] = useState(false)
+  const [editingName, setEditingName] = useState(false)
+  const [name, setName] = useState(group.name)
   const [deletePending, startDeleteTransition] = useTransition()
-  const typeInfo = TYPE_LABELS[group.type] ?? { label: group.type, color: 'text-muted-foreground bg-muted' }
+  const [renamePending, startRenameTransition] = useTransition()
+  const isIncome = group.calculationType === 'income'
+  const actualTone = group.groupActual > group.groupPlanned ? 'text-destructive' : 'text-emerald-700'
 
-  const handleDeleteGroup = () => {
-    startDeleteTransition(async () => {
-      const result = await deleteBudgetGroupAction(group.id, budgetId)
-      if (result.success) {
-        toast.success(result.message ?? 'Group deleted')
-      } else {
-        toast.error(result.message ?? 'Failed to delete group')
-      }
-    })
-  }
+  const rename = () => { if (!name.trim()) return; startRenameTransition(async () => { const result = await updateBudgetGroupAction({ id: group.id, name: name.trim() }, budgetId); if (result.success) { setEditingName(false); toast.success(result.message ?? 'Group updated') } else toast.error(result.message ?? 'Failed to update group') }) }
+  const remove = () => startDeleteTransition(async () => { const result = await deleteBudgetGroupAction(group.id, budgetId); if (result.success) toast.success(result.message ?? 'Group deleted'); else toast.error(result.message ?? 'Failed to delete group') })
 
-  return (
-    <div className='rounded-2xl border border-border bg-card overflow-hidden'>
-      <button
-        onClick={() => setCollapsed(!collapsed)}
-        className='w-full flex items-center gap-3 p-4 hover:bg-muted/30 transition-colors text-left'
-      >
-        <div className='shrink-0 text-muted-foreground'>
-          {collapsed ? <ChevronRight className='size-4' /> : <ChevronDown className='size-4' />}
-        </div>
-
-        <span className={cn('text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-md', typeInfo.color)}>
-          {typeInfo.label}
-        </span>
-
-        <span className='text-sm font-semibold text-foreground'>{group.name}</span>
-
-        <div className='ml-auto flex items-center gap-3 text-xs tabular-nums'>
-          <span className='text-muted-foreground'>Planned: <strong className='text-foreground'>{currency(group.groupPlanned)}</strong></span>
-          <span className='text-muted-foreground'>Actual: <strong className={cn(group.groupActual > group.groupPlanned ? 'text-red-600' : 'text-emerald-600')}>{currency(group.groupActual)}</strong></span>
-        </div>
-
-        <Dialog>
-          <DialogTrigger asChild onClick={e => e.stopPropagation()}>
-            <Button
-              size='icon'
-              variant='ghost'
-              className='size-7 shrink-0 text-muted-foreground hover:text-red-600'
-            >
-              <Trash2 className='size-3.5' />
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete group</DialogTitle>
-              <DialogDescription>
-                Are you sure you want to delete &ldquo;{group.name}&rdquo;? All items inside will also be deleted.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant='outline'>Cancel</Button>
-              </DialogClose>
-              <Button variant='destructive' onClick={handleDeleteGroup} disabled={deletePending}>
-                {deletePending ? 'Deleting\u2026' : 'Delete'}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      </button>
-
-      {!collapsed && (
-        <div className='border-t border-border'>
-          <div className='grid grid-cols-[1fr_104px_88px_88px_104px_40px] gap-0 px-3 pt-2 pb-1'>
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground'>Item</span>
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground text-right'>Planned</span>
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground text-right'>Actual</span>
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground text-right'>Remaining</span>
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground text-right'>Usage</span>
-            <span />
-          </div>
-
-          {group.items.length === 0 && (
-            <p className='text-xs text-muted-foreground px-4 py-3 italic'>No items yet.</p>
-          )}
-
-          {group.items.map(item => (
-            <BudgetItemRow key={item.id} item={item} budgetId={budgetId} />
-          ))}
-
-          <AddBudgetItemForm groupId={group.id} budgetId={budgetId} />
-        </div>
-      )}
+  return <section className='overflow-hidden rounded-xl border border-border bg-card'>
+    <div className='flex min-h-16 items-center gap-3 px-4 py-3 sm:px-5'>
+      <button aria-label={`Toggle ${group.name}`} onClick={() => setCollapsed(value => !value)} className='rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground'>{collapsed ? <ChevronRight className='size-4' /> : <ChevronDown className='size-4' />}</button>
+      <span className={cn('label-caps rounded-full px-2 py-1', isIncome ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300')}>{isIncome ? 'Income' : 'Outflow'}</span>
+      <div className='min-w-0 flex-1'>{editingName ? <div className='flex items-center gap-1'><input aria-label='Group name' value={name} onChange={event => setName(event.target.value)} className='h-8 w-full max-w-56 rounded-md border bg-background px-2 body-sm font-semibold' autoFocus /><Button size='icon' variant='ghost' aria-label='Save group name' className='size-8' onClick={rename} disabled={renamePending}><Check className='size-3.5' /></Button><Button size='icon' variant='ghost' aria-label='Cancel group rename' className='size-8' onClick={() => { setName(group.name); setEditingName(false) }}><X className='size-3.5' /></Button></div> : <h2 className='title-md truncate text-foreground'>{group.name}</h2>}</div>
+      <div className='hidden text-right sm:block'><p className='label-caps text-muted-foreground'>Planned</p><p className='body-sm font-semibold tabular-nums'>{currency(group.groupPlanned)}</p></div>
+      <div className='hidden text-right md:block'><p className='label-caps text-muted-foreground'>Actual</p><p className={cn('body-sm font-semibold tabular-nums', actualTone)}>{currency(group.groupActual)}</p></div>
+      {!editingName && <Button size='icon' variant='ghost' aria-label={`Rename ${group.name}`} className='size-8 text-muted-foreground' onClick={() => setEditingName(true)}><Pencil className='size-3.5' /></Button>}
+      <Dialog><DialogTrigger asChild><Button size='icon' variant='ghost' aria-label={`Delete ${group.name}`} className='size-8 text-muted-foreground hover:text-destructive'><Trash2 className='size-3.5' /></Button></DialogTrigger><DialogContent><DialogHeader><DialogTitle>Delete group</DialogTitle><DialogDescription>Are you sure you want to delete &ldquo;{group.name}&rdquo;? All items inside will also be deleted.</DialogDescription></DialogHeader><DialogFooter><DialogClose asChild><Button variant='outline'>Cancel</Button></DialogClose><Button variant='destructive' onClick={remove} disabled={deletePending}>{deletePending ? 'Deleting…' : 'Delete'}</Button></DialogFooter></DialogContent></Dialog>
     </div>
-  )
+    {!collapsed && <div className='border-t border-border'><div className='overflow-x-auto'><div className='min-w-[620px]'><div className='grid grid-cols-[minmax(180px,1fr)_104px_88px_88px_104px_40px] gap-0 border-b border-border bg-muted/40 px-4 py-2 sm:px-5'><span className='label-caps text-muted-foreground'>Category</span><span className='label-caps text-right text-muted-foreground'>Planned</span><span className='label-caps text-right text-muted-foreground'>Actual</span><span className='label-caps text-right text-muted-foreground'>Remaining</span><span className='label-caps text-right text-muted-foreground'>Usage</span><span /></div>{group.items.length === 0 && <p className='px-5 py-5 body-sm italic text-muted-foreground'>No categories assigned yet.</p>}{group.items.map(item => <BudgetItemRow key={item.id} item={item} budgetId={budgetId} />)}</div></div><AddBudgetItemForm groupId={group.id} budgetId={budgetId} calculationType={group.calculationType} /></div>}
+  </section>
 }

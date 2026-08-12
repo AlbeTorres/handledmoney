@@ -71,8 +71,8 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
   }
 
   return (
-    <div className='group flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-muted/40 transition-colors'>
-      <div className='flex-1 min-w-0'>
+    <div className='group grid grid-cols-[minmax(180px,1fr)_104px_88px_88px_104px_40px] items-center gap-0 px-4 py-2.5 transition-colors hover:bg-muted/40 sm:px-5'>
+      <div className='min-w-0'>
         <div className='flex items-center gap-2'>
           <span className='text-sm font-medium text-foreground truncate'>{item.name}</span>
           {item.categoryId && (
@@ -83,13 +83,13 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
         </div>
       </div>
 
-      <div className='flex items-center gap-4 shrink-0'>
+      <div className='flex justify-end'>
         {editing ? (
           <div className='flex items-center gap-1'>
             <Input
               value={plannedAmount}
               onChange={e => setPlannedAmount(e.target.value)}
-              className='h-8 w-24 text-xs text-right tabular-nums'
+              className='h-8 w-20 text-xs text-right tabular-nums'
               type='number'
               step='0.01'
               min='0'
@@ -115,28 +115,18 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
         ) : (
           <button
             onClick={() => setEditing(true)}
-            className='text-sm font-medium tabular-nums text-foreground hover:text-primary transition-colors text-right w-24 opacity-0 group-hover:opacity-100'
+            aria-label={`Edit planned amount for ${item.name}`}
+            className='text-right body-sm font-medium tabular-nums text-foreground transition-colors hover:text-primary'
           >
-            <span className='opacity-100 group-hover:opacity-0 transition-opacity'>
-              {currency(item.plannedAmount)}
-            </span>
-            <span className='absolute opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 justify-end w-24'>
-              <Pencil className='size-3' />
-              Edit
-            </span>
+            <span className='inline-flex items-center gap-1'>{currency(item.plannedAmount)}<Pencil className='size-3 opacity-0 transition-opacity group-hover:opacity-100' /></span>
           </button>
         )}
-
-        <span className={cn('text-sm tabular-nums w-20 text-right', isOver ? 'text-red-600 font-medium' : 'text-muted-foreground')}>
-          {currency(item.actualAmount)}
-        </span>
-
-        <span className={cn('text-sm tabular-nums w-20 text-right font-medium', isOver ? 'text-red-600' : item.remaining > 0 ? 'text-emerald-600' : 'text-muted-foreground')}>
-          {currency(item.remaining)}
-        </span>
       </div>
 
-      <div className='w-24 shrink-0'>
+      <span className={cn('body-sm tabular-nums text-right', isOver ? 'font-medium text-destructive' : 'text-muted-foreground')}>{currency(item.actualAmount)}</span>
+      <span className={cn('body-sm text-right font-medium tabular-nums', isOver ? 'text-destructive' : item.remaining > 0 ? 'text-emerald-700' : 'text-muted-foreground')}>{currency(item.remaining)}</span>
+
+      <div className='px-3'>
         <div className='h-1.5 w-full rounded-full bg-muted overflow-hidden'>
           <div
             className={cn(
@@ -153,7 +143,8 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
           <Button
             size='icon'
             variant='ghost'
-            className='size-7 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 text-muted-foreground hover:text-red-600'
+          aria-label={`Delete ${item.name}`}
+          className='size-7 justify-self-end opacity-0 transition-opacity group-hover:opacity-100 text-muted-foreground hover:text-destructive focus-visible:opacity-100'
           >
             <Trash2 className='size-3.5' />
           </Button>

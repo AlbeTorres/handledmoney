@@ -204,51 +204,60 @@ export const UpdateTransactionSchema = z.object({
 
 // ── Budget schemas ────────────────────────────────────────────────────────────
 
-export const BudgetGroupTypeEnum = z.enum([
-  'income',
-  'bills',
-  'variable_expenses',
-  'debt',
-  'savings',
-  'investments',
-])
+export const BudgetCalculationTypeEnum = z.enum(['income', 'outflow'])
 
-export const CreateBudgetSchema = z.object({
+const budgetDateRange = <T extends z.ZodTypeAny>(schema: T) =>
+  schema.refine(
+    value => !value.endDate || value.endDate >= value.startDate,
+    { message: 'End date must be on or after start date', path: ['endDate'] },
+  )
+
+export const CreateBudgetSchema = budgetDateRange(z.object({
   name: z.string().min(1, 'Budget name is required').max(255),
-  month: z.number().int().min(1).max(12),
-  year: z.number().int().min(2020),
-})
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().nullable().optional(),
+}))
 
 export const UpdateBudgetSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, 'Budget name is required').max(255).optional(),
-  month: z.number().int().min(1).max(12).optional(),
-  year: z.number().int().min(2020).optional(),
+  startDate: z.coerce.date().optional(),
+  endDate: z.coerce.date().nullable().optional(),
+}).superRefine((value, ctx) => {
+  if (value.startDate && value.endDate && value.endDate < value.startDate) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['endDate'], message: 'End date must be on or after start date' })
+  }
 })
 
 export const CreateBudgetGroupSchema = z.object({
   budgetId: z.string().uuid(),
   name: z.string().min(1, 'Group name is required').max(255),
-  type: BudgetGroupTypeEnum,
+  calculationType: BudgetCalculationTypeEnum,
   sortOrder: z.number().int().min(0).default(0),
+})
+
+export const DuplicateBudgetSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1, 'Budget name is required').max(255).optional(),
+  startDate: z.coerce.date(),
+})
+
+export const UpdateBudgetGroupSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1, 'Group name is required').max(255),
 })
 
 export const CreateBudgetItemSchema = z.object({
   groupId: z.string().uuid(),
   name: z.string().min(1, 'Item name is required').max(255),
-  plannedAmount: z.coerce
-    .number({ invalid_type_error: 'Amount must be a number' })
-    .min(0, 'Amount must be zero or positive'),
+  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }).min(0, 'Amount must be zero or positive'),
   categoryId: z.string().uuid().optional().nullable(),
 })
 
 export const UpdateBudgetItemSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, 'Item name is required').max(255).optional(),
-  plannedAmount: z.coerce
-    .number({ invalid_type_error: 'Amount must be a number' })
-    .min(0)
-    .optional(),
+  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }).min(0).optional(),
   categoryId: z.string().uuid().optional().nullable(),
 })
 
@@ -257,4 +266,4 @@ export type UpdateBudgetValues = z.infer<typeof UpdateBudgetSchema>
 export type CreateBudgetGroupValues = z.infer<typeof CreateBudgetGroupSchema>
 export type CreateBudgetItemValues = z.infer<typeof CreateBudgetItemSchema>
 export type UpdateBudgetItemValues = z.infer<typeof UpdateBudgetItemSchema>
-export type BudgetGroupType = z.infer<typeof BudgetGroupTypeEnum>
+export type BudgetCalculationType = z.infer<typeof BudgetCalculationTypeEnum>
