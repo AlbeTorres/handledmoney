@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth'
 import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'
 
-export const getCategoriesByUserAction = async () => {
+export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -21,7 +21,7 @@ export const getCategoriesByUserAction = async () => {
   }
 
   try {
-    const categories = await getCategoriesByUserId(userId)
+    const categories = await getCategoriesByUserId(userId, type)
 
     return {
       success: true,

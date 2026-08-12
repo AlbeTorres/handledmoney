@@ -38,14 +38,14 @@ export const deleteCategoryAction = async (id: string) => {
       }
     }
 
-    await deleteCategory(id, userId)
+    const result = await deleteCategory(id, userId)
 
     revalidatePath('/category')
 
     return {
       success: true,
       status: 200,
-      message: 'Category deleted successfully',
+      message: result?.archived ? 'Category archived successfully' : 'Category deleted successfully',
     }
   } catch (error: any) {
     console.error('Error deleting category:', error)

@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { categoriesTable, transactionsTable } from '@/db/schema'
+import { budgetItemsTable, budgetsTable, categoriesTable, transactionsTable } from '@/db/schema'
 import { and, eq, sql } from 'drizzle-orm'
 
 export type CategorySelect = typeof categoriesTable.$inferSelect
@@ -8,8 +8,8 @@ export type CategoryInsert = typeof categoriesTable.$inferInsert
 export const getCategoriesByUserId = async (userId: string, type?: 'income' | 'expense') => {
   try {
     const whereClause = type
-      ? and(eq(categoriesTable.userId, userId), eq(categoriesTable.type, type))
-      : eq(categoriesTable.userId, userId)
+      ? and(eq(categoriesTable.userId, userId), eq(categoriesTable.type, type), sql`${categoriesTable.archivedAt} IS NULL`)
+      : and(eq(categoriesTable.userId, userId), sql`${categoriesTable.archivedAt} IS NULL`)
 
     const categories = await db.query.categoriesTable.findMany({
       where: whereClause,
@@ -61,21 +61,23 @@ export const updateCategory = async (id: string, userId: string, data: Partial<C
 
 export const deleteCategory = async (id: string, userId: string) => {
   try {
-    // Check for transactions
-    const transactions = await db
+    const [transactionReferences] = await db
       .select({ count: sql<number>`count(*)` })
       .from(transactionsTable)
       .where(and(eq(transactionsTable.categoryId, id), eq(transactionsTable.userId, userId)))
-
-    if (Number(transactions[0].count) > 0) {
-      throw new Error('Cannot delete category with associated transactions')
+    const [budgetReferences] = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(budgetItemsTable)
+      .innerJoin(budgetsTable, eq(budgetItemsTable.budgetId, budgetsTable.id))
+      .where(and(eq(budgetItemsTable.categoryId, id), eq(budgetsTable.userId, userId)))
+    const referenced = Number(transactionReferences.count) > 0 || Number(budgetReferences.count) > 0
+    if (referenced) {
+      const [category] = await db.update(categoriesTable).set({ archivedAt: new Date() })
+        .where(and(eq(categoriesTable.id, id), eq(categoriesTable.userId, userId))).returning()
+      return { category, archived: true }
     }
-
-    const [result] = await db
-      .delete(categoriesTable)
-      .where(and(eq(categoriesTable.id, id), eq(categoriesTable.userId, userId)))
-      .returning()
-    return result
+    const [category] = await db.delete(categoriesTable).where(and(eq(categoriesTable.id, id), eq(categoriesTable.userId, userId))).returning()
+    return { category, archived: false }
   } catch (error) {
     console.error('Error deleting category:', error)
     throw error

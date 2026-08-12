@@ -1,4 +1,4 @@
-import type { BudgetGroupType } from '@/lib/schema'
+import type { BudgetCalculationType } from '@/lib/schema'
 
 // ── Raw DB shapes ─────────────────────────────────────────────────────────────
 
@@ -6,17 +6,24 @@ export interface Budget {
   id: string
   userId: string
   name: string
-  month: number
-  year: number
+  startDate: Date
+  endDate: Date | null
   createdAt: Date
   updatedAt: Date
+}
+
+/** Lightweight budget summary used by the budget library. */
+export interface BudgetListItem extends Budget {
+  totalIncome: number
+  totalAllocated: number
+  remainingToAllocate: number
 }
 
 export interface BudgetGroup {
   id: string
   budgetId: string
   name: string
-  type: BudgetGroupType
+  calculationType: BudgetCalculationType
   sortOrder: number
   createdAt: Date
   updatedAt: Date
@@ -24,6 +31,7 @@ export interface BudgetGroup {
 
 export interface BudgetItem {
   id: string
+  budgetId: string
   groupId: string
   categoryId: string | null
   name: string
@@ -59,4 +67,29 @@ export interface BudgetWithGroups extends Budget {
   totalAllocated: number
   /** totalIncome - totalAllocated — the zero-sum remainder */
   remainingToAllocate: number
+}
+
+/** A current budget's plan compared with every categorized transaction owned by its user. */
+export interface BudgetCategoryComparison {
+  categoryId: string
+  categoryName: string
+  type: 'income' | 'expense'
+  plannedAmount: number
+  actualAmount: number
+  variance: number
+}
+
+export interface BudgetComparisonTotals {
+  plannedAmount: number
+  actualAmount: number
+  variance: number
+}
+
+export interface CurrentBudgetComparison {
+  budget: Budget
+  categories: BudgetCategoryComparison[]
+  actualWithoutPlan: BudgetCategoryComparison[]
+  plannedWithoutActual: BudgetCategoryComparison[]
+  income: BudgetComparisonTotals
+  outflow: BudgetComparisonTotals
 }

@@ -2,6 +2,7 @@
 
 import { createBudgetItemAction } from '@/actions/budget/budget-item'
 import { getCategoriesByUserAction } from '@/actions/category/get-categories'
+import { createCategoryAction } from '@/actions/category/create-category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -14,29 +15,59 @@ import {
 } from '@/components/ui/select'
 import type { CategorySelect } from '@/repository/categories'
 import { Loader2, Plus, X } from 'lucide-react'
-import { useEffect, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 interface AddBudgetItemFormProps {
   groupId: string
   budgetId: string
+  calculationType: 'income' | 'outflow'
 }
 
-export function AddBudgetItemForm({ groupId, budgetId }: AddBudgetItemFormProps) {
+export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBudgetItemFormProps) {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
   const [categories, setCategories] = useState<CategorySelect[]>([])
 
   const [name, setName] = useState('')
   const [plannedAmount, setPlannedAmount] = useState('')
-  const [categoryId, setCategoryId] = useState<string | undefined>(undefined)
+  const [categoryId, setCategoryId] = useState('')
+  const selectedCategoryIdRef = useRef('')
 
   useEffect(() => {
     if (!open) return
-    getCategoriesByUserAction().then(res => {
-      if (res.success && res.data) setCategories(res.data as CategorySelect[])
+      getCategoriesByUserAction(calculationType === 'income' ? 'income' : 'expense').then(res => {
+      if (res.success && res.data) {
+        setCategories(current => {
+          const fetched = res.data as CategorySelect[]
+          return [...fetched, ...current.filter(category => !fetched.some(item => item.id === category.id))]
+        })
+      }
     })
-  }, [open])
+  }, [open, calculationType])
+
+  const createCategory = async () => {
+    const categoryName = name.trim()
+    if (!categoryName) {
+      toast.error('Enter an item name before creating its category')
+      return
+    }
+    const result = await createCategoryAction({
+        name: categoryName,
+        type: calculationType === 'income' ? 'income' : 'expense',
+        icon: 'more_horizontal',
+        color: '94a3b8',
+    })
+    if (result.success && result.data) {
+        const category = result.data as CategorySelect
+        setCategories(current => [...current, category])
+        setCategoryId(category.id)
+        selectedCategoryIdRef.current = category.id
+        toast.success('Category created and selected')
+    } else {
+      toast.error(result.message ?? 'Failed to create category')
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,14 +80,15 @@ export function AddBudgetItemForm({ groupId, budgetId }: AddBudgetItemFormProps)
 
     startTransition(async () => {
       const result = await createBudgetItemAction(
-        { groupId, name: name.trim(), plannedAmount: amount, categoryId: categoryId || null },
+        { groupId, name: name.trim(), plannedAmount: amount, categoryId: categoryId || selectedCategoryIdRef.current || null },
         budgetId,
       )
       if (result.success) {
         toast.success(result.message ?? 'Item added')
         setName('')
         setPlannedAmount('')
-        setCategoryId(undefined)
+        setCategoryId('')
+        selectedCategoryIdRef.current = ''
         setOpen(false)
       } else {
         toast.error(result.message ?? 'Failed to add item')
@@ -114,7 +146,7 @@ export function AddBudgetItemForm({ groupId, budgetId }: AddBudgetItemFormProps)
           <Label htmlFor='item-category' className='text-[10px] uppercase tracking-wider text-muted-foreground'>
             Category
           </Label>
-          <Select value={categoryId} onValueChange={setCategoryId}>
+          <Select value={categoryId} onValueChange={value => { setCategoryId(value); selectedCategoryIdRef.current = value }}>
             <SelectTrigger id='item-category' className='h-8 text-xs'>
               <SelectValue placeholder='Optional' />
             </SelectTrigger>
@@ -126,6 +158,9 @@ export function AddBudgetItemForm({ groupId, budgetId }: AddBudgetItemFormProps)
               ))}
             </SelectContent>
           </Select>
+          <Button type='button' variant='ghost' size='sm' className='h-6 px-0 text-[10px]' onClick={createCategory} disabled={isPending}>
+            <Plus className='mr-1 size-3' /> Create category from item name
+          </Button>
         </div>
       </div>
 
