@@ -157,7 +157,7 @@
         "title": "Aún no tenés cuentas vinculadas",
         "description": "Para empezar a seguir tu salud financiero y tener claridad en tus gastos, necesitás vincular tus cuentas bancarias o crear una cuenta de seguimiento manual.",
         "add_first_account": "Agregá tu primera cuenta",
-        "import_data": "Importar datos"
+        "import_data": "Importar CSV"
       },
       "action": {
         "search_placeholder": "Buscar cuentas...",
@@ -346,7 +346,7 @@
         "title": "Aún no tenés transacciones",
         "description": "Empezá a registrar tus ingresos y gastos para tener claridad en tu salud financiera.",
         "add_first_transaction": "Agregá tu primera transacción",
-        "import_data": "Importar datos"
+        "import_data": "Importar CSV"
       },
       "summary": {
         "total_income": "Ingresos totales",
@@ -360,7 +360,7 @@
         "filter_category": "Categoría",
         "filter_status": "Estado",
         "export_csv": "Exportar CSV",
-        "bulk_add": "Carga Masiva",
+        "bulk_add": "Importar CSV",
         "sort_date": "Fecha",
         "sort_amount": "Monto",
         "sort_recently_added": "Agregadas recientemente",
@@ -399,7 +399,8 @@
         "select_all": "Seleccionar todo",
         "select_row": "Seleccionar fila",
         "delete_success": "{count} transacción(es) eliminada(s)",
-        "category_update_success": "{count} transacción(es) actualizada(s)"
+        "category_update_success": "{count} transacción(es) actualizada(s)",
+        "category_update_error": "No se pudo actualizar la categoría."
       },
       "row": {
         "view_details": "Ver detalles",
@@ -512,7 +513,9 @@
         "added_on": "Añadido el"
       },
       "import": {
-        "upload_button": "Subir CSV",
+        "upload_button": "Seleccionar un archivo",
+        "dropzone_drag_hint": "Arrastrá tu archivo CSV acá o",
+        "dropzone_hint": "Solo CSV \u00b7 hasta {max} filas",
         "upload_parse_error": "No se pudo leer el archivo. Verifica que sea un CSV válido e inténtalo de nuevo.",
         "upload_too_many_rows": "Demasiadas filas: el archivo tiene más de {max} filas. Divide el archivo e impórtalo por partes.",
         "title": "Importar transacciones",

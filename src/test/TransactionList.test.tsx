@@ -12,11 +12,17 @@ vi.mock('next-intl', () => ({
 }))
 
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
   useSearchParams: () => ({
     get: vi.fn(),
     toString: vi.fn(),
   }),
+}))
+
+// The real action transitively loads @/lib/auth → send-email.ts, which builds a
+// Resend client and throws without RESEND_API_KEY in the test env — mock it.
+vi.mock('@/actions/transaction/update-transactions-category', () => ({
+  updateTransactionsCategoryAction: vi.fn(),
 }))
 
 vi.mock('@/components/ui/checkbox', () => ({

@@ -1,5 +1,7 @@
 'use client'
+import { updateTransactionsCategoryAction } from '@/actions/transaction/update-transactions-category'
 import { useTranslations } from 'next-intl'
+import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
 import { Transaction } from '../interfaces'
 import { DataTable } from './DataTable'
@@ -18,6 +20,7 @@ export function TransactionList({
   currentPage,
 }: TransactionListProps) {
   const t = useTranslations('handledmoney.transaction')
+  const router = useRouter()
 
   const onDelete = async (ids: string[]) => {
     try {
@@ -31,11 +34,16 @@ export function TransactionList({
 
   const onBulkCategoryChange = async (categoryId: string, ids: string[]) => {
     try {
-      // TODO: Implement bulk category change server action
-      console.log('Would change category to:', categoryId, 'for transactions:', ids)
-      toast.success(t('table.category_update_success', { count: ids.length }))
+      const result = await updateTransactionsCategoryAction({ categoryId, ids })
+      if (result.success) {
+        toast.success(t('table.category_update_success', { count: result.count ?? ids.length }))
+      } else {
+        toast.error(t('table.category_update_error'))
+      }
     } catch {
-      toast.error(t('form.error_generic'))
+      toast.error(t('table.category_update_error'))
+    } finally {
+      router.refresh()
     }
   }
 

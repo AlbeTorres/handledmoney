@@ -183,6 +183,33 @@ export const updateTransaction = async ({
   })
 }
 
+/**
+ * Bulk-updates the category of multiple transactions.
+ * Unlike transferTransaction, ownership IS enforced here: the WHERE clause
+ * filters by userId so transactions belonging to other users are never touched.
+ * Changing a category does not affect account balances (same as updateTransaction
+ * when only the category changes).
+ */
+export const updateTransactionsCategory = async (
+  categoryId: string,
+  ids: string[],
+  userId: string,
+) => {
+  if (ids.length === 0) return 0
+
+  try {
+    const result = await db
+      .update(transactionsTable)
+      .set({ categoryId })
+      .where(and(inArray(transactionsTable.id, ids), eq(transactionsTable.userId, userId)))
+
+    return result.rowCount ?? 0
+  } catch (error) {
+    console.error('Error updating transactions category:', error)
+    throw new Error('Could not update the transactions category.')
+  }
+}
+
 export const getTransactionById = async (id: string, userId: string) => {
   return await db.query.transactionsTable.findFirst({
     where: and(eq(transactionsTable.id, id), eq(transactionsTable.userId, userId)),

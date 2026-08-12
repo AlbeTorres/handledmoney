@@ -8,13 +8,30 @@ import { Transaction } from '@/interfaces'
 // Mock DataTable — it's a complex component with TanStack Table dependencies,
 // so we mock it completely and verify AccountTransactionTable passes the correct props.
 vi.mock('@/components/DataTable', () => ({
-  DataTable: ({ data, totalPages, currentPage, categories, onBulkDelete }: any) => (
+  DataTable: ({ data, totalPages, currentPage, categories, onBulkDelete, onBulkCategoryChange }: any) => (
     <div data-testid='data-table'>
       <span data-testid='data-count'>{data.length}</span>
       <span data-testid='total-pages'>{totalPages}</span>
       <span data-testid='current-page'>{currentPage}</span>
     </div>
   ),
+}))
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn(), refresh: vi.fn() }),
+}))
+
+vi.mock('react-hot-toast', () => ({
+  default: {
+    success: vi.fn(),
+    error: vi.fn(),
+  },
+}))
+
+// The real action transitively loads @/lib/auth → send-email.ts, which builds a
+// Resend client and throws without RESEND_API_KEY in the test env — mock it.
+vi.mock('@/actions/transaction/update-transactions-category', () => ({
+  updateTransactionsCategoryAction: vi.fn(),
 }))
 
 vi.mock('next-intl', () => ({

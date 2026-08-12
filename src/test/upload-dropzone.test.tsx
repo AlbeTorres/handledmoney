@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useCSVState } from '@/store/CSVState'
@@ -36,25 +36,28 @@ vi.mock('react-papaparse', () => ({
       children,
     }: {
       onUploadAccepted: (results: unknown) => void
-      children: (props: { getRootProps: () => { onClick: () => void } }) => React.ReactNode
+      children: (props: {
+        getRootProps: (opts?: {
+          onDragEnter?: () => void
+          onDragLeave?: () => void
+          onDrop?: () => void
+        }) => Record<string, unknown>
+      }) => React.ReactNode
     }) =>
       children({
-        getRootProps: () => ({
+        getRootProps: (opts = {}) => ({
           onClick: () => onUploadAccepted(csvMock.results),
+          onDragEnter: opts.onDragEnter,
+          onDragLeave: opts.onDragLeave,
+          onDrop: opts.onDrop,
         }),
       }),
   }),
 }))
 
-vi.mock('@/components/ui/button', () => ({
-  Button: ({ children, ...props }: React.PropsWithChildren<Record<string, unknown>>) => (
-    <button {...props}>{children}</button>
-  ),
-}))
-
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { UploadButton } from '@/components/UploadButton'
+import { UploadDropzone } from '@/components/UploadDropzone'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 
@@ -74,7 +77,7 @@ const makeResult = (data: string[][], errors: unknown[] = []) => ({
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
-describe('UploadButton', () => {
+describe('UploadDropzone', () => {
   beforeEach(() => {
     toastErrorMock.mockClear()
     toastSuccessMock.mockClear()
@@ -92,7 +95,7 @@ describe('UploadButton', () => {
       ['1/25/2024', 'Opening balance', '$100.00', '', ''],
     ])
 
-    render(<UploadButton />)
+    render(<UploadDropzone />)
     await user.click(screen.getByRole('button'))
 
     const state = useCSVState.getState()
@@ -112,7 +115,7 @@ describe('UploadButton', () => {
       { type: 'Quotes', code: 'Quotes', message: 'Unescaped quote', row: 2 },
     ])
 
-    render(<UploadButton />)
+    render(<UploadDropzone />)
     await user.click(screen.getByRole('button'))
 
     expect(toastErrorMock).toHaveBeenCalledWith('import.upload_parse_error')
@@ -127,7 +130,7 @@ describe('UploadButton', () => {
     }
     csvMock.results = makeResult(rows)
 
-    render(<UploadButton />)
+    render(<UploadDropzone />)
     await user.click(screen.getByRole('button'))
 
     expect(toastErrorMock).toHaveBeenCalledWith(
@@ -144,10 +147,25 @@ describe('UploadButton', () => {
     }
     csvMock.results = makeResult(rows)
 
-    render(<UploadButton />)
+    render(<UploadDropzone />)
     await user.click(screen.getByRole('button'))
 
     expect(toastErrorMock).not.toHaveBeenCalled()
     expect(useCSVState.getState().isImporting).toBe('IMPORT')
+  })
+
+  it('highlights the dropzone while dragging and clears it on leave', () => {
+    render(<UploadDropzone />)
+
+    // Re-query after each event: the dropzone node can be reconciled into a
+    // fresh element on re-render, so a stale reference would miss the update.
+    const getDropzone = () => screen.getByTestId('upload-dropzone')
+    expect(getDropzone()).toHaveAttribute('data-dragging', 'false')
+
+    fireEvent.dragEnter(getDropzone())
+    expect(getDropzone()).toHaveAttribute('data-dragging', 'true')
+
+    fireEvent.dragLeave(getDropzone())
+    expect(getDropzone()).toHaveAttribute('data-dragging', 'false')
   })
 })

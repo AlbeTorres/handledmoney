@@ -124,6 +124,12 @@ vi.mock('@/components/TransactionQuickEdit', () => ({
   TransactionQuickEdit: () => <div data-testid='transaction-quick-edit' />,
 }))
 
+// The real action transitively loads @/lib/auth → send-email.ts, which builds a
+// Resend client and throws without RESEND_API_KEY in the test env — mock it.
+vi.mock('@/actions/transaction/update-transactions-category', () => ({
+  updateTransactionsCategoryAction: vi.fn(),
+}))
+
 // ── Component Under Test ───────────────────────────────────────────────────────
 
 import { TransactionPageContent } from '@/components/_TransactionPageContent_'

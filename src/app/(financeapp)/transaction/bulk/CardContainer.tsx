@@ -2,7 +2,7 @@
 import { createTransactionsBulkAction } from '@/actions/transaction/create-transaction'
 import { ImportCard } from '@/components/ImportCard'
 import { ReviewImportTable, SubmitResult } from '@/components/ReviewImportTable'
-import { UploadButton } from '@/components/UploadButton'
+import { UploadDropzone } from '@/components/UploadDropzone'
 import { VARIANTS } from '@/interfaces'
 import type { BulkImportInput } from '@/lib/csv/types'
 import { useCSVState } from '@/store/CSVState'
@@ -63,8 +63,8 @@ export const CardContainer = ({ accounts }: Props) => {
   }
 
   return (
-    <div>
-      <UploadButton />
+    <div className='flex min-h-[60vh] items-center justify-center p-4'>
+      <UploadDropzone />
     </div>
   )
 }
