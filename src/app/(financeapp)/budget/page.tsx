@@ -1,25 +1,26 @@
 import { getBudgetListAction } from '@/actions/budget/get-budget'
+import { getCurrentBudgetAction } from '@/actions/budget/get-current-budget'
 import { BudgetGrid } from '@/components/BudgetGrid'
 import { CreateBudgetSheet } from '@/components/CreateBudgetSheet'
 
 export const metadata = { title: 'Budgets | HandledMoney' }
 
 export default async function BudgetPage() {
-  const { data: budgets } = await getBudgetListAction()
+  const [{ data: budgets }, { data: currentBudget }] = await Promise.all([getBudgetListAction(), getCurrentBudgetAction()])
 
   return (
-    <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
-      <div className='flex items-center justify-between'>
+    <div className='container space-y-10 px-4 py-6 sm:px-6 lg:px-10 lg:py-10'>
+      <div className='flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between'>
         <div>
-          <h1 className='text-2xl font-bold text-foreground'>Budgets</h1>
-          <p className='text-sm text-muted-foreground mt-1'>
-            Zero-based budget — every dollar assigned.
+            <h1 className='display-lg text-foreground'>Budgets</h1>
+            <p className='body-lg mt-1 text-muted-foreground'>
+              Manage the plan for your current financial reality.
           </p>
         </div>
         <CreateBudgetSheet />
       </div>
 
-      <BudgetGrid budgets={budgets ?? []} />
+        <BudgetGrid budgets={budgets ?? []} currentBudgetId={currentBudget?.budgetId ?? null} />
     </div>
   )
 }

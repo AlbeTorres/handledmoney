@@ -1,13 +1,14 @@
 'use server'
 
 import { auth } from '@/lib/auth'
-import { CreateBudgetItemSchema, UpdateBudgetItemSchema } from '@/lib/schema'
+import { CreateBudgetItemSchema, CreateBudgetGroupSchema, UpdateBudgetGroupSchema, UpdateBudgetItemSchema } from '@/lib/schema'
 import {
   createBudgetItem,
   updateBudgetItem,
   deleteBudgetItem,
   createBudgetGroup,
   deleteBudgetGroup,
+  updateBudgetGroup,
 } from '@/repository/budget'
 import { revalidatePath } from 'next/cache'
 import { headers } from 'next/headers'
@@ -31,7 +32,8 @@ export const createBudgetItemAction = async (values: CreateBudgetItemValues, bud
   }
 
   try {
-    const item = await createBudgetItem(validated.data)
+    const item = await createBudgetItem(validated.data, session.user.id)
+    if (!item) return { success: false, status: 404, message: 'Group not found' }
     revalidatePath(`/budget/${budgetId}`)
     return { success: true, status: 201, data: item, message: 'Item added successfully' }
   } catch (error) {
@@ -53,7 +55,7 @@ export const updateBudgetItemAction = async (values: UpdateBudgetItemValues, bud
   }
 
   try {
-    const item = await updateBudgetItem(validated.data)
+    const item = await updateBudgetItem(validated.data, budgetId, session.user.id)
     if (!item) return { success: false, status: 404, message: 'Item not found' }
 
     revalidatePath(`/budget/${budgetId}`)
@@ -72,7 +74,7 @@ export const deleteBudgetItemAction = async (id: string, budgetId: string) => {
   }
 
   try {
-    const deleted = await deleteBudgetItem(id)
+    const deleted = await deleteBudgetItem(id, budgetId, session.user.id)
     if (!deleted) return { success: false, status: 404, message: 'Item not found' }
 
     revalidatePath(`/budget/${budgetId}`)
@@ -86,7 +88,7 @@ export const deleteBudgetItemAction = async (id: string, budgetId: string) => {
 // ── Group actions ──────────────────────────────────────────────────────────────
 
 export const createBudgetGroupAction = async (
-  values: { budgetId: string; name: string; type: 'income' | 'bills' | 'variable_expenses' | 'debt' | 'savings' | 'investments'; sortOrder?: number },
+  values: { budgetId: string; name: string; calculationType: 'income' | 'outflow'; sortOrder?: number },
   budgetId: string,
 ) => {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -95,17 +97,32 @@ export const createBudgetGroupAction = async (
     return { success: false, status: 401, message: 'Unauthorized' }
   }
 
+  const validated = CreateBudgetGroupSchema.safeParse(values)
+  if (!validated.success || values.budgetId !== budgetId) return { success: false, status: 400, message: 'Invalid group' }
+
   try {
-    const group = await createBudgetGroup({
-      budgetId,
-      name: values.name,
-      type: values.type,
-      sortOrder: values.sortOrder ?? 0,
-    })
+    const group = await createBudgetGroup(validated.data, session.user.id)
+    if (!group) return { success: false, status: 404, message: 'Budget not found' }
     revalidatePath(`/budget/${budgetId}`)
     return { success: true, status: 201, data: group, message: 'Group added successfully' }
   } catch (error) {
     console.error('Error creating budget group:', error)
+    return { success: false, status: 500, message: 'Something went wrong' }
+  }
+}
+
+export const updateBudgetGroupAction = async (values: { id: string; name: string }, budgetId: string) => {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user?.id) return { success: false, status: 401, message: 'Unauthorized' }
+  const validated = UpdateBudgetGroupSchema.safeParse(values)
+  if (!validated.success) return { success: false, status: 400, message: 'Invalid fields', errors: validated.error.flatten() }
+  try {
+    const group = await updateBudgetGroup(validated.data, budgetId, session.user.id)
+    if (!group) return { success: false, status: 404, message: 'Group not found' }
+    revalidatePath(`/budget/${budgetId}`)
+    return { success: true, status: 200, data: group, message: 'Group updated successfully' }
+  } catch (error) {
+    console.error('Error updating budget group:', error)
     return { success: false, status: 500, message: 'Something went wrong' }
   }
 }
@@ -118,7 +135,7 @@ export const deleteBudgetGroupAction = async (groupId: string, budgetId: string)
   }
 
   try {
-    const deleted = await deleteBudgetGroup(groupId)
+    const deleted = await deleteBudgetGroup(groupId, budgetId, session.user.id)
     if (!deleted) return { success: false, status: 404, message: 'Group not found' }
 
     revalidatePath(`/budget/${budgetId}`)

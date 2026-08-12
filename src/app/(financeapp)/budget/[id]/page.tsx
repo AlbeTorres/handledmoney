@@ -13,7 +13,7 @@ export default async function BudgetDetailPage({ params }: BudgetDetailPageProps
   if (!success || !budget) notFound()
 
   return (
-    <div className='p-8 max-w-7xl mx-auto w-full'>
+    <div className='container px-4 py-6 sm:px-6 lg:px-10 lg:py-10'>
       <BudgetDetailView budget={budget} />
     </div>
   )

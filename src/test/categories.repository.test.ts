@@ -66,6 +66,7 @@ vi.mock('@/db', () => ({
     select: (_columns: unknown) => ({
       from: (_table: unknown) => ({
         where: mockSelectWhere,
+        innerJoin: (_table: unknown, _condition: unknown) => ({ where: mockSelectWhere }),
       }),
     }),
     // delete chain: delete() → where() → returning()
@@ -251,22 +252,20 @@ describe('Categories Repository', () => {
 
       const result = await deleteCategory(mockCategoryId, mockUserId)
 
-      expect(result).toEqual(mockCategory)
-      // The select query (transaction check) should have been called first.
-      expect(mockSelectWhere).toHaveBeenCalledTimes(1)
+      expect(result).toEqual({ category: mockCategory, archived: false })
+      expect(mockSelectWhere).toHaveBeenCalledTimes(2)
       // The delete query should follow.
       expect(mockDeleteReturning).toHaveBeenCalledTimes(1)
     })
 
-    it('throws when the category has associated transactions', async () => {
-      // count > 0 → transactions exist → function throws before calling delete
+    it('archives when the category has associated transactions', async () => {
       mockSelectWhere.mockResolvedValue([{ count: 5 }])
+      mockUpdateReturning.mockResolvedValue([mockCategory])
 
-      await expect(deleteCategory(mockCategoryId, mockUserId)).rejects.toThrow(
-        'Cannot delete category with associated transactions',
-      )
-
-      // Delete should never be reached.
+      await expect(deleteCategory(mockCategoryId, mockUserId)).resolves.toEqual({
+        category: mockCategory,
+        archived: true,
+      })
       expect(mockDeleteReturning).not.toHaveBeenCalled()
     })
 

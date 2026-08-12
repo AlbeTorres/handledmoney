@@ -12,36 +12,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Plus } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-const MONTHS = [
-  { value: '1', label: 'January' }, { value: '2', label: 'February' },
-  { value: '3', label: 'March' }, { value: '4', label: 'April' },
-  { value: '5', label: 'May' }, { value: '6', label: 'June' },
-  { value: '7', label: 'July' }, { value: '8', label: 'August' },
-  { value: '9', label: 'September' }, { value: '10', label: 'October' },
-  { value: '11', label: 'November' }, { value: '12', label: 'December' },
-]
-
-const CURRENT_YEAR = new Date().getFullYear()
-const YEARS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - 1 + i)
+const today = () => new Date().toISOString().slice(0, 10)
 
 export function CreateBudgetSheet() {
   const [open, setOpen] = useState(false)
   const [isPending, startTransition] = useTransition()
 
   const [name, setName] = useState('')
-  const [month, setMonth] = useState(String(new Date().getMonth() + 1))
-  const [year, setYear] = useState(String(CURRENT_YEAR))
+  const [startDate, setStartDate] = useState(today)
+  const [endDate, setEndDate] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,8 +32,8 @@ export function CreateBudgetSheet() {
     startTransition(async () => {
       const result = await createBudgetAction({
         name,
-        month: Number(month),
-        year: Number(year),
+        startDate: new Date(`${startDate}T00:00:00`),
+        endDate: endDate ? new Date(`${endDate}T00:00:00`) : null,
       })
 
       if (result.success) {
@@ -76,7 +59,7 @@ export function CreateBudgetSheet() {
         <SheetHeader>
           <SheetTitle>Create Budget</SheetTitle>
           <SheetDescription>
-            Set up a zero-based budget for a specific month.
+            Set up a zero-based budget for your current financial reality.
           </SheetDescription>
         </SheetHeader>
 
@@ -94,31 +77,12 @@ export function CreateBudgetSheet() {
 
           <div className='grid grid-cols-2 gap-3'>
             <div className='space-y-2'>
-              <Label htmlFor='budget-month'>Month</Label>
-              <Select value={month} onValueChange={setMonth}>
-                <SelectTrigger id='budget-month'>
-                  <SelectValue placeholder='Month' />
-                </SelectTrigger>
-                <SelectContent>
-                  {MONTHS.map(m => (
-                    <SelectItem key={m.value} value={m.value}>{m.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor='budget-start-date'>Start date</Label>
+              <Input id='budget-start-date' type='date' value={startDate} onChange={event => setStartDate(event.target.value)} required />
             </div>
-
             <div className='space-y-2'>
-              <Label htmlFor='budget-year'>Year</Label>
-              <Select value={year} onValueChange={setYear}>
-                <SelectTrigger id='budget-year'>
-                  <SelectValue placeholder='Year' />
-                </SelectTrigger>
-                <SelectContent>
-                  {YEARS.map(y => (
-                    <SelectItem key={y} value={String(y)}>{y}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Label htmlFor='budget-end-date'>End date</Label>
+              <Input id='budget-end-date' type='date' value={endDate} onChange={event => setEndDate(event.target.value)} min={startDate} />
             </div>
           </div>
 

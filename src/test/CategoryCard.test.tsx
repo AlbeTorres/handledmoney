@@ -60,6 +60,7 @@ const baseCategory = {
   createdAt: new Date(),
   updatedAt: new Date(),
   deletedAt: null,
+  archivedAt: null,
 }
 
 // ── Section: Renders category name ───────────────────────────────────────────

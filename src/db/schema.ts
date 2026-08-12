@@ -10,6 +10,7 @@ import {
   pgTable,
   text,
   timestamp,
+  unique,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
@@ -31,14 +32,7 @@ export const incomeTypeEnum = pgEnum('income_type', [
 
 export const billingTypeEnum = pgEnum('billing_type', ['hourly', 'project', 'salary'])
 
-export const budgetGroupTypeEnum = pgEnum('budget_group_type', [
-  'income',
-  'bills',
-  'variable_expenses',
-  'debt',
-  'savings',
-  'investments',
-])
+export const budgetCalculationTypeEnum = pgEnum('budget_calculation_type', ['income', 'outflow'])
 
 const timestamps = {
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -183,6 +177,7 @@ export const categoriesTable = pgTable('category', {
   type: categoryTypeEnum().default('expense').notNull(),
   isDefault: boolean('is_default').default(false).notNull(),
   order: integer('order').default(0).notNull(),
+  archivedAt: timestamp('archived_at'),
   ...timestamps,
 })
 
@@ -263,12 +258,20 @@ export const budgetsTable = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     name: varchar({ length: 255 }).notNull(),
-    month: integer('month').notNull(), // 1–12
-    year: integer('year').notNull(),
+    startDate: timestamp('start_date').notNull(),
+    endDate: timestamp('end_date'),
     ...timestamps,
   },
-  table => [index('budget_userId_year_month_idx').on(table.userId, table.year, table.month)],
+  table => [index('budget_userId_startDate_idx').on(table.userId, table.startDate)],
 )
+
+export const currentBudgetsTable = pgTable('current_budget', {
+  userId: text('user_id')
+    .primaryKey()
+    .references(() => user.id, { onDelete: 'cascade' }),
+  budgetId: uuid('budget_id').references(() => budgetsTable.id, { onDelete: 'set null' }),
+  ...timestamps,
+})
 
 export const budgetGroupsTable = pgTable('budget_group', {
   id: uuid('id').defaultRandom().primaryKey(),
@@ -276,21 +279,28 @@ export const budgetGroupsTable = pgTable('budget_group', {
     .notNull()
     .references(() => budgetsTable.id, { onDelete: 'cascade' }),
   name: varchar({ length: 255 }).notNull(),
-  type: budgetGroupTypeEnum().notNull(),
+  calculationType: budgetCalculationTypeEnum('calculation_type').notNull(),
   sortOrder: integer('sort_order').default(0).notNull(),
   ...timestamps,
 })
 
-export const budgetItemsTable = pgTable('budget_item', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  groupId: uuid('group_id')
-    .notNull()
-    .references(() => budgetGroupsTable.id, { onDelete: 'cascade' }),
-  categoryId: uuid('category_id').references(() => categoriesTable.id, { onDelete: 'set null' }),
-  name: varchar({ length: 255 }).notNull(),
-  plannedAmount: numeric('planned_amount', { precision: 10, scale: 2 }).default('0').notNull(),
-  ...timestamps,
-})
+export const budgetItemsTable = pgTable(
+  'budget_item',
+  {
+    id: uuid('id').defaultRandom().primaryKey(),
+    budgetId: uuid('budget_id')
+      .notNull()
+      .references(() => budgetsTable.id, { onDelete: 'cascade' }),
+    groupId: uuid('group_id')
+      .notNull()
+      .references(() => budgetGroupsTable.id, { onDelete: 'cascade' }),
+    categoryId: uuid('category_id').references(() => categoriesTable.id),
+    name: varchar({ length: 255 }).notNull(),
+    plannedAmount: numeric('planned_amount', { precision: 10, scale: 2 }).default('0').notNull(),
+    ...timestamps,
+  },
+  table => [unique('budget_item_budget_category_unique').on(table.budgetId, table.categoryId)],
+)
 
 // rate limiter
 
@@ -312,6 +322,7 @@ export const userRelations = relations(user, ({ many, one }) => ({
   transactions: many(transactionsTable),
   twoFactors: many(twoFactor),
   budgets: many(budgetsTable),
+  currentBudget: one(currentBudgetsTable),
 
   settings: one(Settings, {
     fields: [user.id],
@@ -354,6 +365,7 @@ export const categoriesRelations = relations(categoriesTable, ({ one, many }) =>
     references: [user.id],
   }),
   transactions: many(transactionsTable),
+  budgetItems: many(budgetItemsTable),
 }))
 
 export const transactionsRelations = relations(transactionsTable, ({ one }) => ({
@@ -399,6 +411,7 @@ export const budgetsRelations = relations(budgetsTable, ({ one, many }) => ({
     references: [user.id],
   }),
   groups: many(budgetGroupsTable),
+  items: many(budgetItemsTable),
 }))
 
 export const budgetGroupsRelations = relations(budgetGroupsTable, ({ one, many }) => ({
@@ -410,6 +423,10 @@ export const budgetGroupsRelations = relations(budgetGroupsTable, ({ one, many }
 }))
 
 export const budgetItemsRelations = relations(budgetItemsTable, ({ one }) => ({
+  budget: one(budgetsTable, {
+    fields: [budgetItemsTable.budgetId],
+    references: [budgetsTable.id],
+  }),
   group: one(budgetGroupsTable, {
     fields: [budgetItemsTable.groupId],
     references: [budgetGroupsTable.id],
@@ -417,5 +434,17 @@ export const budgetItemsRelations = relations(budgetItemsTable, ({ one }) => ({
   category: one(categoriesTable, {
     fields: [budgetItemsTable.categoryId],
     references: [categoriesTable.id],
+  }),
+}))
+
+
+export const currentBudgetsRelations = relations(currentBudgetsTable, ({ one }) => ({
+  user: one(user, {
+    fields: [currentBudgetsTable.userId],
+    references: [user.id],
+  }),
+  budget: one(budgetsTable, {
+    fields: [currentBudgetsTable.budgetId],
+    references: [budgetsTable.id],
   }),
 }))
