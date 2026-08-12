@@ -194,84 +194,117 @@ describe('normalizeDate', () => {
 
 describe('detectType', () => {
   it('maps the CSV 2 vocabulary: DEBIT→expense, CREDIT/DSLIP→income', () => {
-    expect(detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '-120.50' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '-120.50', numberFormat: 'us' })).toEqual({
       type: 'expense',
       conflict: false,
     })
-    expect(detectType({ mode: 'map', mappedValue: 'CREDIT', rawAmount: '+2000.00' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'CREDIT', rawAmount: '+2000.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
     })
-    expect(detectType({ mode: 'map', mappedValue: 'DSLIP', rawAmount: '500.00' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'DSLIP', rawAmount: '500.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
     })
   })
 
   it('supports the full vocabulary case-insensitively (D/C, +/-, expense/income)', () => {
-    expect(detectType({ mode: 'map', mappedValue: 'd', rawAmount: '' }).type).toBe('expense')
-    expect(detectType({ mode: 'map', mappedValue: 'c', rawAmount: '' }).type).toBe('income')
-    expect(detectType({ mode: 'map', mappedValue: '-', rawAmount: '' }).type).toBe('expense')
-    expect(detectType({ mode: 'map', mappedValue: '+', rawAmount: '' }).type).toBe('income')
-    expect(detectType({ mode: 'map', mappedValue: 'Expense', rawAmount: '' }).type).toBe('expense')
-    expect(detectType({ mode: 'map', mappedValue: 'INCOME', rawAmount: '' }).type).toBe('income')
-    expect(detectType({ mode: 'map', mappedValue: '  debit  ', rawAmount: '' }).type).toBe('expense')
+    expect(detectType({ mode: 'map', mappedValue: 'd', rawAmount: '', numberFormat: 'us' }).type).toBe('expense')
+    expect(detectType({ mode: 'map', mappedValue: 'c', rawAmount: '', numberFormat: 'us' }).type).toBe('income')
+    expect(detectType({ mode: 'map', mappedValue: '-', rawAmount: '', numberFormat: 'us' }).type).toBe('expense')
+    expect(detectType({ mode: 'map', mappedValue: '+', rawAmount: '', numberFormat: 'us' }).type).toBe('income')
+    expect(detectType({ mode: 'map', mappedValue: 'Expense', rawAmount: '', numberFormat: 'us' }).type).toBe('expense')
+    expect(detectType({ mode: 'map', mappedValue: 'INCOME', rawAmount: '', numberFormat: 'us' }).type).toBe('income')
+    expect(detectType({ mode: 'map', mappedValue: '  debit  ', rawAmount: '', numberFormat: 'us' }).type).toBe('expense')
   })
 
   it('mapped column wins over sign (CSV-IMP-03)', () => {
-    const result = detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '+50.00' })
+    const result = detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '+50.00', numberFormat: 'us' })
     expect(result.type).toBe('expense')
   })
 
   it('flags type-vs-sign conflict, never silently choosing (CSV-IMP-03)', () => {
-    const result = detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '+50.00' })
+    const result = detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '+50.00', numberFormat: 'us' })
     expect(result).toEqual({ type: 'expense', conflict: true })
   })
 
   it('no conflict when mapped type agrees with the sign', () => {
-    expect(detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '-50.00' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '-50.00', numberFormat: 'us' })).toEqual({
       type: 'expense',
       conflict: false,
     })
-    expect(detectType({ mode: 'map', mappedValue: 'CREDIT', rawAmount: '+50.00' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'CREDIT', rawAmount: '+50.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
     })
   })
 
   it('ignores unrecognized bank codes by falling back to the sign (CSV 2 DR/CR/DP)', () => {
-    expect(detectType({ mode: 'map', mappedValue: 'DR', rawAmount: '-50.00' })).toEqual({
+    expect(detectType({ mode: 'map', mappedValue: 'DR', rawAmount: '-50.00', numberFormat: 'us' })).toEqual({
       type: 'expense',
       conflict: false,
     })
   })
 
   it('forces all_expenses / all_income modes', () => {
-    expect(detectType({ mode: 'all_expenses', mappedValue: null, rawAmount: '+50.00' })).toEqual({
+    expect(detectType({ mode: 'all_expenses', mappedValue: null, rawAmount: '+50.00', numberFormat: 'us' })).toEqual({
       type: 'expense',
       conflict: false,
     })
-    expect(detectType({ mode: 'all_income', mappedValue: null, rawAmount: '-50.00' })).toEqual({
+    expect(detectType({ mode: 'all_income', mappedValue: null, rawAmount: '-50.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
     })
   })
 
   it('auto mode derives from the sign (-25.00 → expense, +2000.00 → income)', () => {
-    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '-25.00' })).toEqual({
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '-25.00', numberFormat: 'us' })).toEqual({
       type: 'expense',
       conflict: false,
     })
-    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '+2000.00' })).toEqual({
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '+2000.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
     })
   })
 
   it('auto mode reads unsigned positive amounts as income (file-level default lives in normalizeRows)', () => {
-    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '500.00' })).toEqual({
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '500.00', numberFormat: 'us' })).toEqual({
       type: 'income',
       conflict: false,
+    })
+  })
+
+  it('correctly resolves sign on amounts with US thousands separators', () => {
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '-1,234.56', numberFormat: 'us' })).toEqual({
+      type: 'expense',
+      conflict: false,
+    })
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '+1,234.56', numberFormat: 'us' })).toEqual({
+      type: 'income',
+      conflict: false,
+    })
+  })
+
+  it('correctly resolves sign on amounts with EU thousands separators', () => {
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '-1.234,56', numberFormat: 'eu' })).toEqual({
+      type: 'expense',
+      conflict: false,
+    })
+    expect(detectType({ mode: 'auto', mappedValue: null, rawAmount: '+1.234,56', numberFormat: 'eu' })).toEqual({
+      type: 'income',
+      conflict: false,
+    })
+  })
+
+  it('flags conflict for amounts with thousands separators in map mode', () => {
+    expect(detectType({ mode: 'map', mappedValue: 'DEBIT', rawAmount: '+1,234.56', numberFormat: 'us' })).toEqual({
+      type: 'expense',
+      conflict: true,
+    })
+    expect(detectType({ mode: 'map', mappedValue: 'CREDIT', rawAmount: '-1.234,56', numberFormat: 'eu' })).toEqual({
+      type: 'income',
+      conflict: true,
     })
   })
 })

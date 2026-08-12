@@ -108,13 +108,14 @@ export function detectType(input: {
   mode: TypeMode
   mappedValue: string | null
   rawAmount: string
+  numberFormat: NumberFormat
 }): { type: 'expense' | 'income'; conflict: boolean } {
-  const { mode, mappedValue, rawAmount } = input
+  const { mode, mappedValue, rawAmount, numberFormat } = input
 
   if (mode === 'all_expenses') return { type: 'expense', conflict: false }
   if (mode === 'all_income') return { type: 'income', conflict: false }
 
-  const signType = signTypeOf(rawAmount)
+  const signType = signTypeOf(rawAmount, numberFormat)
 
   if (mode === 'map') {
     const mapped = resolveMappedType(mappedValue)
@@ -171,6 +172,7 @@ export function normalizeRows(
           mode: config.typeMode,
           mappedValue: row['type'] ?? null,
           rawAmount,
+          numberFormat: config.numberFormat,
         })
     const payee = (row['payee'] ?? '').trim()
     const notes = (row['notes'] ?? '').trim()
@@ -195,10 +197,8 @@ function pad2(value: string): string {
 }
 
 /** Explicit-sign polarity: negative → expense, positive → income, none → null. */
-function signTypeOf(rawAmount: string): 'expense' | 'income' | null {
-  const trimmed = rawAmount.trim()
-  if (trimmed === '') return null
-  const value = Number(trimmed.replace(/[$€£¥\s]/g, ''))
+function signTypeOf(rawAmount: string, format: NumberFormat): 'expense' | 'income' | null {
+  const value = normalizeAmount(rawAmount, format)
   if (Number.isNaN(value) || value === 0) return null
   return value < 0 ? 'expense' : 'income'
 }
