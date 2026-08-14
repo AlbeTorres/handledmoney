@@ -1,18 +1,33 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { findBudget, findGroup, findItem, findCategory, insertReturning, updateReturning, conflictUpdate, selectWhere } = vi.hoisted(() => ({ findBudget: vi.fn(), findGroup: vi.fn(), findItem: vi.fn(), findCategory: vi.fn(), insertReturning: vi.fn(), updateReturning: vi.fn(), conflictUpdate: vi.fn(), selectWhere: vi.fn() }))
+const { findBudget, findGroup, findItem, findCategory, insertReturning, updateReturning, conflictUpdate, selectWhere, transaction, transactionSelect, transactionInsert } = vi.hoisted(() => ({ findBudget: vi.fn(), findGroup: vi.fn(), findItem: vi.fn(), findCategory: vi.fn(), insertReturning: vi.fn(), updateReturning: vi.fn(), conflictUpdate: vi.fn(), selectWhere: vi.fn(), transaction: vi.fn(), transactionSelect: vi.fn(), transactionInsert: vi.fn() }))
 vi.mock('@/db', () => ({
   db: {
     query: { budgetsTable: { findFirst: findBudget }, budgetGroupsTable: { findFirst: findGroup }, budgetItemsTable: { findFirst: findItem }, categoriesTable: { findFirst: findCategory } },
     select: () => ({ from: () => ({ where: selectWhere }) }),
     insert: () => ({ values: () => ({ onConflictDoUpdate: (value: unknown) => { conflictUpdate(value); return { returning: insertReturning } } }) }),
     update: () => ({ set: () => ({ where: () => ({ returning: updateReturning }) }) }),
+    transaction,
   },
 }))
-import { deleteBudgetGroup, getBudgetWithActuals, selectCurrentBudget, updateBudgetItem } from '@/repository/budget'
+import { createBudget, deleteBudgetGroup, getBudgetWithActuals, selectCurrentBudget, updateBudgetItem } from '@/repository/budget'
+
+const draft = {
+  userId: 'user-1', name: 'Plan', startDate: new Date('2026-01-01'), endDate: null,
+  groups: [{ name: 'Outflow', calculationType: 'outflow' as const, sortOrder: 0, items: [{ categoryId: 'category-1', plannedAmount: -25 }] }],
+}
 
 describe('budget repository current selection', () => {
-  beforeEach(() => vi.clearAllMocks())
+  beforeEach(() => {
+    vi.clearAllMocks()
+    transaction.mockImplementation(async callback => callback({
+      select: () => ({ from: () => ({ where: transactionSelect }) }),
+      insert: () => ({ values: (values: unknown) => {
+        const result = transactionInsert(values)
+        return { returning: () => result, then: result.then.bind(result) }
+      } }),
+    }))
+  })
   it('replaces the current selection for the same user', async () => {
     findBudget.mockResolvedValue({ id: 'budget-2', userId: 'user-1' })
     insertReturning.mockResolvedValue([{ userId: 'user-1', budgetId: 'budget-2' }])
@@ -56,5 +71,39 @@ describe('budget repository current selection', () => {
     findBudget.mockResolvedValue(undefined)
     await expect(selectCurrentBudget('foreign-budget', 'user-1')).resolves.toBeUndefined()
     expect(insertReturning).not.toHaveBeenCalled()
+  })
+})
+
+describe('createBudget transaction', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    transaction.mockImplementation(async callback => callback({
+      select: () => ({ from: () => ({ where: transactionSelect }) }),
+      insert: () => ({ values: (values: unknown) => {
+        const result = transactionInsert(values)
+        return { returning: () => result, then: result.then.bind(result) }
+      } }),
+    }))
+  })
+
+  it('rejects missing, foreign, and incompatible categories before any write', async () => {
+    transactionSelect.mockResolvedValue([])
+    await expect(createBudget(draft)).rejects.toThrow('Category not found')
+    expect(transactionInsert).not.toHaveBeenCalled()
+
+    transactionSelect.mockResolvedValue([{ id: 'category-1', userId: 'user-2', type: 'expense' }])
+    await expect(createBudget(draft)).rejects.toThrow('Category not found')
+    expect(transactionInsert).not.toHaveBeenCalled()
+
+    transactionSelect.mockResolvedValue([{ id: 'category-1', userId: 'user-1', type: 'income' }])
+    await expect(createBudget(draft)).rejects.toThrow('Category type does not match group type')
+    expect(transactionInsert).not.toHaveBeenCalled()
+  })
+
+  it('propagates a late item write failure to the transaction', async () => {
+    transactionSelect.mockResolvedValue([{ id: 'category-1', userId: 'user-1', type: 'expense', name: 'Food' }])
+    transactionInsert.mockResolvedValueOnce([{ id: 'budget-1' }]).mockResolvedValueOnce([{ id: 'group-1' }]).mockRejectedValueOnce(new Error('late item write'))
+    await expect(createBudget(draft)).rejects.toThrow('late item write')
+    expect(transaction).toHaveBeenCalledOnce()
   })
 })

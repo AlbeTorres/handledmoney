@@ -206,17 +206,24 @@ export const UpdateTransactionSchema = z.object({
 
 export const BudgetCalculationTypeEnum = z.enum(['income', 'outflow'])
 
-const budgetDateRange = <T extends z.ZodTypeAny>(schema: T) =>
-  schema.refine(
-    value => !value.endDate || value.endDate >= value.startDate,
-    { message: 'End date must be on or after start date', path: ['endDate'] },
-  )
+const BudgetPlanItemSchema = z.object({
+  categoryId: z.string().uuid('Select a category'),
+  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }),
+})
 
-export const CreateBudgetSchema = budgetDateRange(z.object({
-  name: z.string().min(1, 'Budget name is required').max(255),
+const BudgetPlanGroupSchema = z.object({
+  name: z.string().min(1, 'Group name is required').max(255).trim(),
+  calculationType: BudgetCalculationTypeEnum,
+  sortOrder: z.number().int().min(0),
+  items: z.array(BudgetPlanItemSchema),
+})
+
+export const CreateBudgetSchema = z.object({
+  name: z.string().min(1, 'Budget name is required').max(255).trim(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable().optional(),
-}))
+  groups: z.array(BudgetPlanGroupSchema).min(1, 'Add at least one group'),
+})
 
 export const UpdateBudgetSchema = z.object({
   id: z.string().uuid(),
