@@ -48,8 +48,8 @@ export default function GroupEditor({
         setValue={form.setValue}
         onAddItem={() => append({ categoryId: '', plannedAmount: 0 })}
         onRemoveGroup={onRemoveGroup}
-        onCreateCategory={itemIndex =>
-          onQuickCreate({ groupIndex, itemIndex, calculationType: group.calculationType })
+        onCreateCategory={(itemIndex, name) =>
+          onQuickCreate({ groupIndex, itemIndex, calculationType: group.calculationType, name })
         }
         onConfirmRemoveItem={removeItem}
       />
