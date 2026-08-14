@@ -17,7 +17,7 @@ import {
   UpdateBudgetSchema,
 } from '@/lib/schema'
 import type { BudgetCategoryComparison, BudgetGroupWithItems, BudgetItemWithActual, BudgetListItem, BudgetWithGroups, CurrentBudgetComparison } from '@/interfaces'
-import { and, count, desc, eq } from 'drizzle-orm'
+import { and, count, desc, eq, inArray } from 'drizzle-orm'
 import z from 'zod'
 
 type CreateBudgetValues = z.infer<typeof CreateBudgetSchema> & { userId: string }
@@ -28,19 +28,38 @@ type UpdateBudgetItemValues = z.infer<typeof UpdateBudgetItemSchema>
 type UpdateBudgetGroupValues = z.infer<typeof UpdateBudgetGroupSchema>
 type DuplicateBudgetValues = z.infer<typeof DuplicateBudgetSchema>
 
-const DEFAULT_GROUPS: Array<Pick<CreateBudgetGroupValues, 'name' | 'calculationType' | 'sortOrder'>> = [
-  { name: 'Income', calculationType: 'income', sortOrder: 0 },
-  { name: 'Bills', calculationType: 'outflow', sortOrder: 1 },
-  { name: 'Variable Expenses', calculationType: 'outflow', sortOrder: 2 },
-  { name: 'Debt', calculationType: 'outflow', sortOrder: 3 },
-  { name: 'Savings', calculationType: 'outflow', sortOrder: 4 },
-  { name: 'Investments', calculationType: 'outflow', sortOrder: 5 },
-]
-
-export const createBudget = async ({ userId, name, startDate, endDate }: CreateBudgetValues) =>
+export const createBudget = async ({ userId, name, startDate, endDate, groups }: CreateBudgetValues) =>
   db.transaction(async tx => {
+    const categoryIds = groups.flatMap(group => group.items.map(item => item.categoryId))
+    const categories = categoryIds.length
+      ? await tx.select().from(categoriesTable).where(and(inArray(categoriesTable.id, categoryIds), eq(categoriesTable.userId, userId)))
+      : []
+    const categoriesById = new Map(categories.map(category => [category.id, category]))
+
+    for (const group of groups) {
+      for (const item of group.items) {
+        const category = categoriesById.get(item.categoryId)
+        if (!category || category.userId !== userId) throw new Error('Category not found')
+        const expectedType = group.calculationType === 'income' ? 'income' : 'expense'
+        if (category.type !== expectedType) throw new Error('Category type does not match group type')
+      }
+    }
+
     const [budget] = await tx.insert(budgetsTable).values({ userId, name, startDate, endDate: endDate ?? null }).returning()
-    await tx.insert(budgetGroupsTable).values(DEFAULT_GROUPS.map(group => ({ ...group, budgetId: budget.id })))
+    const createdGroups = await Promise.all(groups.map(group => tx.insert(budgetGroupsTable).values({
+      budgetId: budget.id,
+      name: group.name,
+      calculationType: group.calculationType,
+      sortOrder: group.sortOrder,
+    }).returning().then(([created]) => created)))
+    const items = groups.flatMap((group, groupIndex) => group.items.map(item => ({
+      budgetId: budget.id,
+      groupId: createdGroups[groupIndex].id,
+      categoryId: item.categoryId,
+      name: categoriesById.get(item.categoryId)!.name,
+      plannedAmount: String(item.plannedAmount),
+    })))
+    if (items.length) await tx.insert(budgetItemsTable).values(items)
     return budget
   })
 

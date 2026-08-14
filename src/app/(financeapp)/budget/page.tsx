@@ -1,7 +1,9 @@
-import { getBudgetListAction } from '@/actions/budget/get-budget'
+﻿import { getBudgetListAction } from '@/actions/budget/get-budget'
 import { getCurrentBudgetAction } from '@/actions/budget/get-current-budget'
 import { BudgetGrid } from '@/components/BudgetGrid'
-import { CreateBudgetSheet } from '@/components/CreateBudgetSheet'
+import { Button } from '@/components/ui/button'
+import { Plus } from 'lucide-react'
+import Link from 'next/link'
 
 export const metadata = { title: 'Budgets | HandledMoney' }
 
@@ -12,15 +14,12 @@ export default async function BudgetPage() {
     <div className='container space-y-10 px-4 py-6 sm:px-6 lg:px-10 lg:py-10'>
       <div className='flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between'>
         <div>
-            <h1 className='display-lg text-foreground'>Budgets</h1>
-            <p className='body-lg mt-1 text-muted-foreground'>
-              Manage the plan for your current financial reality.
-          </p>
+          <h1 className='display-lg text-foreground'>Budgets</h1>
+          <p className='body-lg mt-1 text-muted-foreground'>Manage the plan for your current financial reality.</p>
         </div>
-        <CreateBudgetSheet />
+        <Button asChild className='gap-2'><Link href='/budget/create'><Plus className='size-4' />New Budget</Link></Button>
       </div>
-
-        <BudgetGrid budgets={budgets ?? []} currentBudgetId={currentBudget?.budgetId ?? null} />
+      <BudgetGrid budgets={budgets ?? []} currentBudgetId={currentBudget?.budgetId ?? null} />
     </div>
   )
 }
