@@ -24,7 +24,7 @@ type Props = {
   setValue: UseFormSetValue<CreateBudgetValues>
   onAddItem: () => void
   onRemoveGroup: () => void
-  onCreateCategory: (itemIndex: number) => void
+  onCreateCategory: (itemIndex: number, name: string) => void
   onConfirmRemoveItem: (index: number) => void
 }
 
@@ -84,7 +84,7 @@ export function BudgetPlanGroupTable({
                       shouldValidate: true,
                     })
                   }
-                  onCreate={() => onCreateCategory(itemIndex)}
+                  onCreate={name => onCreateCategory(itemIndex, name)}
                 />
               </TableCell>
               <TableCell>
