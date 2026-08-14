@@ -565,6 +565,47 @@
         "toast_failure": "Import failed. Review the report and try again.",
         "toast_success": "Imported {count} transaction(s)"
       }
+    },
+    "budget": {
+      "form": {
+          "error_generic": "Something went wrong",
+          "success": "Budget created successfully",
+          "name": "Budget name",
+          "name_placeholder": "e.g., Monthly Budget",
+          "start_date": "Start date",
+          "end_date": "End date",
+          "create_button": "Create Budget",
+          "creating": "Creating...",
+          "plan": "Budget plan",
+          "group_name": "Group name",
+          "group_name_placeholder": "e.g., Housing",
+          "group_type": "Group type",
+          "income": "Income",
+          "outflow": "Outflow",
+          "add_group": "Add group",
+          "remove_group": "Remove group",
+          "group_confirm_title": "Remove group?",
+          "group_confirm_description": "This will remove the group and all of its items.",
+          "category": "Category",
+          "amount": "Amount",
+          "add_item": "Add item",
+          "remove_item": "Remove item",
+          "item_confirm_title": "Remove item?",
+          "item_confirm_description": "This will remove the item from the group.",
+          "category_placeholder": "Select a category",
+          "category_search": "Search categories...",
+          "category_empty": "No matching categories found.",
+          "create_category": "Create category",
+          "category_created": "Category created successfully",
+          "quick_category_title": "Create category",
+          "quick_category_description": "Add a category to this budget plan.",
+          "category_name": "Category name",
+          "category_type": "Category type",
+          "category_color": "Category color",
+          "category_icon": "Category icon",
+          "save_category": "Save category",
+          "saving_category": "Saving..."
+      }
     }
   }
 }
