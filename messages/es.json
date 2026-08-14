@@ -563,6 +563,47 @@
         "toast_failure": "La importación falló. Revisa el informe e inténtalo de nuevo.",
         "toast_success": "Se importaron {count} transacción(es)"
       }
+    },
+    "budget": {
+      "form": {
+          "error_generic": "Algo salió mal",
+          "success": "Presupuesto creado correctamente",
+          "name": "Nombre del presupuesto",
+          "name_placeholder": "p. ej., Presupuesto mensual",
+          "start_date": "Fecha de inicio",
+          "end_date": "Fecha de finalización",
+          "create_button": "Crear presupuesto",
+          "creating": "Creando...",
+          "plan": "Plan de presupuesto",
+          "group_name": "Nombre del grupo",
+          "group_name_placeholder": "p. ej., Vivienda",
+          "group_type": "Tipo de grupo",
+          "income": "Ingresos",
+          "outflow": "Egresos",
+          "add_group": "Agregar grupo",
+          "remove_group": "Eliminar grupo",
+          "group_confirm_title": "¿Eliminar grupo?",
+          "group_confirm_description": "Esto eliminará el grupo y todos sus elementos.",
+          "category": "Categoría",
+          "amount": "Monto",
+          "add_item": "Agregar elemento",
+          "remove_item": "Eliminar elemento",
+          "item_confirm_title": "¿Eliminar elemento?",
+          "item_confirm_description": "Esto eliminará el elemento del grupo.",
+          "category_placeholder": "Seleccionar una categoría",
+          "category_search": "Buscar categorías...",
+          "category_empty": "No se encontraron categorías compatibles.",
+          "create_category": "Crear categoría",
+          "category_created": "Categoría creada correctamente",
+          "quick_category_title": "Crear categoría",
+          "quick_category_description": "Agrega una categoría a este plan de presupuesto.",
+          "category_name": "Nombre de la categoría",
+          "category_type": "Tipo de categoría",
+          "category_color": "Color de la categoría",
+          "category_icon": "Ícono de la categoría",
+          "save_category": "Guardar categoría",
+          "saving_category": "Guardando..."
+      }
     }
   }
 }
