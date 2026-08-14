@@ -26,7 +26,7 @@ export function CategoryCombobox({
   calculationType: 'income' | 'outflow'
   selectedCategoryId: string
   onSelect: (id: string) => void
-  onCreate: () => void
+  onCreate: (name: string) => void
 }) {
   const t = useTranslations('handledmoney.budget.form')
   const [open, setOpen] = useState(false)
@@ -94,7 +94,7 @@ export function CategoryCombobox({
           className='mt-2 w-full justify-start'
           onClick={() => {
             setOpen(false)
-            onCreate()
+            onCreate(query)
           }}
         >
           <Plus className='size-4' />

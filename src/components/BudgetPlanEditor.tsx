@@ -23,6 +23,7 @@ export type QuickTarget = {
   groupIndex: number
   itemIndex: number
   calculationType: 'income' | 'outflow'
+  name: string
 } | null
 
 export function BudgetPlanEditor({

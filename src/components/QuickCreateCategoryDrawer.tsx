@@ -28,11 +28,13 @@ export function QuickCreateCategoryDrawer({
   open,
   onOpenChange,
   calculationType,
+  name,
   onCreated,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   calculationType: 'income' | 'outflow'
+  name: string
   onCreated: (category: BudgetCategory) => void
 }) {
   const t = useTranslations('handledmoney.budget.form')
@@ -43,7 +45,11 @@ export function QuickCreateCategoryDrawer({
     defaultValues: { name: '', icon: 'more_horizontal', color: '94a3b8', type: categoryType },
   })
 
-  useEffect(() => form.setValue('type', categoryType), [categoryType, form])
+  useEffect(() => {
+    if (open) {
+      form.reset({ name, icon: 'more_horizontal', color: '94a3b8', type: categoryType })
+    }
+  }, [categoryType, form, name, open])
 
   const submit = async (values: Values) => {
     setIsPending(true)

@@ -179,6 +179,7 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
           if (!open) setQuickTarget(null)
         }}
         calculationType={quickTarget?.calculationType ?? 'outflow'}
+        name={quickTarget?.name ?? ''}
         onCreated={onCategoryCreated}
       />
     </>
