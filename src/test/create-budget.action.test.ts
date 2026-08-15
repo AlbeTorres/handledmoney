@@ -13,7 +13,14 @@ const draft = {
   name: 'Plan',
   startDate: new Date('2026-01-01'),
   endDate: null,
-  groups: [{ name: 'Income', calculationType: 'income' as const, sortOrder: 0, items: [] }],
+  groups: [
+    {
+      name: 'Income',
+      calculationType: 'income' as const,
+      sortOrder: 0,
+      items: [{ categoryId: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', plannedAmount: 5000 }],
+    },
+  ],
 }
 
 describe('createBudgetAction', () => {
@@ -27,10 +34,30 @@ describe('createBudgetAction', () => {
     await expect(createBudgetAction({ ...draft, groups: [] })).resolves.toMatchObject({ success: false, status: 400 })
     expect(createBudget).not.toHaveBeenCalled()
   })
-  it('accepts a plan without Income and does not add amount or date restrictions', async () => {
-    createBudget.mockResolvedValue({ id: 'budget-1' })
-    const noIncome = { ...draft, startDate: new Date('2026-02-01'), endDate: new Date('2026-01-01'), groups: [{ name: 'Outflow', calculationType: 'outflow' as const, sortOrder: 0, items: [{ categoryId: '981dfbd9-4a5b-438e-bc92-5ad5fa6466c2', plannedAmount: -1 }] }] }
-    await expect(createBudgetAction(noIncome)).resolves.toMatchObject({ success: true, status: 201 })
+  it('rejects a plan with no income group before reaching the repository', async () => {
+    const noIncome = { ...draft, groups: [{ name: 'Outflow', calculationType: 'outflow' as const, sortOrder: 0, items: [{ categoryId: '981dfbd9-4a5b-438e-bc92-5ad5fa6466c2', plannedAmount: 100 }] }] }
+    await expect(createBudgetAction(noIncome)).resolves.toMatchObject({ success: false, status: 400 })
+    expect(createBudget).not.toHaveBeenCalled()
+  })
+  it('rejects a plan with a negative amount before reaching the repository', async () => {
+    const negative = { ...draft, groups: [{ name: 'Income', calculationType: 'income' as const, sortOrder: 0, items: [{ categoryId: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', plannedAmount: -500 }] }] }
+    await expect(createBudgetAction(negative)).resolves.toMatchObject({ success: false, status: 400 })
+    expect(createBudget).not.toHaveBeenCalled()
+  })
+  it('rejects a plan with reversed dates before reaching the repository', async () => {
+    const reversed = { ...draft, startDate: new Date('2026-02-01'), endDate: new Date('2026-01-01') }
+    await expect(createBudgetAction(reversed)).resolves.toMatchObject({ success: false, status: 400 })
+    expect(createBudget).not.toHaveBeenCalled()
+  })
+  it('rejects a plan with an income group but no category before reaching the repository', async () => {
+    const noCategory = { ...draft, groups: [{ name: 'Income', calculationType: 'income' as const, sortOrder: 0, items: [] }] }
+    await expect(createBudgetAction(noCategory)).resolves.toMatchObject({ success: false, status: 400 })
+    expect(createBudget).not.toHaveBeenCalled()
+  })
+  it('rejects a plan with total income zero before reaching the repository', async () => {
+    const zeroIncome = { ...draft, groups: [{ name: 'Income', calculationType: 'income' as const, sortOrder: 0, items: [{ categoryId: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', plannedAmount: 0 }] }] }
+    await expect(createBudgetAction(zeroIncome)).resolves.toMatchObject({ success: false, status: 400 })
+    expect(createBudget).not.toHaveBeenCalled()
   })
   it('passes the complete draft with the authenticated owner', async () => {
     createBudget.mockResolvedValue({ id: 'budget-1' })
