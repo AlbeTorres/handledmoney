@@ -140,6 +140,7 @@ export function QuickCreateCategoryDrawer({
             isPending={isPending}
             text={t('save_category')}
             loadingText={t('saving_category')}
+            cancelText={t('cancel')}
           />
         </form>
       </DrawerContent>

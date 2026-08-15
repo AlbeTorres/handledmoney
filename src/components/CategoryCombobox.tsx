@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { getIconComponent } from '@/lib/utils'
 import { Check, ChevronsUpDown, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
@@ -21,26 +22,30 @@ export function CategoryCombobox({
   selectedCategoryId,
   onSelect,
   onCreate,
+  disabledCategoryIds = [],
 }: {
   categories: BudgetCategory[]
   calculationType: 'income' | 'outflow'
   selectedCategoryId: string
   onSelect: (id: string) => void
   onCreate: (name: string) => void
+  disabledCategoryIds?: string[]
 }) {
   const t = useTranslations('handledmoney.budget.form')
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState('')
   const expectedType = calculationType === 'income' ? 'income' : 'expense'
   const selected = categories.find(category => category.id === selectedCategoryId)
+  const SelectedIcon = selected ? getIconComponent(selected.icon) : null
   const compatible = useMemo(
     () =>
       categories.filter(
         category =>
           category.type === expectedType &&
+          (category.id === selectedCategoryId || !disabledCategoryIds.includes(category.id)) &&
           category.name.toLowerCase().includes(query.toLowerCase()),
       ),
-    [categories, expectedType, query],
+    [categories, expectedType, query, selectedCategoryId, disabledCategoryIds],
   )
 
   return (
@@ -51,9 +56,19 @@ export function CategoryCombobox({
           variant='outline'
           role='combobox'
           aria-expanded={open}
+          aria-label={t('category_placeholder')}
           className='w-full justify-between font-normal'
         >
-          {selected ? selected.name : t('category_placeholder')}
+          {selected ? (
+            <span className='inline-flex min-w-0 items-center gap-2'>
+              {SelectedIcon && (
+                <SelectedIcon className='size-4 shrink-0' style={{ color: `#${selected.color}` }} />
+              )}
+              <span className='truncate'>{selected.name}</span>
+            </span>
+          ) : (
+            t('category_placeholder')
+          )}
           <ChevronsUpDown className='ml-2 size-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
@@ -62,6 +77,7 @@ export function CategoryCombobox({
           value={query}
           onChange={event => setQuery(event.target.value)}
           placeholder={t('category_search')}
+          aria-label={t('category_search')}
           className='mb-2'
         />
         <div className='max-h-52 overflow-y-auto'>
