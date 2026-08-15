@@ -13,6 +13,8 @@ import { JSX, useState } from 'react'
 export const useConfirm = (
   title: string,
   message: string,
+  confirmLabel = 'Confirm',
+  cancelLabel = 'Cancel',
 ): [() => JSX.Element, () => Promise<unknown>] => {
   const [promise, setPromise] = useState<{ resolve: (value: boolean) => void } | null>(null)
 
@@ -42,9 +44,9 @@ export const useConfirm = (
         </DialogHeader>
         <DialogFooter className='pt-2'>
           <Button onClick={handleCancel} variant={'outline'}>
-            Cancel
+            {cancelLabel}
           </Button>
-          <Button onClick={handleConfirm}>Confirm</Button>
+          <Button onClick={handleConfirm}>{confirmLabel}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

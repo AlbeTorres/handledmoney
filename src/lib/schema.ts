@@ -206,24 +206,79 @@ export const UpdateTransactionSchema = z.object({
 
 export const BudgetCalculationTypeEnum = z.enum(['income', 'outflow'])
 
-const BudgetPlanItemSchema = z.object({
+const endDateOnOrAfterStartDate = (value: { startDate: Date; endDate?: Date | null }, ctx: z.RefinementCtx) => {
+  if (value.endDate && value.endDate < value.startDate) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['endDate'], message: 'End date must be on or after start date' })
+  }
+}
+
+const budgetMetadataShape = {
+  name: z.string().min(1, 'Budget name is required').max(255).trim(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date().nullable().optional(),
+}
+
+export const BudgetMetadataSchema = z.object(budgetMetadataShape).superRefine(endDateOnOrAfterStartDate)
+
+export const BudgetPlanItemSchema = z.object({
   categoryId: z.string().uuid('Select a category'),
-  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }),
+  plannedAmount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(0, 'Amount must be zero or positive'),
 })
 
-const BudgetPlanGroupSchema = z.object({
+export const BudgetPlanGroupSchema = z.object({
   name: z.string().min(1, 'Group name is required').max(255).trim(),
   calculationType: BudgetCalculationTypeEnum,
   sortOrder: z.number().int().min(0),
   items: z.array(BudgetPlanItemSchema),
 })
 
-export const CreateBudgetSchema = z.object({
-  name: z.string().min(1, 'Budget name is required').max(255).trim(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().nullable().optional(),
-  groups: z.array(BudgetPlanGroupSchema).min(1, 'Add at least one group'),
-})
+export const BudgetStructureSchema = z
+  .array(BudgetPlanGroupSchema)
+  .min(1, 'Add at least one group')
+  .superRefine((groups, ctx) => {
+    const hasIncomeGroupWithCategory = groups.some(
+      group => group.calculationType === 'income' && group.items.length > 0,
+    )
+    if (!hasIncomeGroupWithCategory) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['groups'],
+        message: 'Add at least one income group with a category',
+      })
+    }
+
+    const seen = new Set<string>()
+    groups.forEach((group, groupIndex) => {
+      group.items.forEach((item, itemIndex) => {
+        if (seen.has(item.categoryId)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['groups', groupIndex, 'items', itemIndex, 'categoryId'],
+            message: `Category can only be used once per budget (${item.categoryId})`,
+          })
+        } else {
+          seen.add(item.categoryId)
+        }
+      })
+    })
+  })
+
+export const CreateBudgetSchema = z
+  .object({
+    ...budgetMetadataShape,
+    groups: BudgetStructureSchema,
+  })
+  .superRefine(endDateOnOrAfterStartDate)
+  .superRefine((value, ctx) => {
+    const totalIncome = value.groups
+      .filter(group => group.calculationType === 'income')
+      .reduce((sum, group) => sum + group.items.reduce((itemSum, item) => itemSum + item.plannedAmount, 0), 0)
+    if (totalIncome <= 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['groups'], message: 'Planned income must be greater than zero' })
+    }
+  })
 
 export const UpdateBudgetSchema = z.object({
   id: z.string().uuid(),

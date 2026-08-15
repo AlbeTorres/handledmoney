@@ -9,6 +9,7 @@ interface FormActionsProps {
   loadingText: string
   handleDelete?: () => void
   isSubmitDisabled?: boolean
+  cancelText?: string
 }
 
 export function FormActions({
@@ -18,6 +19,7 @@ export function FormActions({
   loadingText,
   handleDelete,
   isSubmitDisabled = false,
+  cancelText = 'Cancel',
 }: FormActionsProps) {
   return (
     <div
@@ -48,7 +50,7 @@ export function FormActions({
           disabled={isPending}
           className='w-full sm:w-auto'
         >
-          Cancel
+          {cancelText}
         </Button>
         <Button type='submit' disabled={isPending || isSubmitDisabled} className='w-full sm:w-auto px-10'>
           {isPending ? (
