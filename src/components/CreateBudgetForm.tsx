@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { BudgetPlanEditor, type QuickTarget } from './BudgetPlanEditor'
 import type { BudgetCategory } from './CategoryCombobox'
 import { QuickCreateCategoryDrawer } from './QuickCreateCategoryDrawer'
+import TemplateBudgetSelect from './TemplateBudgetSelect'
 
 export const initialGroups: CreateBudgetValues['groups'] = [
   { name: 'Income', calculationType: 'income', sortOrder: 0, items: [] },
@@ -158,6 +159,7 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
                 />
               </div>
             </FieldGroup>
+            <TemplateBudgetSelect />
             <BudgetPlanEditor
               form={form}
               categories={categories}
