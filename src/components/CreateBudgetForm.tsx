@@ -16,9 +16,10 @@ import {
 } from '@/lib/budget-plan-templates'
 import { BudgetStructureSchema, CreateBudgetSchema, type CreateBudgetValues } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { format } from 'date-fns'
+import { Info } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
-import { Info } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useFieldArray, useForm, useWatch, type Path } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -27,6 +28,8 @@ import { BudgetStructureEditor, type QuickTarget } from './BudgetStructureEditor
 import type { BudgetCategory } from './CategoryCombobox'
 import { QuickCreateCategoryDrawer } from './QuickCreateCategoryDrawer'
 import TemplateBudgetSelect from './TemplateBudgetSelect'
+import { Calendar } from './ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
 
 // Kept for existing consumers; new drafts must use createTemplateGroups for fresh values.
 export const initialGroups = createTemplateGroups('starter')
@@ -80,7 +83,12 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
   const allocationHeadingRef = useRef<HTMLHeadingElement>(null)
   const form = useForm<CreateBudgetValues>({
     resolver: zodResolver(CreateBudgetSchema),
-    defaultValues: { name: '', startDate: new Date(), endDate: null, groups: createTemplateGroups('starter') },
+    defaultValues: {
+      name: '',
+      startDate: new Date(),
+      endDate: undefined,
+      groups: createTemplateGroups('starter'),
+    },
   })
   const { replace } = useFieldArray({ control: form.control, name: 'groups' })
   const groups = useWatch({ control: form.control, name: 'groups' })
@@ -165,7 +173,11 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
   const onCategoryCreated = (category: BudgetCategory) => {
     setCategories(current => [...current, category])
     if (quickTarget && quickTarget.itemIndex >= 0) {
-      form.setValue(`groups.${quickTarget.groupIndex}.items.${quickTarget.itemIndex}.categoryId`, category.id, { shouldValidate: true })
+      form.setValue(
+        `groups.${quickTarget.groupIndex}.items.${quickTarget.itemIndex}.categoryId`,
+        category.id,
+        { shouldValidate: true },
+      )
     }
     setQuickTarget(null)
   }
@@ -178,68 +190,170 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
             <BudgetCreationStepper currentStep={step} />
             {step === 'setup' ? (
               <>
-                <div className='space-y-2'>
-                  <h2 ref={setupHeadingRef} tabIndex={-1} className='text-lg font-semibold'>{t('step_setup')}</h2>
+                <div className='w-full md:max-w-md'>
+                  <FieldGroup>
+                    <Controller
+                      name='name'
+                      control={form.control}
+                      render={({ field, fieldState }) => (
+                        <Field className='md:max-w-60' data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor='budget-name'>{t('name')}</FieldLabel>
+                          <InputGroup>
+                            <InputGroupInput
+                              {...field}
+                              id='budget-name'
+                              placeholder={t('name_placeholder')}
+                              disabled={isPending}
+                              aria-invalid={fieldState.invalid}
+                            />
+                          </InputGroup>
+                          {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                        </Field>
+                      )}
+                    />
+                    <div className='grid gap-6 md:grid-cols-2'>
+                      <Controller
+                        name='startDate'
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor='budget-start-date'>{t('start_date')}</FieldLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant='outline'
+                                  id='date-picker-simple'
+                                  className='data-[empty=true]:text-muted-foreground w-[212px] justify-between text-left font-normal'
+                                >
+                                  {field.value ? (
+                                    format(field.value, 'PPP')
+                                  ) : (
+                                    <span>Select a date</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent align='start'>
+                                <Calendar
+                                  mode='single'
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  defaultMonth={field.value}
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
+                      />
+                      <Controller
+                        name='endDate'
+                        control={form.control}
+                        render={({ field, fieldState }) => (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor='budget-end-date'>{t('end_date')}</FieldLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  variant='outline'
+                                  id='budget-end-date'
+                                  className='data-[empty=true]:text-muted-foreground w-[212px] justify-between text-left font-normal'
+                                >
+                                  {field.value ? (
+                                    format(field.value, 'PPP')
+                                  ) : (
+                                    <span>Select a date</span>
+                                  )}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent align='start'>
+                                <Calendar
+                                  mode='single'
+                                  selected={field.value ?? undefined}
+                                  onSelect={field.onChange}
+                                  defaultMonth={field.value ?? undefined}
+                                />
+                              </PopoverContent>
+                            </Popover>
+
+                            {fieldState.error && <FieldError errors={[fieldState.error]} />}
+                          </Field>
+                        )}
+                      />
+                    </div>
+                  </FieldGroup>
                 </div>
-                <FieldGroup>
-                  <div className='grid gap-6'>
-                    <Controller name='name' control={form.control} render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor='budget-name'>{t('name')}</FieldLabel>
-                        <InputGroup><InputGroupInput {...field} id='budget-name' placeholder={t('name_placeholder')} disabled={isPending} aria-invalid={fieldState.invalid} /></InputGroup>
-                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )} />
-                  </div>
-                  <div className='grid gap-6 md:grid-cols-2'>
-                    <Controller name='startDate' control={form.control} render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor='budget-start-date'>{t('start_date')}</FieldLabel>
-                        <InputGroup><InputGroupInput id='budget-start-date' type='date' value={field.value ? new Date(field.value).toISOString().slice(0, 10) : ''} onChange={event => field.onChange(event.target.value ? new Date(`${event.target.value}T00:00:00`) : undefined)} disabled={isPending} aria-invalid={fieldState.invalid} /></InputGroup>
-                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )} />
-                    <Controller name='endDate' control={form.control} render={({ field, fieldState }) => (
-                      <Field data-invalid={fieldState.invalid}>
-                        <FieldLabel htmlFor='budget-end-date'>{t('end_date')}</FieldLabel>
-                        <InputGroup><InputGroupInput id='budget-end-date' type='date' value={field.value ? new Date(field.value).toISOString().slice(0, 10) : ''} onChange={event => field.onChange(event.target.value ? new Date(`${event.target.value}T00:00:00`) : null)} disabled={isPending} aria-invalid={fieldState.invalid} /></InputGroup>
-                        {fieldState.error && <FieldError errors={[fieldState.error]} />}
-                      </Field>
-                    )} />
-                  </div>
-                </FieldGroup>
-                <TemplateBudgetSelect value={templateId} onValueChange={value => void changeTemplate(value)} disabled={isPending} />
-                <div className='flex items-start gap-2 rounded-md border bg-muted/50 p-3'>
-                  <Info aria-hidden='true' className='mt-0.5 size-4 shrink-0 text-muted-foreground' />
+
+                <TemplateBudgetSelect
+                  value={templateId}
+                  onValueChange={value => void changeTemplate(value)}
+                  disabled={isPending}
+                />
+                <div className='flex items-start gap-2 rounded-md border w-fit bg-muted/50 p-3'>
+                  <Info
+                    aria-hidden='true'
+                    className='mt-0.5 size-4 shrink-0 text-muted-foreground'
+                  />
                   <p className='text-sm text-muted-foreground'>
                     {templateId === 'blank' ? t('template_info_blank') : t('template_info_starter')}
                   </p>
                 </div>
-                <StepFooter onCancel={cancel} onNext={() => void goToStructure()} disabled={isPending} />
+                <StepFooter
+                  onCancel={cancel}
+                  onNext={() => void goToStructure()}
+                  disabled={isPending}
+                />
               </>
             ) : step === 'structure' ? (
               <>
                 <div className='space-y-2'>
-                  <h2 ref={structureHeadingRef} tabIndex={-1} className='text-lg font-semibold'>{t('heading_structure')}</h2>
+                  <h2 ref={structureHeadingRef} tabIndex={-1} className='text-lg font-semibold'>
+                    {t('heading_structure')}
+                  </h2>
                 </div>
-                <BudgetStructureEditor form={form} categories={categories} onRequestQuickCreate={setQuickTarget} />
-                <StepFooter onBack={() => setStep('setup')} onNext={() => void goToAllocation()} disabled={isPending} />
+                <BudgetStructureEditor
+                  form={form}
+                  categories={categories}
+                  onRequestQuickCreate={setQuickTarget}
+                />
+                <StepFooter
+                  onBack={() => setStep('setup')}
+                  onNext={() => void goToAllocation()}
+                  disabled={isPending}
+                />
               </>
             ) : (
               <>
                 <div className='space-y-2'>
-                  <h2 ref={allocationHeadingRef} tabIndex={-1} className='text-lg font-semibold'>{t('heading_allocation')}</h2>
+                  <h2 ref={allocationHeadingRef} tabIndex={-1} className='text-lg font-semibold'>
+                    {t('heading_allocation')}
+                  </h2>
                 </div>
                 <BudgetAllocationEditor form={form} categories={categories} />
                 <StepFooter onBack={() => setStep('structure')} disabled={isPending} />
               </>
             )}
           </div>
-          {step === 'allocation' && <FormActions onCancel={cancel} isPending={isPending} isSubmitDisabled={!groups?.length} text={t('create_button')} loadingText={t('creating')} />}
+          {step === 'allocation' && (
+            <FormActions
+              onCancel={cancel}
+              isPending={isPending}
+              isSubmitDisabled={!groups?.length}
+              text={t('create_button')}
+              loadingText={t('creating')}
+            />
+          )}
         </form>
       </div>
       <ConfirmReplace />
-      <QuickCreateCategoryDrawer open={quickTarget !== null && quickTarget.itemIndex >= 0} onOpenChange={open => { if (!open) setQuickTarget(null) }} calculationType={quickTarget?.calculationType ?? 'outflow'} name={quickTarget?.name ?? ''} onCreated={onCategoryCreated} />
+      <QuickCreateCategoryDrawer
+        open={quickTarget !== null && quickTarget.itemIndex >= 0}
+        onOpenChange={open => {
+          if (!open) setQuickTarget(null)
+        }}
+        calculationType={quickTarget?.calculationType ?? 'outflow'}
+        name={quickTarget?.name ?? ''}
+        onCreated={onCategoryCreated}
+      />
     </>
   )
 }
