@@ -12,12 +12,12 @@ import {
 } from '@/components/ui/select'
 import { useConfirm } from '@/hooks/use-confirm'
 import type { CreateBudgetValues } from '@/lib/schema'
-import { CircleDollarSign, Plus, WalletCards } from 'lucide-react'
+import { CircleDollarSign, CirclePlus, Plus, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import { useFieldArray, useWatch, type UseFormReturn } from 'react-hook-form'
-import type { BudgetCategory } from './CategoryCombobox'
 import { BudgetStructureGroupCard } from './BudgetStructureGroupCard'
+import type { BudgetCategory } from './CategoryCombobox'
 
 export type QuickTarget = {
   groupIndex: number
@@ -101,12 +101,13 @@ export function BudgetStructureEditor({
               onConfirmRemoveGroup={() => void removeGroup(groupIndex)}
             />
           ))}
-          <div className='rounded-md border border-dashed p-3'>
+          <>
             {createOpen ? (
-              <div className='grid gap-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end'>
+              <div className='grid gap-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end rounded-md border shadow-sm bg-muted/30 px-4 py-3'>
                 <Field>
                   <FieldLabel htmlFor='new-budget-group-name'>{t('group_name')}</FieldLabel>
                   <Input
+                    className='bg-card'
                     id='new-budget-group-name'
                     value={newGroup.name}
                     onChange={event =>
@@ -126,10 +127,10 @@ export function BudgetStructureEditor({
                       }))
                     }
                   >
-                    <SelectTrigger className='w-full' aria-label={t('group_type')}>
+                    <SelectTrigger className='w-full bg-card' aria-label={t('group_type')}>
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className='bg-card'>
                       <SelectItem value='income'>{t('income')}</SelectItem>
                       <SelectItem value='outflow'>{t('outflow')}</SelectItem>
                     </SelectContent>
@@ -141,23 +142,23 @@ export function BudgetStructureEditor({
                 </Button>
               </div>
             ) : (
-              <Button
-                type='button'
-                variant='ghost'
-                className='w-full justify-start'
+              <button
+                className='flex flex-col w-full items-center text-lg justify-center  text-primary rounded-md border border-primary border-dashed p-4 hover:bg-primary/20  hover:text-green-700 hover:border-green-700 duration-300 transition-all'
                 onClick={() => setCreateOpen(true)}
               >
-                <Plus className='size-4' />
+                <CirclePlus className='size-4' />
                 {t('create_group')}
-              </Button>
+              </button>
             )}
-          </div>
+          </>
         </div>
         <aside className='rounded-md border bg-muted/20 p-4 lg:sticky lg:top-24'>
           <h3 className='text-sm font-semibold'>{t('summary_title')}</h3>
           <dl className='mt-3 space-y-2 text-sm'>
             <div className='flex items-center justify-between gap-2'>
-              <dt className='text-muted-foreground'>{t('summary_groups', { count: groups.length })}</dt>
+              <dt className='text-muted-foreground'>
+                {t('summary_groups', { count: groups.length })}
+              </dt>
             </div>
             <div className='flex items-center justify-between gap-2'>
               <dt className='text-muted-foreground'>

@@ -1,7 +1,6 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { useConfirm } from '@/hooks/use-confirm'
 import type { CreateBudgetValues } from '@/lib/schema'
 import { CircleDollarSign, Plus, Trash2, WalletCards } from 'lucide-react'
@@ -57,20 +56,18 @@ export function BudgetStructureGroupCard({
     <section className='overflow-hidden rounded-md border bg-card shadow-sm'>
       <ConfirmItem />
       <div className='flex flex-wrap items-center justify-between gap-3 border-b bg-muted/30 px-4 py-3'>
-        <div className='flex min-w-0 items-center gap-3'>
-          <Input
-            {...form.register(`groups.${groupIndex}.name`)}
-            aria-label={`${t('group_name')} ${watchedGroup.name}`}
-            className='h-8 max-w-56 border-0 bg-transparent px-0 font-semibold shadow-none'
-          />
+        <div className='flex flex-col items-start gap-3'>
           <span className='inline-flex items-center gap-1.5 rounded-md bg-background px-2 py-1 text-xs text-muted-foreground'>
             {watchedGroup.calculationType === 'income' ? (
               <CircleDollarSign className='size-3.5 text-emerald-600' />
             ) : (
               <WalletCards className='size-3.5 text-sky-600' />
             )}
-            {watchedGroup.calculationType === 'income' ? t('group_type_income') : t('group_type_outflow')}
+            {watchedGroup.calculationType === 'income'
+              ? t('group_type_income')
+              : t('group_type_outflow')}
           </span>
+          <p className='h-8 max-w-56   font-semibold '>{watchedGroup.name}</p>
         </div>
         <Button
           type='button'
@@ -90,7 +87,7 @@ export function BudgetStructureGroupCard({
             const itemError = groupsError[groupIndex]?.items?.[itemIndex]?.categoryId?.message
             return (
               <li key={item.id} className='flex items-center gap-2 px-4 py-2'>
-                <div className='min-w-0 flex-1'>
+                <div className=''>
                   <CategoryCombobox
                     categories={categories}
                     calculationType={watchedGroup.calculationType}

@@ -127,7 +127,7 @@ function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmou
       <Controller
         name={`groups.${groupIndex}.items.${itemIndex}.plannedAmount`}
         render={({ field }) => {
-          const rawValue = Number.isNaN(field.value) ? '' : field.value
+          const rawValue = (Number.isNaN(field.value) || field.value === 0) ? '' : field.value
           return (
             <div className='w-full min-w-0 sm:w-32 sm:shrink-0'>
               <InputGroup>
