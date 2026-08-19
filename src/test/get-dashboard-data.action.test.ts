@@ -1,16 +1,21 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mocks = vi.hoisted(() => ({ getSession: vi.fn(), headers: vi.fn(), getSnapshot: vi.fn(), buildViewModel: vi.fn() }))
+const mocks = vi.hoisted(() => ({
+  getSession: vi.fn(),
+  headers: vi.fn(),
+  getSnapshot: vi.fn(),
+  buildViewModel: vi.fn(),
+}))
 
 vi.mock('@/lib/auth', () => ({ auth: { api: { getSession: mocks.getSession } } }))
 vi.mock('next/headers', () => ({ headers: mocks.headers }))
 vi.mock('@/repository/dashboard', () => ({ getDashboardSnapshot: mocks.getSnapshot }))
 vi.mock('@/lib/finance-data', async importOriginal => ({
-  ...await importOriginal<typeof import('@/lib/finance-data')>(),
+  ...(await importOriginal<typeof import('@/lib/finance-data')>()),
   buildDashboardViewModel: mocks.buildViewModel,
 }))
 
-import { getDashboardData } from '@/actions/dashboard/get-dashboard-data'
+import { getDashboardData } from '@/actions/dashboard/get-dashboard'
 
 describe('getDashboardData', () => {
   beforeEach(() => {
@@ -24,7 +29,10 @@ describe('getDashboardData', () => {
   it('returns UNAUTHENTICATED without reading a snapshot', async () => {
     mocks.getSession.mockResolvedValue(null)
 
-    await expect(getDashboardData({ mode: 'monthly', year: 2026, month: 0 })).resolves.toEqual({ ok: false, code: 'UNAUTHENTICATED' })
+    await expect(getDashboardData({ mode: 'monthly', year: 2026, month: 0 })).resolves.toEqual({
+      ok: false,
+      code: 'UNAUTHENTICATED',
+    })
     expect(mocks.getSnapshot).not.toHaveBeenCalled()
   })
 
@@ -53,6 +61,9 @@ describe('getDashboardData', () => {
   it('maps repository failures to the non-sensitive UNAVAILABLE result', async () => {
     mocks.getSnapshot.mockRejectedValue(new Error('database connection details'))
 
-    await expect(getDashboardData({ mode: 'annual', year: 2026 })).resolves.toEqual({ ok: false, code: 'UNAVAILABLE' })
+    await expect(getDashboardData({ mode: 'annual', year: 2026 })).resolves.toEqual({
+      ok: false,
+      code: 'UNAVAILABLE',
+    })
   })
 })

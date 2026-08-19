@@ -1,9 +1,9 @@
 // components/FilterDropdown.tsx
 'use client'
 
-import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
-import { Check, ChevronDown, ListFilter } from 'lucide-react'
+import { Check, ChevronDown, ListFilter, LucideIcon } from 'lucide-react' // Importamos LucideIcon
+import { useTranslations } from 'next-intl'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
 import {
@@ -24,17 +24,36 @@ type Props = {
   label: string
   options: FilterOption[]
   selected: string[]
-  onChange: (values: string[]) => void
+  onChange: (value: string[]) => void
+  multiple?: boolean // Nueva prop para alternar entre uno o múltiples
+  icon?: LucideIcon // Nueva prop para el ícono personalizado
 }
 
-export default function FilterDropdown({ label, options, selected, onChange }: Props) {
+export default function FilterDropdown({
+  label,
+  options,
+  selected,
+  onChange,
+  multiple = true, // Por defecto sigue siendo múltiple para no romper tu código actual
+  icon: Icon = ListFilter, // Ícono por defecto si no se pasa ninguno
+}: Props) {
   const t = useTranslations('handledmoney.account')
 
   const toggle = (value: string) => {
-    if (selected.includes(value)) {
-      onChange(selected.filter(v => v !== value))
+    if (multiple) {
+      // Comportamiento múltiple original
+      if (selected.includes(value)) {
+        onChange(selected.filter(v => v !== value))
+      } else {
+        onChange([...selected, value])
+      }
     } else {
-      onChange([...selected, value])
+      // Comportamiento de selección única: si se hace clic en el que ya está seleccionado, se limpia, si no, se reemplaza
+      if (selected.includes(value)) {
+        onChange([])
+      } else {
+        onChange([value])
+      }
     }
   }
 
@@ -50,11 +69,13 @@ export default function FilterDropdown({ label, options, selected, onChange }: P
             selected.length > 0 && 'border-primary text-primary',
           )}
         >
-          <ListFilter className='size-4' />
+          <Icon className='size-4' /> {/* Usamos el ícono dinámico aquí */}
           {label}
           {selected.length > 0 && (
             <Badge variant='secondary' className='ml-1 rounded-sm px-1.5'>
-              {selected.length}
+              {multiple
+                ? selected.length
+                : options.find(option => option.value === selected[0])?.label}
             </Badge>
           )}
           <ChevronDown className='size-4 opacity-50' />
@@ -70,7 +91,8 @@ export default function FilterDropdown({ label, options, selected, onChange }: P
             <DropdownMenuItem
               key={option.value}
               onSelect={e => {
-                e.preventDefault() // evita que se cierre al seleccionar
+                // Si es múltiple, prevenimos que se cierre. Si es único, dejamos que se cierre automáticamente.
+                if (multiple) e.preventDefault()
                 toggle(option.value)
               }}
               className='flex items-center justify-between cursor-pointer'
@@ -80,7 +102,8 @@ export default function FilterDropdown({ label, options, selected, onChange }: P
             </DropdownMenuItem>
           )
         })}
-        {selected.length > 0 && (
+        {/* El botón de limpiar solo aparece en modo múltiple para evitar confusiones */}
+        {multiple && selected.length > 0 && (
           <>
             <DropdownMenuSeparator />
             <DropdownMenuItem

@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import { ICONS } from './data'
+import { DashboardPeriod } from './schema'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -41,4 +42,16 @@ export const fmtDate = (date: string | Date) => {
 export const getIconComponent = (iconName: string) => {
   const iconData = ICONS.find(i => i.name === (iconName || 'account_balance'))
   return iconData?.icon ?? ICONS[0].icon
+}
+
+export function utcRange(period: DashboardPeriod): { start: Date; nextStart: Date } {
+  const start =
+    period.mode === 'monthly' && period.month !== undefined
+      ? new Date(Date.UTC(period.year, period.month, 1))
+      : new Date(Date.UTC(period.year, 0, 1))
+  const nextStart =
+    period.mode === 'monthly' && period.month !== undefined
+      ? new Date(Date.UTC(period.year, period.month + 1, 1))
+      : new Date(Date.UTC(period.year + 1, 0, 1))
+  return { start, nextStart }
 }

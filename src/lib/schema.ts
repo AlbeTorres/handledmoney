@@ -206,9 +206,16 @@ export const UpdateTransactionSchema = z.object({
 
 export const BudgetCalculationTypeEnum = z.enum(['income', 'outflow'])
 
-const endDateOnOrAfterStartDate = (value: { startDate: Date; endDate?: Date | null }, ctx: z.RefinementCtx) => {
+const endDateOnOrAfterStartDate = (
+  value: { startDate: Date; endDate?: Date | null },
+  ctx: z.RefinementCtx,
+) => {
   if (value.endDate && value.endDate < value.startDate) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['endDate'], message: 'End date must be on or after start date' })
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ['endDate'],
+      message: 'End date must be on or after start date',
+    })
   }
 }
 
@@ -218,7 +225,9 @@ const budgetMetadataShape = {
   endDate: z.coerce.date().nullable().optional(),
 }
 
-export const BudgetMetadataSchema = z.object(budgetMetadataShape).superRefine(endDateOnOrAfterStartDate)
+export const BudgetMetadataSchema = z
+  .object(budgetMetadataShape)
+  .superRefine(endDateOnOrAfterStartDate)
 
 export const BudgetPlanItemSchema = z.object({
   categoryId: z.string().uuid('Select a category'),
@@ -274,22 +283,36 @@ export const CreateBudgetSchema = z
   .superRefine((value, ctx) => {
     const totalIncome = value.groups
       .filter(group => group.calculationType === 'income')
-      .reduce((sum, group) => sum + group.items.reduce((itemSum, item) => itemSum + item.plannedAmount, 0), 0)
+      .reduce(
+        (sum, group) =>
+          sum + group.items.reduce((itemSum, item) => itemSum + item.plannedAmount, 0),
+        0,
+      )
     if (totalIncome <= 0) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['groups'], message: 'Planned income must be greater than zero' })
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['groups'],
+        message: 'Planned income must be greater than zero',
+      })
     }
   })
 
-export const UpdateBudgetSchema = z.object({
-  id: z.string().uuid(),
-  name: z.string().min(1, 'Budget name is required').max(255).optional(),
-  startDate: z.coerce.date().optional(),
-  endDate: z.coerce.date().nullable().optional(),
-}).superRefine((value, ctx) => {
-  if (value.startDate && value.endDate && value.endDate < value.startDate) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ['endDate'], message: 'End date must be on or after start date' })
-  }
-})
+export const UpdateBudgetSchema = z
+  .object({
+    id: z.string().uuid(),
+    name: z.string().min(1, 'Budget name is required').max(255).optional(),
+    startDate: z.coerce.date().optional(),
+    endDate: z.coerce.date().nullable().optional(),
+  })
+  .superRefine((value, ctx) => {
+    if (value.startDate && value.endDate && value.endDate < value.startDate) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['endDate'],
+        message: 'End date must be on or after start date',
+      })
+    }
+  })
 
 export const CreateBudgetGroupSchema = z.object({
   budgetId: z.string().uuid(),
@@ -312,16 +335,29 @@ export const UpdateBudgetGroupSchema = z.object({
 export const CreateBudgetItemSchema = z.object({
   groupId: z.string().uuid(),
   name: z.string().min(1, 'Item name is required').max(255),
-  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }).min(0, 'Amount must be zero or positive'),
+  plannedAmount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(0, 'Amount must be zero or positive'),
   categoryId: z.string().uuid().optional().nullable(),
 })
 
 export const UpdateBudgetItemSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1, 'Item name is required').max(255).optional(),
-  plannedAmount: z.coerce.number({ invalid_type_error: 'Amount must be a number' }).min(0).optional(),
+  plannedAmount: z.coerce
+    .number({ invalid_type_error: 'Amount must be a number' })
+    .min(0)
+    .optional(),
   categoryId: z.string().uuid().optional().nullable(),
 })
+
+export const DashboardPeriodSchema = z.object({
+  mode: z.enum(['monthly', 'annual']).default('monthly'),
+  year: z.number().int(),
+  month: z.number().int().min(0).max(11).optional(),
+})
+
+export type DashboardPeriod = z.infer<typeof DashboardPeriodSchema>
 
 export type CreateBudgetValues = z.infer<typeof CreateBudgetSchema>
 export type UpdateBudgetValues = z.infer<typeof UpdateBudgetSchema>
