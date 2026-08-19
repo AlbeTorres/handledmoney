@@ -6,11 +6,16 @@ import {
   currentBudgetsTable,
   transactionsTable,
 } from '@/db/schema'
-import { type DashboardPeriod, type DashboardSnapshot, utcRange } from '@/lib/finance-data'
+import { type DashboardSnapshot } from '@/lib/finance-data'
+import { DashboardPeriod } from '@/lib/schema'
 import { and, eq, gte, isNull, lt } from 'drizzle-orm'
 
-export async function getDashboardSnapshot(userId: string, period: DashboardPeriod): Promise<DashboardSnapshot> {
-  const { start, nextStart } = utcRange(period)
+export async function getDashboardRepository(
+  userId: string,
+  period: DashboardPeriod,
+  start: Date,
+  nextStart: Date,
+): Promise<DashboardSnapshot> {
   const [selection, categories, accounts, transactions] = await Promise.all([
     db.query.currentBudgetsTable.findFirst({
       where: eq(currentBudgetsTable.userId, userId),
