@@ -129,30 +129,76 @@ describe('dashboard URL period selection (ActionDashboard controls)', () => {
     expect(modeDropdown?.selected).toEqual(['annual'])
   })
 
-  it('pushes the canonical URL when a mode option is selected', async () => {
+  it('pushes a complete valid URL when a mode option is selected', async () => {
     const user = userEvent.setup()
     render(<ActionDashboard dashboardmode="monthly" />)
 
     await user.click(screen.getByRole('button', { name: 'Anual' }))
 
-    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?mode=annual', { scroll: false })
+    expect(navigation.push).toHaveBeenLastCalledWith(
+      `/dashboard?mode=annual&year=${new Date().getUTCFullYear()}`,
+      { scroll: false },
+    )
   })
 
-  it('pushes the canonical URL when a month option is selected', async () => {
+  it('drops the month param when switching monthly to annual', async () => {
+    navigation.search = 'mode=monthly&year=2026&month=3'
+    const user = userEvent.setup()
+    render(<ActionDashboard dashboardmode="monthly" />)
+
+    await user.click(screen.getByRole('button', { name: 'Anual' }))
+
+    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?mode=annual&year=2026', {
+      scroll: false,
+    })
+  })
+
+  it('restores the default month when switching annual to monthly', async () => {
+    navigation.search = 'mode=annual&year=2026'
+    const user = userEvent.setup()
+    render(<ActionDashboard dashboardmode="annual" />)
+
+    await user.click(screen.getByRole('button', { name: 'Mensual' }))
+
+    expect(navigation.push).toHaveBeenLastCalledWith(
+      `/dashboard?mode=monthly&year=2026&month=${new Date().getUTCMonth()}`,
+      { scroll: false },
+    )
+  })
+
+  it('pushes a complete valid URL when a month option is selected', async () => {
     const user = userEvent.setup()
     render(<ActionDashboard dashboardmode="monthly" />)
 
     await user.click(screen.getByRole('button', { name: 'Marzo' }))
 
-    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?month=2', { scroll: false })
+    expect(navigation.push).toHaveBeenLastCalledWith(
+      `/dashboard?mode=monthly&year=${new Date().getUTCFullYear()}&month=2`,
+      { scroll: false },
+    )
   })
 
-  it('pushes the canonical URL when a year option is selected', async () => {
+  it('pushes a complete valid URL when a year option is selected', async () => {
     const user = userEvent.setup()
     render(<ActionDashboard dashboardmode="monthly" />)
 
     await user.click(screen.getByRole('button', { name: '2027' }))
 
-    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?year=2027', { scroll: false })
+    expect(navigation.push).toHaveBeenLastCalledWith(
+      `/dashboard?mode=monthly&year=2027&month=${new Date().getUTCMonth()}`,
+      { scroll: false },
+    )
+  })
+
+  it('keeps the month when changing the year in monthly mode', async () => {
+    navigation.search = 'mode=monthly&year=2026&month=3'
+    const user = userEvent.setup()
+    render(<ActionDashboard dashboardmode="monthly" />)
+
+    await user.click(screen.getByRole('button', { name: '2027' }))
+
+    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?mode=monthly&year=2027&month=3', {
+      scroll: false,
+    })
   })
 })

@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { useFilterParam } from '@/hooks/use-filter-params'
+import { useFilterParam, useFilterParams } from '@/hooks/use-filter-params'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -109,5 +109,42 @@ describe('useFilterParam', () => {
     const calledWith = pushMock.mock.calls[0][0]
     expect(calledWith).toContain('currency=USD')
     expect(calledWith).toContain('sort=name')
+  })
+})
+
+describe('useFilterParams coordinated setter', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    setupSearchParams('')
+  })
+
+  it('applies multiple key updates in a single push', () => {
+    setupSearchParams('mode=monthly&year=2026&month=3')
+    const { result } = renderHook(() => useFilterParams())
+
+    act(() => {
+      result.current({ mode: ['annual'], month: [] })
+    })
+
+    expect(pushMock).toHaveBeenCalledTimes(1)
+    const calledWith = pushMock.mock.calls[0][0]
+    expect(calledWith).toContain('mode=annual')
+    expect(calledWith).toContain('year=2026')
+    expect(calledWith).not.toContain('month')
+  })
+
+  it('sets and deletes keys from the same updates object', () => {
+    setupSearchParams('mode=monthly&year=2026&month=3&sort=name')
+    const { result } = renderHook(() => useFilterParams())
+
+    act(() => {
+      result.current({ mode: ['annual'], month: [], year: ['2027'], sort: ['name'] })
+    })
+
+    const calledWith = pushMock.mock.calls[0][0]
+    expect(calledWith).toContain('mode=annual')
+    expect(calledWith).toContain('year=2027')
+    expect(calledWith).toContain('sort=name')
+    expect(calledWith).not.toContain('month')
   })
 })

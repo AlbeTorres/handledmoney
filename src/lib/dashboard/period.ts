@@ -101,6 +101,17 @@ export function parseDashboardPeriod(raw: DashboardPeriodInput): DashboardPeriod
 }
 
 /**
+ * Default reporting period for a bare `/dashboard` entry — sidebar nav, login
+ * callback, or any link that omits period search params: the current UTC
+ * month and year in monthly mode. Present-but-invalid params still go through
+ * the strict parser; this default only applies when no period params exist,
+ * so the happy-path entry never dead-ends in the unavailable alert.
+ */
+export function defaultDashboardPeriod(now: Date = new Date()): DashboardPeriod {
+  return { mode: 'monthly', year: now.getUTCFullYear(), month: now.getUTCMonth() }
+}
+
+/**
  * One UTC half-open range for a validated period: monthly
  * `[monthStart, nextMonthStart)` or annual `[yearStart, nextYearStart)`.
  * Every period-sensitive source shares this range, so URL and date drift are
