@@ -1,5 +1,6 @@
 import { Lightbulb } from 'lucide-react'
-import { formatCurrency, type GroupRow } from '@/lib/finance-data'
+import type { GroupRow } from '@/lib/dashboard/budget'
+import { formatCurrency } from '@/lib/dashboard/format'
 
 interface Props {
   groups: GroupRow[]

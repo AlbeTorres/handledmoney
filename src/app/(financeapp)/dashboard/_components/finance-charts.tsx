@@ -11,7 +11,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { formatCurrency, type ViewMode } from '@/lib/finance-data'
+import { formatCurrency } from '@/lib/dashboard/format'
+import type { ViewMode } from '@/lib/dashboard/period'
 
 const DONUT_COLORS = [
   'var(--chart-1)',

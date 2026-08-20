@@ -7,11 +7,12 @@ import {
   TrendingUp,
   type LucideIcon,
 } from 'lucide-react'
-import { formatCurrency, type Kpis } from '@/lib/finance-data'
+import { formatCurrency } from '@/lib/dashboard/format'
+import type { DashboardKpis } from '@/lib/dashboard/kpis'
 import { cn } from '@/lib/utils'
 
 interface Props {
-  kpis: Kpis
+  kpis: DashboardKpis
 }
 
 function pct(actual: number, planned: number): number {

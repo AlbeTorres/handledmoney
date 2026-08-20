@@ -2,206 +2,157 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-const { getDashboardData } = vi.hoisted(() => ({ getDashboardData: vi.fn() }))
-const navigation = vi.hoisted(() => ({ pathname: '/dashboard', pending: false, push: vi.fn() }))
+const navigation = vi.hoisted(() => ({
+  pathname: '/dashboard',
+  search: '',
+  push: vi.fn(),
+}))
 
-vi.mock('@/actions/dashboard/get-dashboard-data', () => ({ getDashboardData }))
 vi.mock('next/navigation', () => ({
   usePathname: () => navigation.pathname,
+  useSearchParams: () => new URLSearchParams(navigation.search),
   useRouter: () => ({ push: navigation.push }),
-  useTransition: () => [navigation.pending, (callback: () => void) => callback()],
 }))
-vi.mock('react', async importOriginal => {
-  const actual = await importOriginal<typeof import('react')>()
-  return {
-    ...actual,
-    useTransition: () => [navigation.pending, (callback: () => void) => callback()],
-  }
-})
 
-import {
-  DashboardPeriodHeader,
-  hrefForPeriod,
-  nextPeriod,
-  previousPeriod,
-} from '@/app/(financeapp)/dashboard/_components/action-dashboard'
-import Dashboard, { parseDashboardPeriod } from '@/app/(financeapp)/dashboard/page'
+// FilterDropdown is a presentational client menu; this suite focuses on which
+// period options ActionDashboard feeds it and what URL changes result.
+const dropdowns = vi.hoisted(() => ({
+  render: vi.fn(),
+}))
 
-const now = new Date(Date.UTC(2026, 5, 15))
-const dashboardData = {
-  period: { mode: 'monthly' as const, year: 2026, month: 5 },
-  kpis: {
-    incomePlanned: 0,
-    incomeActual: 0,
-    expensePlanned: 0,
-    expenseActual: 0,
-    netPlanned: 0,
-    netActual: 0,
-    available: 0,
+vi.mock('@/components/FilterDropdown', () => ({
+  default: (props: {
+    label: string
+    options: Array<{ label: string; value: string }>
+    selected: string[]
+    onChange: (values: string[]) => void
+    icon?: unknown
+    multiple?: boolean
+  }) => {
+    dropdowns.render(props)
+    return (
+      <div data-testid="period-dropdown" data-options={JSON.stringify(props.options.map(o => o.value))}>
+        {props.options.map(option => (
+          <button
+            key={option.value}
+            data-option-value={option.value}
+            onClick={() => props.onChange([option.value])}
+          >
+            {option.label}
+          </button>
+        ))}
+      </div>
+    )
   },
-  groups: [],
-  budgetVsActual: [],
-  monthlyTrend: [],
-  expenseByGroup: [],
-  accounts: [],
-  aggregateBalance: null,
-  empty: { hasBudget: false, hasTransactions: false, hasAccounts: false, isEmpty: true },
+}))
+
+import { ActionDashboard } from '@/app/(financeapp)/dashboard/_components/action-dashboard'
+
+type DropdownProps = {
+  label: string
+  options: Array<{ label: string; value: string }>
+  selected: string[]
+  onChange: (values: string[]) => void
 }
 
-describe('dashboard URL period selection', () => {
+function renderCalls(): DropdownProps[] {
+  return dropdowns.render.mock.calls.map(call => call[0] as DropdownProps)
+}
+
+describe('dashboard URL period selection (ActionDashboard controls)', () => {
   beforeEach(() => {
     navigation.pathname = '/dashboard'
-    navigation.pending = false
+    navigation.search = ''
     navigation.push.mockReset()
-    getDashboardData.mockReset()
+    dropdowns.render.mockClear()
     vi.useRealTimers()
   })
-  it('parses only canonical scalar monthly and annual periods', () => {
-    expect(parseDashboardPeriod({ mode: 'monthly', year: '2026', month: '11' }, now)).toEqual({
-      mode: 'monthly',
-      year: 2026,
-      month: 11,
-    })
-    expect(parseDashboardPeriod({ mode: 'annual', year: '2026' }, now)).toEqual({
-      mode: 'annual',
-      year: 2026,
-    })
+
+  it('renders month, year, and mode options in monthly mode and omits month in annual mode', () => {
+    const monthlyView = render(<ActionDashboard dashboardmode="monthly" />)
+    const monthlyOptions = renderCalls().flatMap(call => call.options.map(option => option.value))
+    expect(monthlyOptions).toContain('0')
+    expect(monthlyOptions).toContain('11')
+    expect(monthlyOptions).toContain('2000')
+    expect(monthlyOptions).toContain('2100')
+    expect(monthlyOptions).toContain('monthly')
+    expect(monthlyOptions).toContain('annual')
+    monthlyView.unmount()
+
+    dropdowns.render.mockClear()
+    render(<ActionDashboard dashboardmode="annual" />)
+    const annualOptions = renderCalls().flatMap(call => call.options.map(option => option.value))
+    expect(annualOptions).not.toContain('0')
+    expect(annualOptions).not.toContain('11')
+    expect(annualOptions).toContain('2000')
+    expect(annualOptions).toContain('monthly')
+    expect(annualOptions).toContain('annual')
   })
 
-  it.each([
-    {},
-    { mode: ['monthly', 'annual'], year: '2026', month: '5' },
-    { mode: 'monthly', year: '2026' },
-    { mode: 'annual', year: '2026', month: '5' },
-    { mode: 'monthly', year: '1999', month: '5' },
-    { mode: 'monthly', year: '2026', month: '12' },
-    { mode: 'monthly', year: '2026', month: '5', extra: 'unsafe' },
-  ])('defaults invalid query %o to the current UTC month', query => {
-    expect(parseDashboardPeriod(query, now)).toEqual({ mode: 'monthly', year: 2026, month: 5 })
-  })
+  it('defaults month to the current UTC month, year to the current UTC year, and mode to monthly', () => {
+    render(<ActionDashboard dashboardmode="monthly" />)
 
-  it('calls the server action once with a valid parsed union', async () => {
-    getDashboardData.mockResolvedValueOnce({ ok: true, data: dashboardData })
-
-    await Dashboard({ searchParams: Promise.resolve({ mode: 'annual', year: '2026' }) })
-
-    expect(getDashboardData).toHaveBeenCalledTimes(1)
-    expect(getDashboardData).toHaveBeenCalledWith({ mode: 'annual', year: 2026 })
-  })
-
-  it('renders the selected server period in the dashboard header', async () => {
-    getDashboardData.mockResolvedValueOnce({ ok: true, data: dashboardData })
-
-    render(
-      await Dashboard({
-        searchParams: Promise.resolve({ mode: 'monthly', year: '2026', month: '5' }),
-      }),
+    const calls = renderCalls()
+    const monthDropdown = calls.find(call =>
+      call.options.some(option => option.value === '0') &&
+      call.options.some(option => option.value === '11'),
+    )
+    const yearDropdown = calls.find(call =>
+      call.options.some(option => option.value === '2000') &&
+      call.options.some(option => option.value === '2100'),
+    )
+    const modeDropdown = calls.find(call =>
+      call.options.some(option => option.value === 'monthly') &&
+      call.options.some(option => option.value === 'annual'),
     )
 
-    expect(screen.getByRole('heading', { name: 'Presupuesto vs Realidad' })).toBeInTheDocument()
-    expect(screen.getByText('junio de 2026')).toBeInTheDocument()
+    expect(monthDropdown?.selected).toEqual([String(new Date().getUTCMonth())])
+    expect(yearDropdown?.selected).toEqual([String(new Date().getUTCFullYear())])
+    expect(modeDropdown?.selected).toEqual(['monthly'])
   })
 
-  it('renders a non-sensitive retryable alert without dashboard controls when data is unavailable', async () => {
-    getDashboardData.mockResolvedValueOnce({ ok: false, code: 'UNAVAILABLE' })
+  it('picks up existing month, year, and mode search params', () => {
+    navigation.search = 'mode=annual&year=2024&month=3'
 
-    render(
-      await Dashboard({
-        searchParams: Promise.resolve({ mode: 'monthly', year: '2026', month: '5' }),
-      }),
+    render(<ActionDashboard dashboardmode="annual" />)
+
+    const calls = renderCalls()
+    const yearDropdown = calls.find(call =>
+      call.options.some(option => option.value === '2000') &&
+      call.options.some(option => option.value === '2100'),
     )
-
-    expect(screen.getByRole('alert')).toHaveTextContent(
-      'No se pudieron cargar los datos del panel. Intenta actualizar la página.',
+    const modeDropdown = calls.find(call =>
+      call.options.some(option => option.value === 'monthly') &&
+      call.options.some(option => option.value === 'annual'),
     )
-    expect(
-      screen.queryByRole('heading', { name: 'Presupuesto vs Realidad' }),
-    ).not.toBeInTheDocument()
-    expect(screen.queryAllByRole('button')).toHaveLength(0)
-  })
-})
-
-describe('DashboardPeriodHeader', () => {
-  it('renders the exact Spanish copy, selected mode, and balance states', () => {
-    const { rerender } = render(
-      <DashboardPeriodHeader period={{ mode: 'monthly', year: 2026, month: 0 }} netActual={12} />,
-    )
-
-    expect(screen.getByRole('heading', { name: 'Presupuesto vs Realidad' })).toBeInTheDocument()
-    expect(
-      screen.getByText('Compara tus flujos estimados contra tu desempeño real.'),
-    ).toBeInTheDocument()
-    expect(screen.getByText('enero de 2026')).toBeInTheDocument()
-    expect(screen.getByText('Superávit')).toBeInTheDocument()
-    expect(screen.getByRole('group', { name: 'Modo del período' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Mensual' })).toHaveAttribute('aria-pressed', 'true')
-    expect(screen.getByRole('button', { name: 'Anual' })).toHaveAttribute('aria-pressed', 'false')
-
-    rerender(<DashboardPeriodHeader period={{ mode: 'annual', year: 2026 }} netActual={-1} />)
-    expect(screen.getByText('2026')).toBeInTheDocument()
-    expect(screen.getByText('Déficit')).toBeInTheDocument()
-
-    rerender(<DashboardPeriodHeader period={{ mode: 'annual', year: 2026 }} netActual={0} />)
-    expect(screen.getByText('Balance neutro')).toBeInTheDocument()
+    expect(yearDropdown?.selected).toEqual(['2024'])
+    expect(modeDropdown?.selected).toEqual(['annual'])
   })
 
-  it('builds pathname-prefixed canonical URLs and crosses period boundaries', () => {
-    expect(hrefForPeriod('/dashboard', { mode: 'monthly', year: 2026, month: 11 })).toBe(
-      '/dashboard?mode=monthly&year=2026&month=11',
-    )
-    expect(hrefForPeriod('/dashboard', { mode: 'annual', year: 2026 })).toBe(
-      '/dashboard?mode=annual&year=2026',
-    )
-    expect(nextPeriod({ mode: 'monthly', year: 2026, month: 11 })).toEqual({
-      mode: 'monthly',
-      year: 2027,
-      month: 0,
-    })
-    expect(previousPeriod({ mode: 'monthly', year: 2027, month: 0 })).toEqual({
-      mode: 'monthly',
-      year: 2026,
-      month: 11,
-    })
-    expect(nextPeriod({ mode: 'annual', year: 2026 })).toEqual({ mode: 'annual', year: 2027 })
-    expect(previousPeriod({ mode: 'annual', year: 2027 })).toEqual({ mode: 'annual', year: 2026 })
-  })
-
-  it('pushes canonical URLs from mouse and keyboard controls and preserves the year on mode changes', async () => {
+  it('pushes the canonical URL when a mode option is selected', async () => {
     const user = userEvent.setup()
-    const { rerender } = render(
-      <DashboardPeriodHeader period={{ mode: 'monthly', year: 2026, month: 11 }} netActual={0} />,
-    )
+    render(<ActionDashboard dashboardmode="monthly" />)
 
-    await user.click(screen.getByRole('button', { name: 'Período siguiente' }))
-    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?mode=monthly&year=2027&month=0')
+    await user.click(screen.getByRole('button', { name: 'Anual' }))
 
-    rerender(<DashboardPeriodHeader period={{ mode: 'annual', year: 2026 }} netActual={0} />)
-    const monthly = screen.getByRole('button', { name: 'Mensual' })
-    monthly.focus()
-    await user.keyboard('{Enter}')
-    expect(navigation.push).toHaveBeenLastCalledWith(
-      `/dashboard?mode=monthly&year=2026&month=${new Date().getUTCMonth()}`,
-    )
+    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?mode=annual', { scroll: false })
   })
 
-  it('keeps controls accessible while pending and announces only matching refreshed server props', async () => {
+  it('pushes the canonical URL when a month option is selected', async () => {
     const user = userEvent.setup()
-    const { rerender } = render(
-      <DashboardPeriodHeader period={{ mode: 'annual', year: 2026 }} netActual={0} />,
-    )
-    const next = screen.getByRole('button', { name: 'Período siguiente' })
-    next.focus()
+    render(<ActionDashboard dashboardmode="monthly" />)
 
-    await user.click(next)
+    await user.click(screen.getByRole('button', { name: 'Marzo' }))
 
-    navigation.pending = true
-    rerender(<DashboardPeriodHeader period={{ mode: 'annual', year: 2026 }} netActual={0} />)
-    expect(next).toHaveFocus()
-    expect(next).toBeDisabled()
-    expect(screen.getByLabelText('Presupuesto vs Realidad')).toHaveAttribute('aria-busy', 'true')
+    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?month=2', { scroll: false })
+  })
 
-    navigation.pending = false
-    rerender(<DashboardPeriodHeader period={{ mode: 'annual', year: 2027 }} netActual={0} />)
-    expect(screen.getByRole('status')).toHaveTextContent('Período actualizado: 2027')
+  it('pushes the canonical URL when a year option is selected', async () => {
+    const user = userEvent.setup()
+    render(<ActionDashboard dashboardmode="monthly" />)
+
+    await user.click(screen.getByRole('button', { name: '2027' }))
+
+    expect(navigation.push).toHaveBeenLastCalledWith('/dashboard?year=2027', { scroll: false })
   })
 })
