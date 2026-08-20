@@ -18,6 +18,7 @@ describe('dashboard cleanup', () => {
 
     const page = readFileSync(resolve(process.cwd(), 'src/app/(financeapp)/dashboard/page.tsx'), 'utf8')
     expect(page).not.toMatch(/add-transaction-dialog|dashboard-header|transaction-drawer|theme-toggle|\.\/\_components\/sidebar/)
-    expect(page).toContain('getDashboardData')
+    expect(page).toContain('getDashboardActuals')
+    expect(page).not.toContain('getDashboardData')
   })
 })
