@@ -88,6 +88,20 @@ describe('dashboard page read contract', () => {
     mocks.getDashboardAccounts.mockResolvedValue(accountsRows)
   })
 
+  it('defaults a bare /dashboard URL to the current month/year in monthly mode', async () => {
+    const element = await Dashboard({ searchParams: Promise.resolve({}) })
+
+    const [kpis] = collectByType(element, KpisSection)
+    expect(kpis.props.period).toEqual({
+      mode: 'monthly',
+      year: new Date().getUTCFullYear(),
+      month: new Date().getUTCMonth(),
+    })
+    expect(mocks.getDashboardActuals).toHaveBeenCalledTimes(1)
+    expect(mocks.getDashboardPlan).toHaveBeenCalledTimes(1)
+    expect(mocks.getDashboardAccounts).toHaveBeenCalledTimes(1)
+  })
+
   it('authenticates once, strictly parses the period, and starts exactly three shared sources', async () => {
     const element = await Dashboard({
       searchParams: Promise.resolve({ mode: 'monthly', year: '2026', month: '0' }),

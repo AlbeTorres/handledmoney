@@ -1,7 +1,12 @@
 import { headers } from 'next/headers'
 
 import { auth } from '@/lib/auth'
-import { dashboardRange, parseDashboardPeriod, type DashboardPeriod } from '@/lib/dashboard/period'
+import {
+  dashboardRange,
+  defaultDashboardPeriod,
+  parseDashboardPeriod,
+  type DashboardPeriod,
+} from '@/lib/dashboard/period'
 import { toSourceResult } from '@/lib/dashboard/source-result'
 import { getDashboardAccounts } from '@/repository/dashboard/accounts'
 import { getDashboardActuals } from '@/repository/dashboard/actuals'
@@ -14,6 +19,8 @@ import { InsightSection } from './_components/insight-section'
 import { KpisSection } from './_components/kpis-section'
 
 type SearchParams = Record<string, string | string[] | undefined>
+
+const PERIOD_KEYS = ['mode', 'year', 'month'] as const
 
 /**
  * Canonical unavailable page response, preserved verbatim during cutover:
@@ -41,10 +48,15 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   if (!userId) return unavailableResponse
 
   let period: DashboardPeriod
-  try {
-    period = parseDashboardPeriod(raw)
-  } catch {
-    return unavailableResponse
+  const hasPeriodParams = PERIOD_KEYS.some(key => raw[key] !== undefined)
+  if (!hasPeriodParams) {
+    period = defaultDashboardPeriod()
+  } else {
+    try {
+      period = parseDashboardPeriod(raw)
+    } catch {
+      return unavailableResponse
+    }
   }
   const range = dashboardRange(period)
 

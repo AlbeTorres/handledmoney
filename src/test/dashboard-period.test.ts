@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DashboardPeriodSchema,
   dashboardRange,
+  defaultDashboardPeriod,
   parseDashboardPeriod,
 } from '@/lib/dashboard/period'
 
@@ -104,6 +105,18 @@ describe('parseDashboardPeriod strict canonical parser', () => {
     { mode: 'monthly', year: '2026', month: '' },
   ])('rejects the non-canonical period %o before any source call', raw => {
     expect(() => parseDashboardPeriod(raw)).toThrow()
+  })
+})
+
+describe('defaultDashboardPeriod bare-URL fallback', () => {
+  it('returns the current UTC month and year in monthly mode', () => {
+    const now = new Date('2026-08-15T12:00:00.000Z')
+    expect(defaultDashboardPeriod(now)).toEqual({ mode: 'monthly', year: 2026, month: 7 })
+  })
+
+  it('produces a parser-valid period for the current instant', () => {
+    const period = defaultDashboardPeriod()
+    expect(DashboardPeriodSchema.safeParse(period).success).toBe(true)
   })
 })
 
