@@ -5,37 +5,67 @@ import { BudgetTable } from '@/app/(financeapp)/dashboard/_components/budget-tab
 import { FinanceCharts } from '@/app/(financeapp)/dashboard/_components/finance-charts'
 import { InsightCard } from '@/app/(financeapp)/dashboard/_components/insight-card'
 import { KpiCards } from '@/app/(financeapp)/dashboard/_components/kpi-cards'
-import { buildDashboardViewModel } from '@/lib/finance-data'
-import { dashboardSnapshot } from './fixtures/dashboard'
+import { presentDashboardAccounts } from '@/lib/dashboard/account-presentation'
+import { projectDashboardBudgetRows } from '@/lib/dashboard/budget'
+import { projectDashboardCharts } from '@/lib/dashboard/charts'
+import { projectDashboardKpis } from '@/lib/dashboard/kpis'
+import { dashboardRange, type DashboardPeriod } from '@/lib/dashboard/period'
+import { dashboardAccounts, dashboardActuals, dashboardPlan } from './fixtures/dashboard'
 
-const populated = buildDashboardViewModel(dashboardSnapshot, {
-  mode: 'monthly',
-  year: 2026,
-  month: 0,
-})
+/**
+ * Widget-contract tests fed by the COMPOSED projections (task 4.1): the
+ * widgets receive exactly what the server sections project from the shared
+ * sources. The legacy `buildDashboardViewModel` seam is gone.
+ */
 
-const empty = buildDashboardViewModel(
-  { budget: null, categories: [], transactions: [], accounts: [] },
-  { mode: 'monthly', year: 2026, month: 0 },
-)
+const monthly: DashboardPeriod = { mode: 'monthly', year: 2026, month: 0 }
 
-describe('read-only dashboard widgets', () => {
-  it('renders the retained widgets from the minimal dashboard projection without controls', () => {
+function composedMonthly() {
+  const range = dashboardRange(monthly)
+  const actuals = dashboardActuals(range)
+  const charts = projectDashboardCharts(monthly, dashboardPlan, actuals)
+  const { groups } = projectDashboardBudgetRows(monthly, dashboardPlan, actuals)
+  const accounts = presentDashboardAccounts(dashboardAccounts)
+  return {
+    kpis: projectDashboardKpis(monthly, dashboardPlan, actuals),
+    charts,
+    groups,
+    accounts,
+  }
+}
+
+function composedEmpty() {
+  const actuals: never[] = []
+  const charts = projectDashboardCharts(monthly, null, actuals)
+  const { groups } = projectDashboardBudgetRows(monthly, null, actuals)
+  const accounts = presentDashboardAccounts([])
+  return {
+    kpis: projectDashboardKpis(monthly, null, actuals),
+    charts,
+    groups,
+    accounts,
+  }
+}
+
+describe('read-only dashboard widgets (composed projections)', () => {
+  it('renders the retained widgets from the composed projection output without controls', () => {
+    const { kpis, charts, groups, accounts } = composedMonthly()
+
     render(
       <>
-        <KpiCards kpis={populated.kpis} />
+        <KpiCards kpis={kpis} />
         <FinanceCharts
-          viewMode={populated.period.mode}
-          budgetVsActual={populated.budgetVsActual}
-          monthlyTrend={populated.monthlyTrend}
-          expenseByGroup={populated.expenseByGroup}
+          viewMode={monthly.mode}
+          budgetVsActual={charts.budgetVsActual}
+          monthlyTrend={charts.monthlyTrend}
+          expenseByGroup={charts.expenseByGroup}
         />
-        <BudgetTable groups={populated.groups} viewMode={populated.period.mode} />
+        <BudgetTable groups={groups} viewMode={monthly.mode} />
         <AccountsWidget
-          accounts={populated.accounts}
-          aggregateBalance={populated.aggregateBalance}
+          accounts={accounts.accounts}
+          aggregateBalance={accounts.aggregateBalance}
         />
-        <InsightCard groups={populated.groups} />
+        <InsightCard groups={groups} />
       </>,
     )
 
@@ -49,18 +79,21 @@ describe('read-only dashboard widgets', () => {
   })
 
   it('shows honest empty states for missing budget, chart, and accounts data', () => {
+    const { kpis, charts, groups, accounts } = composedEmpty()
+
     render(
       <>
+        <KpiCards kpis={kpis} />
         <FinanceCharts
-          viewMode={empty.period.mode}
-          budgetVsActual={empty.budgetVsActual}
-          monthlyTrend={empty.monthlyTrend}
-          expenseByGroup={empty.expenseByGroup}
+          viewMode={monthly.mode}
+          budgetVsActual={charts.budgetVsActual}
+          monthlyTrend={charts.monthlyTrend}
+          expenseByGroup={charts.expenseByGroup}
           isEmpty
         />
-        <BudgetTable groups={empty.groups} viewMode={empty.period.mode} />
-        <AccountsWidget accounts={empty.accounts} aggregateBalance={empty.aggregateBalance} />
-        <InsightCard groups={empty.groups} />
+        <BudgetTable groups={groups} viewMode={monthly.mode} />
+        <AccountsWidget accounts={accounts.accounts} aggregateBalance={accounts.aggregateBalance} />
+        <InsightCard groups={groups} />
       </>,
     )
 
@@ -71,10 +104,12 @@ describe('read-only dashboard widgets', () => {
   })
 
   it('renders each mixed-currency account separately without a combined balance', () => {
+    const { accounts } = composedMonthly()
+
     render(
       <AccountsWidget
-        accounts={populated.accounts}
-        aggregateBalance={populated.aggregateBalance}
+        accounts={accounts.accounts}
+        aggregateBalance={accounts.aggregateBalance}
       />,
     )
 

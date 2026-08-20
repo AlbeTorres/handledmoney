@@ -7,7 +7,6 @@ const mocks = vi.hoisted(() => ({
   getDashboardActuals: vi.fn(),
   getDashboardPlan: vi.fn(),
   getDashboardAccounts: vi.fn(),
-  getDashboardData: vi.fn(),
 }))
 
 vi.mock('@/lib/auth', () => ({ auth: { api: { getSession: mocks.getSession } } }))
@@ -19,8 +18,6 @@ vi.mock('@/repository/dashboard/budget', () => ({ getDashboardPlan: mocks.getDas
 vi.mock('@/repository/dashboard/accounts', () => ({
   getDashboardAccounts: mocks.getDashboardAccounts,
 }))
-// The legacy action must no longer be part of the page read path.
-vi.mock('@/actions/dashboard/get-dashboard', () => ({ getDashboardData: mocks.getDashboardData }))
 // The chart section keeps the client dynamic; the page test only inspects props.
 vi.mock('@/app/(financeapp)/dashboard/_components/finance-charts-client', () => ({
   FinanceChartsClient: () => null,
@@ -105,9 +102,6 @@ describe('dashboard page read contract', () => {
     expect(mocks.getDashboardPlan).toHaveBeenCalledWith('caller-1')
     expect(mocks.getDashboardAccounts).toHaveBeenCalledTimes(1)
     expect(mocks.getDashboardAccounts).toHaveBeenCalledWith('caller-1')
-
-    // The legacy action seam is no longer part of the page read path.
-    expect(mocks.getDashboardData).not.toHaveBeenCalled()
 
     expect(collectByType(element, KpisSection)).toHaveLength(1)
     expect(collectByType(element, ChartsSection)).toHaveLength(1)

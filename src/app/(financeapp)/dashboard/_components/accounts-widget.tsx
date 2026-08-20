@@ -1,6 +1,7 @@
 import { Banknote, CircleDollarSign, CreditCard, Landmark, PiggyBank, WalletCards, type LucideIcon } from 'lucide-react'
 
-import { type DashboardAccount, type SupportedAccountType } from '@/lib/finance-data'
+import type { PresentedAccount } from '@/lib/dashboard/account-presentation'
+import type { AggregateBalance, SupportedAccountType } from '@/lib/dashboard/accounts'
 import { cn } from '@/lib/utils'
 
 const ICONS: Record<SupportedAccountType, LucideIcon> = {
@@ -28,8 +29,8 @@ function formatAccountBalance(balance: number, currency: string): string {
 }
 
 interface Props {
-  accounts: DashboardAccount[]
-  aggregateBalance: { currency: string; balance: number } | null
+  accounts: PresentedAccount[]
+  aggregateBalance: AggregateBalance | null
 }
 
 export function AccountsWidget({ accounts, aggregateBalance }: Props) {

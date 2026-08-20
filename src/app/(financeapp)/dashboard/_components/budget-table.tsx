@@ -1,9 +1,6 @@
-import {
-  formatCurrency,
-  type CategoryRow,
-  type GroupRow,
-  type ViewMode,
-} from '@/lib/finance-data'
+import type { CategoryRow, GroupRow } from '@/lib/dashboard/budget'
+import { formatCurrency } from '@/lib/dashboard/format'
+import type { ViewMode } from '@/lib/dashboard/period'
 import { cn } from '@/lib/utils'
 
 const STATUS_BAR: Record<CategoryRow['status'], string> = {

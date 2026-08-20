@@ -38,6 +38,12 @@ export const DashboardPeriodSchema = z.discriminatedUnion('mode', [
 export type DashboardPeriod = z.infer<typeof DashboardPeriodSchema>
 
 /**
+ * `'monthly' | 'annual'` — the widget-facing mode discriminator consumed by
+ * the budget table and charts (formerly `ViewMode` from finance-data).
+ */
+export type ViewMode = DashboardPeriod['mode']
+
+/**
  * Half-open UTC range: `start` is included, `nextStart` is excluded.
  * Only period.ts builds ranges (`dashboardRange`).
  */
