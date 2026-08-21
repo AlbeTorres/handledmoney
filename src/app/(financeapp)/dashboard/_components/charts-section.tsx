@@ -1,14 +1,13 @@
+import type { DashboardActual } from '@/interfaces/actuals'
 import { projectDashboardCharts } from '@/lib/dashboard/charts'
-import type { DashboardActual } from '@/lib/dashboard/actuals'
 import type { DashboardPeriod } from '@/lib/dashboard/period'
 import type { DashboardPlan } from '@/lib/dashboard/plan'
-import type { SourceResult } from '@/lib/dashboard/source-result'
 import { FinanceChartsClient } from './finance-charts-client'
 import { SectionUnavailable } from './section-unavailable'
 
 interface Props {
-  actuals: Promise<SourceResult<DashboardActual[]>>
-  plan: Promise<SourceResult<DashboardPlan | null>>
+  actuals: Promise<{ data: DashboardActual[]; success: boolean }>
+  plan: Promise<{ data: DashboardPlan | null; success: boolean }>
   period: DashboardPeriod
 }
 
@@ -19,7 +18,7 @@ interface Props {
  */
 export async function ChartsSection({ actuals, plan, period }: Props) {
   const [actualsResult, planResult] = await Promise.all([actuals, plan])
-  if (!actualsResult.ok || !planResult.ok) {
+  if (!actualsResult.success || !planResult.success) {
     return <SectionUnavailable />
   }
   const charts = projectDashboardCharts(period, planResult.data, actualsResult.data)

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { DashboardActual } from '@/lib/dashboard/actuals'
+import type { DashboardActual } from '@/interfaces/actuals'
 import { projectDashboardBudgetRows } from '@/lib/dashboard/budget'
 import { projectDashboardCharts } from '@/lib/dashboard/charts'
 import { projectDashboardKpis } from '@/lib/dashboard/kpis'
@@ -109,13 +109,25 @@ describe('projectDashboardBudgetRows', () => {
     const unplannedIncome = rows.groups[2]
     expect(unplannedIncome).toMatchObject({ name: 'Unplanned income', planned: 0, actual: 300 })
     expect(unplannedIncome.categories).toEqual([
-      expect.objectContaining({ id: 'freelance', name: 'Freelance', planned: 0, actual: 300, status: 'unplanned' }),
+      expect.objectContaining({
+        id: 'freelance',
+        name: 'Freelance',
+        planned: 0,
+        actual: 300,
+        status: 'unplanned',
+      }),
     ])
 
     const unplannedExpense = rows.groups[3]
     expect(unplannedExpense).toMatchObject({ name: 'Unplanned expense', planned: 0, actual: 50 })
     expect(unplannedExpense.categories).toEqual([
-      expect.objectContaining({ id: 'food', name: 'Food', planned: 0, actual: 50, status: 'unplanned' }),
+      expect.objectContaining({
+        id: 'food',
+        name: 'Food',
+        planned: 0,
+        actual: 50,
+        status: 'unplanned',
+      }),
     ])
   })
 
@@ -124,8 +136,16 @@ describe('projectDashboardBudgetRows', () => {
 
     const uncategorizedIncome = rows.groups[4]
     const uncategorizedExpense = rows.groups[5]
-    expect(uncategorizedIncome).toMatchObject({ name: 'Uncategorized', kind: 'income', actual: 100 })
-    expect(uncategorizedExpense).toMatchObject({ name: 'Uncategorized', kind: 'expense', actual: 25 })
+    expect(uncategorizedIncome).toMatchObject({
+      name: 'Uncategorized',
+      kind: 'income',
+      actual: 100,
+    })
+    expect(uncategorizedExpense).toMatchObject({
+      name: 'Uncategorized',
+      kind: 'expense',
+      actual: 25,
+    })
     expect(uncategorizedIncome.categories[0]).toMatchObject({
       id: 'uncategorized-income',
       name: 'Uncategorized',
@@ -187,12 +207,19 @@ describe('projectDashboardBudgetRows', () => {
     const numbers: number[] = []
     for (const group of rows.groups) {
       numbers.push(group.planned, group.actual)
-      for (const category of group.categories) numbers.push(category.planned, category.actual, category.diff, category.pct)
+      for (const category of group.categories)
+        numbers.push(category.planned, category.actual, category.diff, category.pct)
     }
     for (const value of numbers) expect(Number.isFinite(value)).toBe(true)
 
     const poisoned: DashboardActual[] = [
-      { categoryId: 'food', categoryName: 'Food', type: 'expense', month: 0, total: Number.POSITIVE_INFINITY },
+      {
+        categoryId: 'food',
+        categoryName: 'Food',
+        type: 'expense',
+        month: 0,
+        total: Number.POSITIVE_INFINITY,
+      },
     ]
     expect(() => projectDashboardBudgetRows(monthly, plan, poisoned)).toThrow()
   })
@@ -233,13 +260,28 @@ describe('projectDashboardCharts', () => {
     const zeroPoints = charts.monthlyTrend.filter(point => point.ingreso === 0 && point.gasto === 0)
     expect(zeroPoints).toHaveLength(10)
     expect(charts.monthlyTrend.map(point => point.label)).toEqual([
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ])
   })
 
   it('produces only finite values and rejects non-finite output', () => {
     const charts = projectDashboardCharts(monthly, plan, mixedActuals)
-    for (const point of [...charts.budgetVsActual, ...charts.monthlyTrend, ...charts.expenseByGroup]) {
+    for (const point of [
+      ...charts.budgetVsActual,
+      ...charts.monthlyTrend,
+      ...charts.expenseByGroup,
+    ]) {
       for (const [key, value] of Object.entries(point)) {
         if (key === 'label' || key === 'name') continue
         expect(Number.isFinite(value)).toBe(true)

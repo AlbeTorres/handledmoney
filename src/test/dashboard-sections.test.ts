@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from 'vitest'
 import type { ReactElement } from 'react'
+import { describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   FinanceChartsClient: vi.fn(() => null),
@@ -17,17 +17,17 @@ vi.mock('@/repository/dashboard/budget', () => ({ getDashboardPlan: mocks.repoPl
 vi.mock('@/repository/dashboard/accounts', () => ({ getDashboardAccounts: mocks.repoAccounts }))
 
 import { AccountsSection } from '@/app/(financeapp)/dashboard/_components/accounts-section'
+import { AccountsWidget } from '@/app/(financeapp)/dashboard/_components/accounts-widget'
 import { BudgetSection } from '@/app/(financeapp)/dashboard/_components/budget-section'
+import { BudgetTable } from '@/app/(financeapp)/dashboard/_components/budget-table'
 import { ChartsSection } from '@/app/(financeapp)/dashboard/_components/charts-section'
+import { InsightCard } from '@/app/(financeapp)/dashboard/_components/insight-card'
 import { InsightSection } from '@/app/(financeapp)/dashboard/_components/insight-section'
+import { KpiCards } from '@/app/(financeapp)/dashboard/_components/kpi-cards'
 import { KpisSection } from '@/app/(financeapp)/dashboard/_components/kpis-section'
 import { SectionUnavailable } from '@/app/(financeapp)/dashboard/_components/section-unavailable'
-import { AccountsWidget } from '@/app/(financeapp)/dashboard/_components/accounts-widget'
-import { BudgetTable } from '@/app/(financeapp)/dashboard/_components/budget-table'
-import { InsightCard } from '@/app/(financeapp)/dashboard/_components/insight-card'
-import { KpiCards } from '@/app/(financeapp)/dashboard/_components/kpi-cards'
-import type { DashboardActual } from '@/lib/dashboard/actuals'
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
+import type { DashboardAccount } from '@/interfaces/accounts'
+import type { DashboardActual } from '@/interfaces/actuals'
 import type { DashboardPeriod } from '@/lib/dashboard/period'
 import type { DashboardPlan } from '@/lib/dashboard/plan'
 import type { SourceResult } from '@/lib/dashboard/source-result'
@@ -171,7 +171,10 @@ describe('dashboard server sections', () => {
     })
 
     expect(element.type).toBe(BudgetTable)
-    const tableProps = props<{ groups: Array<{ id: string; planned: number; actual: number }>; viewMode: unknown }>(element)
+    const tableProps = props<{
+      groups: Array<{ id: string; planned: number; actual: number }>
+      viewMode: unknown
+    }>(element)
     expect(tableProps.viewMode).toBe('monthly')
     expect(tableProps.groups.map(group => group.id)).toEqual([
       'income-group',
@@ -250,7 +253,9 @@ describe('dashboard server sections', () => {
   })
 
   it('AccountsSection exposes UNAVAILABLE without fabricated accounts', async () => {
-    const element = await AccountsSection({ accounts: Promise.resolve(unavailable<DashboardAccount[]>()) })
+    const element = await AccountsSection({
+      accounts: Promise.resolve(unavailable<DashboardAccount[]>()),
+    })
 
     expect(element.type).toBe(SectionUnavailable)
   })

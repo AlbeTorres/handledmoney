@@ -1,6 +1,6 @@
 import { db } from '@/db'
 import { categoriesTable, transactionsTable } from '@/db/schema'
-import type { DashboardActual } from '@/lib/dashboard/actuals'
+import type { DashboardActual } from '@/interfaces/actuals'
 import type { DashboardRange } from '@/lib/dashboard/period'
 import { and, eq, gte, isNull, lt, sql } from 'drizzle-orm'
 

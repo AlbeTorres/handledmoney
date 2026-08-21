@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import type { DashboardActual } from '@/lib/dashboard/actuals'
-import type { AggregateBalance, DashboardAccount } from '@/lib/dashboard/accounts'
+import type { AggregateBalance, DashboardAccount } from '@/interfaces/accounts'
+import type { DashboardActual } from '@/interfaces/actuals'
 import type { DashboardBudgetRows } from '@/lib/dashboard/budget'
 import type { DashboardCharts } from '@/lib/dashboard/charts'
 import type { DashboardKpis } from '@/lib/dashboard/kpis'

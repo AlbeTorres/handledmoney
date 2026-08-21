@@ -1,5 +1,8 @@
 import { headers } from 'next/headers'
 
+import { getDashboardActualsData } from '@/data-access/get-dashboard-accounts'
+import { getDashboardAccountsData } from '@/data-access/get-dashboard-actuals'
+import { getDashboardBudgetData } from '@/data-access/get-dashboard-budget'
 import { auth } from '@/lib/auth'
 import {
   dashboardRange,
@@ -7,10 +10,6 @@ import {
   parseDashboardPeriod,
   type DashboardPeriod,
 } from '@/lib/dashboard/period'
-import { toSourceResult } from '@/lib/dashboard/source-result'
-import { getDashboardAccounts } from '@/repository/dashboard/accounts'
-import { getDashboardActuals } from '@/repository/dashboard/actuals'
-import { getDashboardPlan } from '@/repository/dashboard/budget'
 import { AccountsSection } from './_components/accounts-section'
 import { ActionDashboard } from './_components/action-dashboard'
 import { BudgetSection } from './_components/budget-section'
@@ -62,9 +61,9 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
   // Exactly three page-owned source promises, started unawaited and wrapped
   // once each. The same instances feed every section; sections never re-read.
-  const actuals = toSourceResult(getDashboardActuals(userId, range))
-  const plan = toSourceResult(getDashboardPlan(userId))
-  const accounts = toSourceResult(getDashboardAccounts(userId))
+  const actuals = getDashboardActualsData(range)
+  const plan = getDashboardBudgetData()
+  const accounts = getDashboardAccountsData()
 
   return (
     <section className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>

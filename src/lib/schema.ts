@@ -351,11 +351,33 @@ export const UpdateBudgetItemSchema = z.object({
   categoryId: z.string().uuid().optional().nullable(),
 })
 
-export const DashboardPeriodSchema = z.object({
-  mode: z.enum(['monthly', 'annual']).default('monthly'),
-  year: z.number().int(),
-  month: z.number().int().min(0).max(11).optional(),
-})
+const monthlyPeriodSchema = z
+  .object({
+    mode: z.literal('monthly'),
+    year: z.number().int().min(2000).max(2100),
+    month: z.number().int().min(0).max(11),
+  })
+  .strict()
+
+/**
+ * Annual reporting period. Forbids `month`; only `year` is meaningful.
+ */
+const annualPeriodSchema = z
+  .object({
+    mode: z.literal('annual'),
+    year: z.number().int().min(2000).max(2100),
+  })
+  .strict()
+
+/**
+ * Runtime contract for a dashboard reporting period. The discriminated union
+ * guarantees monthly periods carry a `month` and annual periods never do.
+ * `.strict()` rejects unknown keys and out-of-range years.
+ */
+export const DashboardPeriodSchema = z.discriminatedUnion('mode', [
+  monthlyPeriodSchema,
+  annualPeriodSchema,
+])
 
 export type DashboardPeriod = z.infer<typeof DashboardPeriodSchema>
 

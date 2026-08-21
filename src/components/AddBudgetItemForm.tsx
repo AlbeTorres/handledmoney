@@ -12,10 +12,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import type { CategorySelect } from '@/repository/categories'
 import { Loader2, Plus, X } from 'lucide-react'
-import { useEffect, useRef, useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
 interface AddBudgetItemFormProps {
@@ -34,20 +33,20 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
   const [categoryId, setCategoryId] = useState('')
   const selectedCategoryIdRef = useRef('')
 
-  useEffect(() => {
-    if (!open) return
-    getCategoriesByUserAction(calculationType === 'income' ? 'income' : 'expense').then(res => {
-      if (res.success && res.data) {
-        setCategories(current => {
-          const fetched = res.data as CategorySelect[]
-          return [
-            ...fetched,
-            ...current.filter(category => !fetched.some(item => item.id === category.id)),
-          ]
-        })
-      }
-    })
-  }, [open, calculationType])
+  // useEffect(() => {
+  //   if (!open) return
+  //   getCategoriesByUserAction(calculationType === 'income' ? 'income' : 'expense').then(res => {
+  //     if (res.success && res.data) {
+  //       setCategories(current => {
+  //         const fetched = res.data as CategorySelect[]
+  //         return [
+  //           ...fetched,
+  //           ...current.filter(category => !fetched.some(item => item.id === category.id)),
+  //         ]
+  //       })
+  //     }
+  //   })
+  // }, [open, calculationType])
 
   const createCategory = async () => {
     const categoryName = name.trim()

@@ -1,11 +1,10 @@
+import type { DashboardAccount } from '@/interfaces/accounts'
 import { presentDashboardAccounts } from '@/lib/dashboard/account-presentation'
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
-import type { SourceResult } from '@/lib/dashboard/source-result'
 import { AccountsWidget } from './accounts-widget'
 import { SectionUnavailable } from './section-unavailable'
 
 interface Props {
-  accounts: Promise<SourceResult<DashboardAccount[]>>
+  accounts: Promise<{ data: DashboardAccount[]; success: boolean }>
 }
 
 /**
@@ -15,7 +14,7 @@ interface Props {
  */
 export async function AccountsSection({ accounts }: Props) {
   const accountsResult = await accounts
-  if (!accountsResult.ok) {
+  if (!accountsResult.success) {
     return <SectionUnavailable />
   }
   const { accounts: presented, aggregateBalance } = presentDashboardAccounts(accountsResult.data)

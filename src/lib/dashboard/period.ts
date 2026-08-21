@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { DashboardPeriod } from '../schema'
 
 /**
  * Monthly reporting period. Requires an integer `month` in the range 0–11
@@ -7,35 +7,6 @@ import { z } from 'zod'
  *
  * Owner: dashboard page / period parser (src/lib/dashboard/period.ts).
  */
-const monthlyPeriodSchema = z
-  .object({
-    mode: z.literal('monthly'),
-    year: z.number().int().min(2000).max(2100),
-    month: z.number().int().min(0).max(11),
-  })
-  .strict()
-
-/**
- * Annual reporting period. Forbids `month`; only `year` is meaningful.
- */
-const annualPeriodSchema = z
-  .object({
-    mode: z.literal('annual'),
-    year: z.number().int().min(2000).max(2100),
-  })
-  .strict()
-
-/**
- * Runtime contract for a dashboard reporting period. The discriminated union
- * guarantees monthly periods carry a `month` and annual periods never do.
- * `.strict()` rejects unknown keys and out-of-range years.
- */
-export const DashboardPeriodSchema = z.discriminatedUnion('mode', [
-  monthlyPeriodSchema,
-  annualPeriodSchema,
-])
-
-export type DashboardPeriod = z.infer<typeof DashboardPeriodSchema>
 
 /**
  * `'monthly' | 'annual'` — the widget-facing mode discriminator consumed by

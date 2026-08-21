@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth'
 import { getCurrentBudgetComparison } from '@/repository/budget'
 import { headers } from 'next/headers'
+import 'server-only'
 
 export const getCurrentBudgetComparisonAction = async () => {
   const session = await auth.api.getSession({ headers: await headers() })

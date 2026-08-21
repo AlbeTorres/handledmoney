@@ -1,5 +1,5 @@
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
-import type { DashboardActual } from '@/lib/dashboard/actuals'
+import type { DashboardAccount } from '@/interfaces/accounts'
+import type { DashboardActual } from '@/interfaces/actuals'
 import type { DashboardRange } from '@/lib/dashboard/period'
 import type { DashboardPlan } from '@/lib/dashboard/plan'
 
@@ -37,10 +37,34 @@ export const dashboardSnapshot = {
     { id: 'food', name: 'Food', type: 'expense' as const },
   ],
   transactions: [
-    { id: 'salary-actual', categoryId: 'salary', type: 'income' as const, amount: '1200', date: new Date('2026-01-10T00:00:00.000Z') },
-    { id: 'rent-actual', categoryId: 'rent', type: 'expense' as const, amount: '700', date: new Date('2026-01-12T00:00:00.000Z') },
-    { id: 'food-actual', categoryId: 'food', type: 'expense' as const, amount: '50', date: new Date('2026-01-20T00:00:00.000Z') },
-    { id: 'uncategorized-actual', categoryId: null, type: 'expense' as const, amount: '25', date: new Date('2026-01-21T00:00:00.000Z') },
+    {
+      id: 'salary-actual',
+      categoryId: 'salary',
+      type: 'income' as const,
+      amount: '1200',
+      date: new Date('2026-01-10T00:00:00.000Z'),
+    },
+    {
+      id: 'rent-actual',
+      categoryId: 'rent',
+      type: 'expense' as const,
+      amount: '700',
+      date: new Date('2026-01-12T00:00:00.000Z'),
+    },
+    {
+      id: 'food-actual',
+      categoryId: 'food',
+      type: 'expense' as const,
+      amount: '50',
+      date: new Date('2026-01-20T00:00:00.000Z'),
+    },
+    {
+      id: 'uncategorized-actual',
+      categoryId: null,
+      type: 'expense' as const,
+      amount: '25',
+      date: new Date('2026-01-21T00:00:00.000Z'),
+    },
   ],
   accounts: [
     { id: 'account-usd', name: 'Cash', type: 'cash', currency: 'USD', balance: '500' },

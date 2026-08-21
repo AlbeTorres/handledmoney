@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { ComponentType, ReactElement, ReactNode } from 'react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
@@ -23,15 +23,15 @@ vi.mock('@/app/(financeapp)/dashboard/_components/finance-charts-client', () => 
   FinanceChartsClient: () => null,
 }))
 
-import Dashboard from '@/app/(financeapp)/dashboard/page'
 import { AccountsSection } from '@/app/(financeapp)/dashboard/_components/accounts-section'
 import { BudgetSection } from '@/app/(financeapp)/dashboard/_components/budget-section'
 import { ChartsSection } from '@/app/(financeapp)/dashboard/_components/charts-section'
 import { InsightSection } from '@/app/(financeapp)/dashboard/_components/insight-section'
 import { KpisSection } from '@/app/(financeapp)/dashboard/_components/kpis-section'
+import Dashboard from '@/app/(financeapp)/dashboard/page'
+import type { DashboardAccount } from '@/interfaces/accounts'
+import type { DashboardActual } from '@/interfaces/actuals'
 import { dashboardRange } from '@/lib/dashboard/period'
-import type { DashboardActual } from '@/lib/dashboard/actuals'
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
 import type { DashboardPlan } from '@/lib/dashboard/plan'
 
 function collectByType<P>(node: ReactNode, type: ComponentType<P>): ReactElement<P>[] {

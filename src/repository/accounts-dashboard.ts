@@ -1,6 +1,6 @@
 import { db } from '@/db'
 import { bankAccountsTable } from '@/db/schema'
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
+import type { DashboardAccount } from '@/interfaces/accounts'
 import { and, eq, isNull } from 'drizzle-orm'
 
 function normalizeFinite(value: string | number | null | undefined): number {

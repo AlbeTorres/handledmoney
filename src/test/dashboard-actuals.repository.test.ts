@@ -22,7 +22,7 @@ vi.mock('drizzle-orm', async importOriginal => ({
   isNull: (column: unknown) => ({ operator: 'isNull', column }),
 }))
 
-import { getDashboardActuals } from '@/repository/dashboard/actuals'
+import { getDashboardActuals } from '@/repository/actuals-dashboard'
 
 describe('getDashboardActuals', () => {
   beforeEach(() => {
@@ -54,9 +54,17 @@ describe('getDashboardActuals', () => {
 
     expect(mocks.from).toHaveBeenCalledOnce()
     expect(mocks.leftJoin).toHaveBeenCalledOnce()
-    const whereArg = mocks.where.mock.calls[0][0] as { operator: string; conditions: Array<{ operator: string; value?: unknown }> }
+    const whereArg = mocks.where.mock.calls[0][0] as {
+      operator: string
+      conditions: Array<{ operator: string; value?: unknown }>
+    }
     expect(whereArg.operator).toBe('and')
-    expect(whereArg.conditions.map(condition => condition.operator)).toEqual(['eq', 'gte', 'lt', 'isNull'])
+    expect(whereArg.conditions.map(condition => condition.operator)).toEqual([
+      'eq',
+      'gte',
+      'lt',
+      'isNull',
+    ])
     expect(whereArg.conditions[0].value).toBe('user-1')
     expect(whereArg.conditions[1].value).toBe(range.start)
     expect(whereArg.conditions[2].value).toBe(range.nextStart)

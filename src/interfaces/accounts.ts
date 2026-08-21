@@ -7,7 +7,7 @@ export type SupportedAccountType = 'savings' | 'checking' | 'investment' | 'cred
  *
  * Owner: src/repository/dashboard/accounts.ts (Fase 3).
  */
-export type DashboardAccount = {
+export interface DashboardAccount {
   id: string
   name: string
   type: string
@@ -20,7 +20,24 @@ export type DashboardAccount = {
  * currency; consumers receive `null` for mixed-currency or empty sets. No
  * currency conversion is ever performed (USD-only MVP).
  */
-export type AggregateBalance = {
+export interface AggregateBalance {
   currency: string
   balance: number
+}
+
+export interface Account {
+  createdAt: Date
+  updatedAt: Date
+  deletedAt: Date | null
+  id: string
+  plaidId: string | null
+  userId: string
+  name: string
+  bank: string
+  type: string
+  currency: string
+  balance: string
+  icon: string
+  color: string
+  transactionsCount: number
 }

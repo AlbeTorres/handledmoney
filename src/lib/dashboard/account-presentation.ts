@@ -1,4 +1,8 @@
-import type { AggregateBalance, DashboardAccount, SupportedAccountType } from './accounts'
+import type {
+  AggregateBalance,
+  DashboardAccount,
+  SupportedAccountType,
+} from '../../interfaces/accounts'
 
 const SUPPORTED_ACCOUNT_TYPES = new Set<SupportedAccountType>([
   'savings',

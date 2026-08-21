@@ -18,7 +18,7 @@ vi.mock('drizzle-orm', async importOriginal => ({
   isNull: (column: unknown) => ({ operator: 'isNull', column }),
 }))
 
-import { getDashboardAccounts } from '@/repository/dashboard/accounts'
+import { getDashboardAccounts } from '@/repository/accounts-dashboard'
 
 describe('getDashboardAccounts', () => {
   beforeEach(() => {
@@ -30,9 +30,7 @@ describe('getDashboardAccounts', () => {
   })
 
   it('filters exactly by user_id and deleted_at IS NULL without an invented predicate', async () => {
-    mocks.rows = [
-      { id: 'a1', name: 'Cash', type: 'cash', currency: 'USD', balance: '500.00' },
-    ]
+    mocks.rows = [{ id: 'a1', name: 'Cash', type: 'cash', currency: 'USD', balance: '500.00' }]
 
     const result = await getDashboardAccounts('user-1')
 
@@ -52,7 +50,13 @@ describe('getDashboardAccounts', () => {
   it('selects only the presentation columns', async () => {
     await getDashboardAccounts('user-1')
 
-    expect(Object.keys(mocks.select.mock.calls[0][0])).toEqual(['id', 'name', 'type', 'currency', 'balance'])
+    expect(Object.keys(mocks.select.mock.calls[0][0])).toEqual([
+      'id',
+      'name',
+      'type',
+      'currency',
+      'balance',
+    ])
   })
 
   it('normalizes balances to finite numbers', async () => {

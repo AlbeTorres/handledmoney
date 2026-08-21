@@ -1,5 +1,6 @@
-import type { DashboardActual, DashboardTransactionType } from './actuals'
-import type { DashboardPeriod } from './period'
+import type { DashboardActual, DashboardTransactionType } from '../../interfaces/actuals'
+import { DashboardPeriod } from '../schema'
+
 import type { DashboardPlan } from './plan'
 
 export type CategoryStatus = 'good' | 'warning' | 'over' | 'unplanned'

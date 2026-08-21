@@ -1,9 +1,13 @@
-import { auth } from '@/lib/auth'
-import { getTransactionById, getTransactionsByAccountId } from '@/repository/transaction'
-import { headers } from 'next/headers'
-
 import { Transaction, TransactionResponse } from '@/interfaces'
-import { getTransactionsPaginated, PaginatedTransactionsParams } from '@/repository/transaction'
+import { auth } from '@/lib/auth'
+import {
+  getTransactionById,
+  getTransactionsByAccountId,
+  getTransactionsPaginated,
+  PaginatedTransactionsParams,
+} from '@/repository/transaction'
+import { headers } from 'next/headers'
+import 'server-only'
 
 export const getTransactionByIdAction = async (id: string) => {
   const session = await auth.api.getSession({ headers: await headers() })

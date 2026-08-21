@@ -17,7 +17,7 @@ vi.mock('drizzle-orm', async importOriginal => ({
   eq: (column: unknown, value: unknown) => ({ operator: 'eq', column, value }),
 }))
 
-import { getDashboardPlan } from '@/repository/dashboard/budget'
+import { getDashboardPlan } from '@/repository/budget-dashboard'
 
 const selection = {
   userId: 'user-1',
@@ -133,7 +133,9 @@ describe('getDashboardPlan', () => {
   it('retains archived category display context through the category join', async () => {
     const result = await getDashboardPlan('user-1')
 
-    const archivedItem = result?.groups.find(group => group.id === 'g2')?.categories.find(category => category.categoryId === 'archived-cat')
+    const archivedItem = result?.groups
+      .find(group => group.id === 'g2')
+      ?.categories.find(category => category.categoryId === 'archived-cat')
     expect(archivedItem).toMatchObject({ name: 'Food (archived)', planned: 100 })
   })
 

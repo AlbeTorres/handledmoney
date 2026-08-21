@@ -31,8 +31,9 @@ export type DashboardKpis = {
   available: number
 }
 
-import type { DashboardActual } from './actuals'
-import type { DashboardPeriod } from './period'
+import type { DashboardActual } from '../../interfaces/actuals'
+import { DashboardPeriod } from '../schema'
+
 import type { DashboardPlan } from './plan'
 
 function requireFinite(value: number, label: string): number {

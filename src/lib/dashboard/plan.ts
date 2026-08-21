@@ -1,4 +1,4 @@
-import type { DashboardTransactionType } from './actuals'
+import type { DashboardTransactionType } from '../../interfaces/actuals'
 
 export type DashboardPlanKind = DashboardTransactionType
 

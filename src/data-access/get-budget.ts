@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth'
 import { getBudgetById, getBudgetsByUser, getBudgetWithActuals } from '@/repository/budget'
 import { headers } from 'next/headers'
+import 'server-only'
 
 export const getBudgetListAction = async () => {
   const session = await auth.api.getSession({ headers: await headers() })

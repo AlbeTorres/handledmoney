@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { DashboardAccount } from '@/lib/dashboard/accounts'
+import type { DashboardAccount } from '@/interfaces/accounts'
 import { presentDashboardAccounts } from '@/lib/dashboard/account-presentation'
 
 const usdAccounts: DashboardAccount[] = [
@@ -34,8 +34,22 @@ describe('presentDashboardAccounts', () => {
     ])
 
     expect(data.accounts).toEqual([
-      { id: 'legacy', name: 'Legacy bank', type: null, presentation: 'generic', currency: 'EUR', balance: 200 },
-      { id: 'weird', name: 'Weird', type: null, presentation: 'generic', currency: 'USD', balance: 10 },
+      {
+        id: 'legacy',
+        name: 'Legacy bank',
+        type: null,
+        presentation: 'generic',
+        currency: 'EUR',
+        balance: 200,
+      },
+      {
+        id: 'weird',
+        name: 'Weird',
+        type: null,
+        presentation: 'generic',
+        currency: 'USD',
+        balance: 10,
+      },
     ])
   })
 

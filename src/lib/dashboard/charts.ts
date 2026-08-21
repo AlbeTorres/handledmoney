@@ -47,9 +47,10 @@ export type DashboardCharts = {
   expenseByGroup: ExpenseGroupPoint[]
 }
 
-import type { DashboardActual } from './actuals'
+import type { DashboardActual } from '../../interfaces/actuals'
+import { DashboardPeriod } from '../schema'
 import { buildDashboardGroups } from './budget'
-import type { DashboardPeriod } from './period'
+
 import type { DashboardPlan } from './plan'
 
 function requireFinite(value: number, label: string): number {

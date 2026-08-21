@@ -1,4 +1,4 @@
-import { Account } from './Account'
+import { Account } from './accounts'
 import { Category } from './Category'
 
 export interface TransactionResponse {

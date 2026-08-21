@@ -1,6 +1,7 @@
 import { auth } from '@/lib/auth'
 import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'
+import 'server-only'
 
 export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => {
   const session = await auth.api.getSession({
