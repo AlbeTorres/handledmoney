@@ -1,6 +1,6 @@
-import { getCategoryByIdAction } from '@/actions/category/get-category-by-id'
 import { EditCategoryForm } from '@/components/EditCategoryForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import { getCategoryByIdAction } from '@/data-access/get-category-by-id'
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 

@@ -1,5 +1,3 @@
-'use server'
-
 import { auth } from '@/lib/auth'
 import { getTransactionById, getTransactionsByAccountId } from '@/repository/transaction'
 import { headers } from 'next/headers'

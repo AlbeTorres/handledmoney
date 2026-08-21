@@ -1,7 +1,5 @@
-'use server'
-
 import { auth } from '@/lib/auth'
-import { getBudgetsByUser, getBudgetById, getBudgetWithActuals } from '@/repository/budget'
+import { getBudgetById, getBudgetsByUser, getBudgetWithActuals } from '@/repository/budget'
 import { headers } from 'next/headers'
 
 export const getBudgetListAction = async () => {

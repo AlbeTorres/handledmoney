@@ -1,7 +1,6 @@
 'use client'
 
 import { createBudgetItemAction } from '@/actions/budget/budget-item'
-import { getCategoriesByUserAction } from '@/actions/category/get-categories'
 import { createCategoryAction } from '@/actions/category/create-category'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import type { CategorySelect } from '@/repository/categories'
 import { Loader2, Plus, X } from 'lucide-react'
 import { useEffect, useRef, useState, useTransition } from 'react'
@@ -36,11 +36,14 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
 
   useEffect(() => {
     if (!open) return
-      getCategoriesByUserAction(calculationType === 'income' ? 'income' : 'expense').then(res => {
+    getCategoriesByUserAction(calculationType === 'income' ? 'income' : 'expense').then(res => {
       if (res.success && res.data) {
         setCategories(current => {
           const fetched = res.data as CategorySelect[]
-          return [...fetched, ...current.filter(category => !fetched.some(item => item.id === category.id))]
+          return [
+            ...fetched,
+            ...current.filter(category => !fetched.some(item => item.id === category.id)),
+          ]
         })
       }
     })
@@ -53,17 +56,17 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
       return
     }
     const result = await createCategoryAction({
-        name: categoryName,
-        type: calculationType === 'income' ? 'income' : 'expense',
-        icon: 'more_horizontal',
-        color: '94a3b8',
+      name: categoryName,
+      type: calculationType === 'income' ? 'income' : 'expense',
+      icon: 'more_horizontal',
+      color: '94a3b8',
     })
     if (result.success && result.data) {
-        const category = result.data as CategorySelect
-        setCategories(current => [...current, category])
-        setCategoryId(category.id)
-        selectedCategoryIdRef.current = category.id
-        toast.success('Category created and selected')
+      const category = result.data as CategorySelect
+      setCategories(current => [...current, category])
+      setCategoryId(category.id)
+      selectedCategoryIdRef.current = category.id
+      toast.success('Category created and selected')
     } else {
       toast.error(result.message ?? 'Failed to create category')
     }
@@ -80,7 +83,12 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
 
     startTransition(async () => {
       const result = await createBudgetItemAction(
-        { groupId, name: name.trim(), plannedAmount: amount, categoryId: categoryId || selectedCategoryIdRef.current || null },
+        {
+          groupId,
+          name: name.trim(),
+          plannedAmount: amount,
+          categoryId: categoryId || selectedCategoryIdRef.current || null,
+        },
         budgetId,
       )
       if (result.success) {
@@ -112,7 +120,10 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
     <form onSubmit={handleSubmit} className='border-t border-border pt-2 mt-2 px-3 pb-2 space-y-2'>
       <div className='flex items-end gap-2'>
         <div className='flex-1 space-y-1'>
-          <Label htmlFor='item-name' className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+          <Label
+            htmlFor='item-name'
+            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+          >
             Name
           </Label>
           <Input
@@ -126,7 +137,10 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
         </div>
 
         <div className='w-28 space-y-1'>
-          <Label htmlFor='item-amount' className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+          <Label
+            htmlFor='item-amount'
+            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+          >
             Amount
           </Label>
           <Input
@@ -143,10 +157,19 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
         </div>
 
         <div className='w-36 space-y-1'>
-          <Label htmlFor='item-category' className='text-[10px] uppercase tracking-wider text-muted-foreground'>
+          <Label
+            htmlFor='item-category'
+            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+          >
             Category
           </Label>
-          <Select value={categoryId} onValueChange={value => { setCategoryId(value); selectedCategoryIdRef.current = value }}>
+          <Select
+            value={categoryId}
+            onValueChange={value => {
+              setCategoryId(value)
+              selectedCategoryIdRef.current = value
+            }}
+          >
             <SelectTrigger id='item-category' className='h-8 text-xs'>
               <SelectValue placeholder='Optional' />
             </SelectTrigger>
@@ -158,14 +181,27 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
               ))}
             </SelectContent>
           </Select>
-          <Button type='button' variant='ghost' size='sm' className='h-6 px-0 text-[10px]' onClick={createCategory} disabled={isPending}>
+          <Button
+            type='button'
+            variant='ghost'
+            size='sm'
+            className='h-6 px-0 text-[10px]'
+            onClick={createCategory}
+            disabled={isPending}
+          >
             <Plus className='mr-1 size-3' /> Create category from item name
           </Button>
         </div>
       </div>
 
       <div className='flex items-center justify-end gap-1.5'>
-        <Button type='button' variant='ghost' size='sm' className='h-7 text-xs' onClick={() => setOpen(false)}>
+        <Button
+          type='button'
+          variant='ghost'
+          size='sm'
+          className='h-7 text-xs'
+          onClick={() => setOpen(false)}
+        >
           <X className='size-3 mr-1' />
           Cancel
         </Button>

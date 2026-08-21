@@ -1,5 +1,5 @@
+import { getCategoryByIdAction } from '@/data-access/get-category-by-id'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { getCategoryByIdAction } from '@/actions/category/get-category-by-id'
 
 // ── Mock Definitions ───────────────────────────────────────────────────────────
 // vi.hoisted() ensures mocks are available before any module-level imports.

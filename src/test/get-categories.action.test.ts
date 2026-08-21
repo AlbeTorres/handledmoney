@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { getCategoriesByUserAction } from '@/actions/category/get-categories'
+import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // ── Mock Definitions ──
 
@@ -113,10 +113,7 @@ describe('getCategoriesByUserAction', () => {
     expect(result.success).toBe(false)
     expect(result.message).toBe('Something went wrong')
     expect(result.data).toEqual([])
-    expect(consoleSpy).toHaveBeenCalledWith(
-      'Error in getCategories:',
-      expect.any(Error),
-    )
+    expect(consoleSpy).toHaveBeenCalledWith('Error in getCategories:', expect.any(Error))
 
     consoleSpy.mockRestore()
   })

@@ -1,4 +1,3 @@
-import { getTransactionByIdAction } from '@/actions/transaction/get-transaction'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import TransacctionDetailAction from '@/components/TransacctionDetailAction'
 import { TransactionDetailAttachments } from '@/components/TransactionDetailAttachments'
@@ -7,6 +6,7 @@ import { TransactionDetailHeader } from '@/components/TransactionDetailHeader'
 import { TransactionDetailIncomeBreakdown } from '@/components/TransactionDetailIncomeBreakdown'
 import { TransactionDetailInfoGrid } from '@/components/TransactionDetailInfoGrid'
 import { TransactionDetailMetadata } from '@/components/TransactionDetailMetadata'
+import { getTransactionByIdAction } from '@/data-access/get-transaction'
 import { getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 

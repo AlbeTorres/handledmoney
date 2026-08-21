@@ -1,9 +1,9 @@
-import { getBankAccountByIdAction } from '@/actions/account/get-account'
-import { getCategoriesByUserAction } from '@/actions/category/get-categories'
-import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
 import { AccountInfo } from '@/components/AccountInfo'
 import { AccountTransactionTable } from '@/components/AccountTransactionTable'
 import { InfoCard } from '@/components/InfoCard'
+import { getBankAccountByIdAction } from '@/data-access/get-account'
+import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'
 
 import { auth } from '@/lib/auth'
 import { ArrowDown, ArrowRightLeft, ArrowUp, TrendingUp } from 'lucide-react'
@@ -112,7 +112,9 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
             </div>
 
             <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
-              <h3 className='font-bold text-lg mb-4'>{t('detail.transactions_for', { name: accountData.name })}</h3>
+              <h3 className='font-bold text-lg mb-4'>
+                {t('detail.transactions_for', { name: accountData.name })}
+              </h3>
               <AccountTransactionTable
                 data={transactionsData}
                 categories={categories}

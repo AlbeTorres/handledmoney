@@ -1,4 +1,3 @@
-'use server'
 import { auth } from '@/lib/auth'
 import { getBankAccountById, getBankAccountsByUser } from '@/repository/account'
 import { headers } from 'next/headers'
