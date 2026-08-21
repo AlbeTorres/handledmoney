@@ -1,6 +1,6 @@
-import { getBankAccountByIdAction } from '@/actions/account/get-account'
 import { EditAccountForm } from '@/components/EditAccountForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import { getBankAccountByIdAction } from '@/data-access/get-account'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
 import toast from 'react-hot-toast'

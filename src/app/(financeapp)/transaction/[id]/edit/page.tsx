@@ -1,8 +1,8 @@
-import { getBankAccountByUserAction } from '@/actions/account/get-account'
-import { getCategoriesByUserAction } from '@/actions/category/get-categories'
-import { getTransactionByIdAction } from '@/actions/transaction/get-transaction'
 import { EditTransactionForm } from '@/components/EditTransactionForm'
 import { FormWrapper } from '@/components/FormWrapper'
+import { getBankAccountByUserAction } from '@/data-access/get-account'
+import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getTransactionByIdAction } from '@/data-access/get-transaction'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 

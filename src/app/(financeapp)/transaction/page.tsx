@@ -1,9 +1,9 @@
-import { getBankAccountByUserAction } from '@/actions/account/get-account'
-import { getCategoriesByUserAction } from '@/actions/category/get-categories'
-import { getTransactionsPaginatedAction } from '@/actions/transaction/get-transaction'
 import { EmptyState } from '@/components/EmptyState'
 import TransactionActionBar from '@/components/TransactionActionBar'
 import { TransactionList } from '@/components/TransactionList'
+import { getBankAccountByUserAction } from '@/data-access/get-account'
+import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'
 import { getTranslations } from 'next-intl/server'
 
 interface TransactionPageProps {

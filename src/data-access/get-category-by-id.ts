@@ -1,5 +1,3 @@
-'use server'
-
 import { auth } from '@/lib/auth'
 import { getCategoryById } from '@/repository/categories'
 import { headers } from 'next/headers'

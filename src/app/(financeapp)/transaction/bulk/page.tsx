@@ -1,4 +1,4 @@
-import { getBankAccountByUserAction } from '@/actions/account/get-account'
+import { getBankAccountByUserAction } from '@/data-access/get-account'
 import Link from 'next/link'
 import { CardContainer } from './CardContainer'
 

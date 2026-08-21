@@ -1,5 +1,5 @@
-import { getBudgetWithActualsAction } from '@/actions/budget/get-budget'
 import { BudgetDetailView } from '@/components/BudgetDetailView'
+import { getBudgetWithActualsAction } from '@/data-access/get-budget'
 import { notFound } from 'next/navigation'
 
 interface BudgetDetailPageProps {
