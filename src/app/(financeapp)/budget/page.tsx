@@ -1,4 +1,4 @@
-﻿import { BudgetGrid } from '@/components/BudgetGrid'
+﻿import { BudgetGrid } from '@/app/(financeapp)/budget/_components/BudgetGrid'
 import { Button } from '@/components/ui/button'
 import { getBudgetListAction } from '@/data-access/get-budget'
 import { getCurrentBudgetAction } from '@/data-access/get-current-budget'

@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils'
 import { Check, ChevronDown, ChevronRight, Pencil, Trash2, X } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
-import { AddBudgetItemForm } from './AddBudgetItemForm'
+import { AddBudgetItemForm } from '../../../../components/AddBudgetItemForm'
 import { BudgetItemRow } from './BudgetItemRow'
 
 const currency = (n: number) =>

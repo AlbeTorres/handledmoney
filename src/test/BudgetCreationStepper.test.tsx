@@ -7,7 +7,7 @@ vi.mock('next-intl', () => ({
     key === 'step_count' ? `Step ${params?.current} of ${params?.total}` : key,
 }))
 
-import { BudgetCreationStepper } from '@/components/BudgetCreationStepper'
+import { BudgetCreationStepper } from '@/app/(financeapp)/budget/_components/BudgetCreationStepper'
 
 function stepItem(label: string) {
   const item = screen.getByText(label).closest('li')
@@ -46,7 +46,10 @@ describe('BudgetCreationStepper', () => {
     expect(stepItem('step_setup').querySelector('div')).toHaveClass('bg-primary')
     expect(stepItem('step_setup').querySelector('span')).toHaveClass('text-foreground')
     expect(stepItem('step_structure').querySelector('div')).toHaveClass('bg-primary')
-    expect(stepItem('step_structure').querySelector('span')).toHaveClass('text-primary', 'font-semibold')
+    expect(stepItem('step_structure').querySelector('span')).toHaveClass(
+      'text-primary',
+      'font-semibold',
+    )
     expect(stepItem('step_allocation').querySelector('div')).toHaveClass('bg-muted')
     expect(stepItem('step_allocation').querySelector('span')).toHaveClass('text-muted-foreground')
 

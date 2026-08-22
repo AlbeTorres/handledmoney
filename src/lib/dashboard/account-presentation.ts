@@ -2,7 +2,7 @@ import type {
   AggregateBalance,
   DashboardAccount,
   SupportedAccountType,
-} from '../../interfaces/accounts'
+} from '../../interfaces/account'
 
 const SUPPORTED_ACCOUNT_TYPES = new Set<SupportedAccountType>([
   'savings',

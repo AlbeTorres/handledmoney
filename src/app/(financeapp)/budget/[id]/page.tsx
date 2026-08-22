@@ -1,4 +1,4 @@
-import { BudgetDetailView } from '@/components/BudgetDetailView'
+import { BudgetDetailView } from '@/app/(financeapp)/budget/_components/BudgetDetailView'
 import { getBudgetWithActualsAction } from '@/data-access/get-budget'
 import { notFound } from 'next/navigation'
 

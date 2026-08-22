@@ -16,8 +16,8 @@ import { CircleDollarSign, CirclePlus, Plus, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import { useFieldArray, useWatch, type UseFormReturn } from 'react-hook-form'
+import type { BudgetCategory } from '../../../../components/CategoryCombobox'
 import { BudgetStructureGroupCard } from './BudgetStructureGroupCard'
-import type { BudgetCategory } from './CategoryCombobox'
 
 export type QuickTarget = {
   groupIndex: number

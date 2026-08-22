@@ -1,7 +1,10 @@
 'use client'
 
 import { createBudgetAction } from '@/actions/budget/create-budget'
-import { BudgetCreationStepper, type WizardStep } from '@/components/BudgetCreationStepper'
+import {
+  BudgetCreationStepper,
+  type WizardStep,
+} from '@/app/(financeapp)/budget/_components/BudgetCreationStepper'
 import { FormActions } from '@/components/FormActions'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -23,8 +26,11 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Controller, useFieldArray, useForm, useWatch, type Path } from 'react-hook-form'
 import { toast } from 'sonner'
-import { BudgetAllocationEditor } from './BudgetAllocationEditor'
-import { BudgetStructureEditor, type QuickTarget } from './BudgetStructureEditor'
+import { BudgetAllocationEditor } from '../app/(financeapp)/budget/_components/BudgetAllocationEditor'
+import {
+  BudgetStructureEditor,
+  type QuickTarget,
+} from '../app/(financeapp)/budget/_components/BudgetStructureEditor'
 import type { BudgetCategory } from './CategoryCombobox'
 import { QuickCreateCategoryDrawer } from './QuickCreateCategoryDrawer'
 import TemplateBudgetSelect from './TemplateBudgetSelect'

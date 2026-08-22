@@ -1,9 +1,9 @@
-import { render, screen, waitFor, within } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import type { QuickTarget } from '@/app/(financeapp)/budget/_components/BudgetStructureEditor'
 import type { BudgetCategory } from '@/components/CategoryCombobox'
-import type { QuickTarget } from '@/components/BudgetStructureEditor'
 import { createTemplateGroups } from '@/lib/budget-plan-templates'
 import type { CreateBudgetValues } from '@/lib/schema'
+import { render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { useEffect } from 'react'
 import { useForm, type UseFormReturn } from 'react-hook-form'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -66,16 +66,40 @@ vi.mock('@/components/ui/select', () => ({
   SelectItem: ({ value, children }: any) => <option value={value}>{children}</option>,
 }))
 
-import { BudgetStructureEditor } from '@/components/BudgetStructureEditor'
+import { BudgetStructureEditor } from '@/app/(financeapp)/budget/_components/BudgetStructureEditor'
 import { CreateBudgetForm } from '@/components/CreateBudgetForm'
 
 const incomeCategories: BudgetCategory[] = [
-  { id: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', name: 'Salary', type: 'income', icon: 'wallet', color: '137FEC' },
-  { id: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', name: 'Interest', type: 'income', icon: 'percent', color: 'F59E0B' },
+  {
+    id: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070',
+    name: 'Salary',
+    type: 'income',
+    icon: 'wallet',
+    color: '137FEC',
+  },
+  {
+    id: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+    name: 'Interest',
+    type: 'income',
+    icon: 'percent',
+    color: 'F59E0B',
+  },
 ]
 const expenseCategories: BudgetCategory[] = [
-  { id: 'b6a5f1d0-1a2b-4c3d-8e9f-0a1b2c3d4e5f', name: 'Groceries', type: 'expense', icon: 'cart', color: '22C55E' },
-  { id: 'c7d8e9f0-2b3c-4d5e-9a8b-1c2d3e4f5060', name: 'Utilities', type: 'expense', icon: 'zap', color: '3B82F6' },
+  {
+    id: 'b6a5f1d0-1a2b-4c3d-8e9f-0a1b2c3d4e5f',
+    name: 'Groceries',
+    type: 'expense',
+    icon: 'cart',
+    color: '22C55E',
+  },
+  {
+    id: 'c7d8e9f0-2b3c-4d5e-9a8b-1c2d3e4f5060',
+    name: 'Utilities',
+    type: 'expense',
+    icon: 'zap',
+    color: '3B82F6',
+  },
 ]
 const allCategories = [...incomeCategories, ...expenseCategories]
 
@@ -91,7 +115,9 @@ function incomeNameInput() {
 }
 
 function categoryComboboxes() {
-  return screen.getAllByRole('combobox').filter(element => element.getAttribute('data-slot') !== 'select-trigger')
+  return screen
+    .getAllByRole('combobox')
+    .filter(element => element.getAttribute('data-slot') !== 'select-trigger')
 }
 
 function renderEditor(
@@ -106,7 +132,11 @@ function renderEditor(
       formRef.current = form
     })
     return (
-      <BudgetStructureEditor form={form} categories={allCategories} onRequestQuickCreate={onRequestQuickCreate} />
+      <BudgetStructureEditor
+        form={form}
+        categories={allCategories}
+        onRequestQuickCreate={onRequestQuickCreate}
+      />
     )
   }
   render(<Wrapper />)
@@ -117,7 +147,10 @@ async function openCreateGroupForm(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole('button', { name: 'create_group' }))
 }
 
-async function selectGroupType(user: ReturnType<typeof userEvent.setup>, type: 'income' | 'outflow') {
+async function selectGroupType(
+  user: ReturnType<typeof userEvent.setup>,
+  type: 'income' | 'outflow',
+) {
   await user.selectOptions(screen.getByRole('combobox', { name: 'group_type' }), type)
 }
 
@@ -152,7 +185,12 @@ describe('BudgetStructureEditor', () => {
     await user.click(screen.getByRole('button', { name: 'add_group' }))
     const groups = form.getValues('groups')
     expect(groups).toHaveLength(2)
-    expect(groups[1]).toMatchObject({ name: 'Salary', calculationType: 'income', sortOrder: 1, items: [] })
+    expect(groups[1]).toMatchObject({
+      name: 'Salary',
+      calculationType: 'income',
+      sortOrder: 1,
+      items: [],
+    })
   })
 
   it('allows deleting an income group when another income group remains', async () => {
@@ -268,7 +306,10 @@ describe('BudgetStructureEditor', () => {
     await user.click(screen.getByRole('button', { name: 'Interest' }))
 
     const items = form.getValues('groups')[0].items
-    expect(items[0]).toEqual({ categoryId: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d', plannedAmount: 0 })
+    expect(items[0]).toEqual({
+      categoryId: '1a2b3c4d-5e6f-7a8b-9c0d-1e2f3a4b5c6d',
+      plannedAmount: 0,
+    })
   })
 
   it('summarizes group count, category count and income readiness', async () => {
@@ -338,7 +379,9 @@ describe('structure-to-allocation gate in the wizard', () => {
 
     await user.click(screen.getByRole('button', { name: 'next' }))
 
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument(),
+    )
   })
 
   it('does not block advancing on empty outflow groups', async () => {
@@ -351,7 +394,9 @@ describe('structure-to-allocation gate in the wizard', () => {
 
     await user.click(screen.getByRole('button', { name: 'next' }))
 
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument(),
+    )
   })
 
   it('quick-create selects the created category in the target income row', async () => {
@@ -366,7 +411,9 @@ describe('structure-to-allocation gate in the wizard', () => {
     expect(categoryComboboxes()[0]).toHaveTextContent('Quick category')
 
     await user.click(screen.getByRole('button', { name: 'next' }))
-    await waitFor(() => expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument())
+    await waitFor(() =>
+      expect(screen.getByRole('heading', { name: 'heading_allocation' })).toBeInTheDocument(),
+    )
   })
 
   it('targets quick-created categories with the group type respected', async () => {

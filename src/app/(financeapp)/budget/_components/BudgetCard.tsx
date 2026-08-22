@@ -1,8 +1,9 @@
 'use client'
 
+import { DropDownActionMenu } from '@/components/DropDownActionMenu'
 import type { BudgetListItem } from '@/interfaces'
-import { ArrowUpRight, CalendarDays } from 'lucide-react'
-import Link from 'next/link'
+import { CalendarDays } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 const currency = (amount: number) =>
   new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
@@ -14,13 +15,22 @@ const date = (value: Date) =>
     timeZone: 'UTC',
   }).format(new Date(value))
 
+export type BudgetCardProps = {
+  budget: BudgetListItem
+  isCurrent?: boolean
+  onEdit?: () => void
+  onDelete?: () => void
+  onDetails?: () => void
+}
+
 export function BudgetCard({
   budget,
   isCurrent = false,
-}: {
-  budget: BudgetListItem
-  isCurrent?: boolean
-}) {
+  onEdit,
+  onDelete,
+  onDetails,
+}: BudgetCardProps) {
+  const t = useTranslations('handledmoney.account')
   const progress =
     budget.totalIncome > 0 ? Math.min((budget.totalAllocated / budget.totalIncome) * 100, 100) : 0
   const balanceClass =
@@ -31,10 +41,7 @@ export function BudgetCard({
         : 'text-amber-700'
 
   return (
-    <Link
-      href={`/budget/${budget.id}`}
-      className='group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
-    >
+    <div className='group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'>
       <div className='flex items-start justify-between gap-4'>
         <div className='min-w-0'>
           <h2 className='title-md truncate text-foreground transition-colors group-hover:text-primary'>
@@ -46,15 +53,33 @@ export function BudgetCard({
             {budget.endDate ? ` – ${date(budget.endDate)}` : ' – ongoing'}
           </p>
         </div>
-        {isCurrent ? (
-          <span className='label-caps shrink-0 rounded-full bg-primary/15 px-2.5 py-1 text-primary'>
-            Current
-          </span>
-        ) : (
-          <span className='label-caps shrink-0 rounded-full bg-muted px-2.5 py-1 text-muted-foreground'>
-            History
-          </span>
-        )}
+
+        <DropDownActionMenu
+          ariaLabel={t('card.options_aria')}
+          actions={[
+            {
+              label: t('card.set_current'),
+              onClick: () => onDetails?.(),
+            },
+            {
+              label: t('card.duplicate'),
+              onClick: () => onDetails?.(),
+            },
+            {
+              label: t('card.details'),
+              onClick: () => onDetails?.(),
+            },
+            {
+              label: t('card.edit_account'),
+              onClick: () => onEdit?.(),
+            },
+            {
+              label: t('card.delete_account'),
+              onClick: () => onDelete?.(),
+              variant: 'destructive',
+            },
+          ]}
+        />
       </div>
 
       <div className='mt-7 grid grid-cols-2 gap-4'>
@@ -83,12 +108,14 @@ export function BudgetCard({
         </div>
         <div className='mt-3 flex items-center justify-between body-sm text-muted-foreground'>
           <span>{Math.round(progress)}% assigned</span>
-          <span className='inline-flex items-center gap-1 font-medium text-foreground'>
-            Open{' '}
-            <ArrowUpRight className='size-3.5 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5' />
-          </span>
+
+          {isCurrent && (
+            <span className='label-caps shrink-0 rounded-full bg-primary/15 px-2.5 py-1 text-primary'>
+              Current
+            </span>
+          )}
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

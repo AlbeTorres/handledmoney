@@ -1,13 +1,8 @@
 'use client'
 
-import { LucideIcon, MoreVertical } from 'lucide-react'
+import { LucideIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+import { DropDownActionMenu } from './DropDownActionMenu'
 
 export interface AccountCardProps {
   institution: string
@@ -52,44 +47,24 @@ export function AccountCard({
           <Icon className='size-7' />
         </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1 cursor-pointer'
-              aria-label={t('card.options_aria')}
-              onClick={e => e.stopPropagation()}
-            >
-              <MoreVertical className='size-5 ' />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuItem
-              onClick={e => {
-                e.stopPropagation()
-                onDetails?.()
-              }}
-            >
-              {t('card.details')}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={e => {
-                e.stopPropagation()
-                onEdit?.()
-              }}
-            >
-              {t('card.edit_account')}
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              variant='destructive'
-              onClick={e => {
-                e.stopPropagation()
-                onDelete?.()
-              }}
-            >
-              {t('card.delete_account')}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <DropDownActionMenu
+          ariaLabel={t('card.options_aria')}
+          actions={[
+            {
+              label: t('card.details'),
+              onClick: () => onDetails?.(),
+            },
+            {
+              label: t('card.edit_account'),
+              onClick: () => onEdit?.(),
+            },
+            {
+              label: t('card.delete_account'),
+              onClick: () => onDelete?.(),
+              variant: 'destructive',
+            },
+          ]}
+        />
       </div>
       <div>
         <p className='text-[9px] font-semibold text-slate-400 uppercase tracking-widest'>

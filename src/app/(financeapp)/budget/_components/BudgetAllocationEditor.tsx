@@ -1,19 +1,19 @@
 'use client'
 
+import { BudgetAllocationSummary } from '@/app/(financeapp)/budget/_components/BudgetAllocationSummary'
 import type { BudgetCategory } from '@/components/CategoryCombobox'
-import { BudgetAllocationSummary } from '@/components/BudgetAllocationSummary'
 import { FieldError } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/components/ui/input-group'
-import { clampProgressPercentage, getBudgetAllocationTotals, getCategoryIncomePercentage } from '@/lib/budget-allocation'
+  clampProgressPercentage,
+  getBudgetAllocationTotals,
+  getCategoryIncomePercentage,
+} from '@/lib/budget-allocation'
 import type { CreateBudgetValues } from '@/lib/schema'
 import { getIconComponent } from '@/lib/utils'
 import { CircleDollarSign, WalletCards } from 'lucide-react'
-import { Controller, FormProvider, useFormContext, type UseFormReturn } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
+import { Controller, FormProvider, useFormContext, type UseFormReturn } from 'react-hook-form'
 
 // Local formatter, consistent with the en-US/USD pattern used across the
 // budget components. Configurable currency is out of scope for now.
@@ -58,10 +58,14 @@ function GroupCard({ group, groupIndex, categories, totalIncome }: GroupCardProp
         )}
         <h3 className='text-base font-medium'>{group.name}</h3>
         {group.calculationType !== 'income' && (
-          <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>Expense</span>
+          <span className='rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground'>
+            Expense
+          </span>
         )}
         <span className='text-sm text-muted-foreground'>{t('group_total')}:</span>
-        <span className='mono-data tabular-nums text-sm text-muted-foreground'>{formatCurrency(groupTotal)}</span>
+        <span className='mono-data tabular-nums text-sm text-muted-foreground'>
+          {formatCurrency(groupTotal)}
+        </span>
       </div>
       {entries.length > 0 && (
         <ul className='mt-3 space-y-3'>
@@ -89,13 +93,20 @@ interface CategoryRowProps {
   plannedAmount: number
 }
 
-function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmount }: CategoryRowProps) {
+function CategoryRow({
+  groupIndex,
+  category,
+  itemIndex,
+  totalIncome,
+  plannedAmount,
+}: CategoryRowProps) {
   const t = useTranslations('handledmoney.budget.form')
   const { formState } = useFormContext<CreateBudgetValues>()
   const Icon = getIconComponent(category.icon)
   const realPercentage = getCategoryIncomePercentage(plannedAmount, totalIncome)
   const clamped = clampProgressPercentage(realPercentage)
-  const amountError = formState.errors.groups?.[groupIndex]?.items?.[itemIndex]?.plannedAmount?.message
+  const amountError =
+    formState.errors.groups?.[groupIndex]?.items?.[itemIndex]?.plannedAmount?.message
 
   return (
     <li className='flex flex-wrap items-center gap-x-3 gap-y-2'>
@@ -115,19 +126,19 @@ function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmou
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={clamped}
-          aria-label={t('category_income_share', { category: category.name, percentage: formatPercentage(realPercentage) })}
+          aria-label={t('category_income_share', {
+            category: category.name,
+            percentage: formatPercentage(realPercentage),
+          })}
           className='mt-1 h-2 w-full overflow-hidden rounded-full bg-muted'
         >
-          <div
-            className='h-full rounded-full bg-primary'
-            style={{ width: `${clamped}%` }}
-          />
+          <div className='h-full rounded-full bg-primary' style={{ width: `${clamped}%` }} />
         </div>
       </div>
       <Controller
         name={`groups.${groupIndex}.items.${itemIndex}.plannedAmount`}
         render={({ field }) => {
-          const rawValue = (Number.isNaN(field.value) || field.value === 0) ? '' : field.value
+          const rawValue = Number.isNaN(field.value) || field.value === 0 ? '' : field.value
           return (
             <div className='w-full min-w-0 sm:w-32 sm:shrink-0'>
               <InputGroup>
@@ -135,7 +146,7 @@ function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmou
                 <InputGroupInput
                   {...field}
                   value={rawValue}
-                  onChange={(event) => {
+                  onChange={event => {
                     const parsed = event.target.valueAsNumber
                     field.onChange(Number.isNaN(parsed) ? Number.NaN : parsed)
                   }}
