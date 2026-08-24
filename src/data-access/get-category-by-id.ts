@@ -3,7 +3,7 @@ import { getCategoryById } from '@/repository/categories'
 import { headers } from 'next/headers'
 import 'server-only'
 
-export const getCategoryByIdAction = async (id: string) => {
+export const getCategoryByIdData = async (id: string) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -13,7 +13,6 @@ export const getCategoryByIdAction = async (id: string) => {
   if (!userId) {
     return {
       success: false,
-      status: 401,
       message: 'Unauthorized User',
     }
   }
@@ -24,14 +23,12 @@ export const getCategoryByIdAction = async (id: string) => {
     if (!category) {
       return {
         success: false,
-        status: 404,
         message: 'Category not found',
       }
     }
 
     return {
       success: true,
-      status: 200,
       data: category,
       message: 'Category retrieved successfully',
     }
@@ -39,7 +36,6 @@ export const getCategoryByIdAction = async (id: string) => {
     console.error('Error in getCategoryByIdAction:', error)
     return {
       success: false,
-      status: 500,
       message: 'Something went wrong',
     }
   }

@@ -1,7 +1,7 @@
 import { EditTransactionForm } from '@/components/EditTransactionForm'
 import { FormWrapper } from '@/components/FormWrapper'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserData } from '@/data-access/get-categories'
 import { getTransactionByIdAction } from '@/data-access/get-transaction'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -13,7 +13,7 @@ interface EditTransactionPageProps {
 export default async function EditTransactionPage({ params }: EditTransactionPageProps) {
   const [accounts, categories] = await Promise.all([
     getBankAccountByUserAction(),
-    getCategoriesByUserAction(),
+    getCategoriesByUserData(),
   ])
 
   const { data: accountsData } = accounts

@@ -2,7 +2,7 @@ import { AccountInfo } from '@/components/AccountInfo'
 import { AccountTransactionTable } from '@/components/AccountTransactionTable'
 import { InfoCard } from '@/components/InfoCard'
 import { getBankAccountByIdAction } from '@/data-access/get-account'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserData } from '@/data-access/get-categories'
 import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'
 
 import { auth } from '@/lib/auth'
@@ -43,7 +43,7 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
       limit,
       search: '',
     }),
-    getCategoriesByUserAction(),
+    getCategoriesByUserData(),
   ])
 
   const transactionsData = transactions?.data?.transactions || []

@@ -3,7 +3,7 @@ import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'
 import 'server-only'
 
-export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => {
+export const getCategoriesByUserData= async (type?: 'income' | 'expense') => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -13,7 +13,6 @@ export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => 
   if (!userId) {
     return {
       success: false,
-      status: 401,
       message: 'Unauthorized User',
       data: [],
     }
@@ -24,7 +23,6 @@ export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => 
 
     return {
       success: true,
-      status: 200,
       data: categories,
       message: 'Categories retrieved successfully',
     }
@@ -32,7 +30,6 @@ export const getCategoriesByUserAction = async (type?: 'income' | 'expense') => 
     console.error('Error in getCategories:', error)
     return {
       success: false,
-      status: 500,
       message: 'Something went wrong',
       data: [],
     }

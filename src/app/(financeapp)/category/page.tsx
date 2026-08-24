@@ -1,7 +1,7 @@
 import CategoryAction from '@/components/CategoryAction'
 import { CategoryContent } from '@/components/CategoryContent'
 import { EmptyState } from '@/components/EmptyState'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserData } from '@/data-access/get-categories'
 import { getTranslations } from 'next-intl/server'
 
 interface CategoryPageProps {
@@ -9,7 +9,7 @@ interface CategoryPageProps {
 }
 
 export default async function CategoryPage({ searchParams }: CategoryPageProps) {
-  const result = await getCategoriesByUserAction()
+  const result = await getCategoriesByUserData()
 
   const t = await getTranslations('handledmoney.category')
 

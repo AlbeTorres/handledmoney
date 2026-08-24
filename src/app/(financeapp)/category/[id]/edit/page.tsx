@@ -1,6 +1,6 @@
 import { EditCategoryForm } from '@/components/EditCategoryForm'
 import { FormWrapper } from '@/components/FormWrapper'
-import { getCategoryByIdAction } from '@/data-access/get-category-by-id'
+import { getCategoryByIdData } from '@/data-access/get-category-by-id'
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
 
@@ -12,7 +12,7 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
   const { id } = await params
   const t = await getTranslations('handledmoney.category')
 
-  const categoryResponse = await getCategoryByIdAction(id)
+  const categoryResponse = await getCategoryByIdData(id)
 
   if (!categoryResponse.success || !categoryResponse.data) {
     return (

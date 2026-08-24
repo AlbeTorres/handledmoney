@@ -1,12 +1,12 @@
 import { CreateTransactionForm } from '@/components/CreateTransactionForm'
 import { FormWrapper } from '@/components/FormWrapper'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserData } from '@/data-access/get-categories'
 
 export default async function CreateTransactionPage() {
   const [account, categories] = await Promise.all([
     getBankAccountByUserAction(),
-    getCategoriesByUserAction(),
+    getCategoriesByUserData(),
   ])
 
   const { data: accountsData } = account

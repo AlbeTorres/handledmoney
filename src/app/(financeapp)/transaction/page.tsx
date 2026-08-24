@@ -2,7 +2,7 @@ import { EmptyState } from '@/components/EmptyState'
 import TransactionActionBar from '@/components/TransactionActionBar'
 import { TransactionList } from '@/components/TransactionList'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserData } from '@/data-access/get-categories'
 import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'
 import { getTranslations } from 'next-intl/server'
 
@@ -28,7 +28,7 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
 
   const [transactionResult, categoryResult, accountResult] = await Promise.all([
     getTransactionsPaginatedAction({ page, limit, search, type, categoryId, sort }),
-    getCategoriesByUserAction(),
+    getCategoriesByUserData(),
     getBankAccountByUserAction(),
   ])
 
