@@ -6,7 +6,7 @@ import type { CreateBudgetValues } from '@/lib/schema'
 import { CircleDollarSign, Plus, Trash2, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useFieldArray, useWatch, type UseFormReturn } from 'react-hook-form'
-import { CategoryCombobox, type BudgetCategory } from '../../../../components/CategoryCombobox'
+import { CategoryCombobox, type BudgetCategory } from '../_components/CategoryCombobox'
 import type { QuickTarget } from './BudgetStructureEditor'
 
 export function BudgetStructureGroupCard({

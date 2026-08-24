@@ -16,7 +16,7 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => messages[key as keyof typeof messages] ?? key,
 }))
 
-import TemplateBudgetSelect from '@/components/TemplateBudgetSelect'
+import TemplateBudgetSelect from '@/app/(financeapp)/budget/_components/TemplateBudgetSelect'
 
 function starterRadio() {
   return screen.getByRole('radio', { name: 'Zero-Sum Starter' })

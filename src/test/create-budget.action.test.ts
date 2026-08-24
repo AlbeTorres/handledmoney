@@ -7,7 +7,7 @@ vi.mock('next/cache', () => ({ revalidatePath }))
 vi.mock('next/headers', () => ({ headers }))
 
 import { createBudgetAction } from '@/actions/budget/create-budget'
-import { initialGroups } from '@/components/CreateBudgetForm'
+import { initialGroups } from '@/app/(financeapp)/budget/_components/CreateBudgetForm'
 
 const draft = {
   name: 'Plan',

@@ -30,6 +30,19 @@ export const formatMoney = (amount: number | string, currency = 'USD'): string =
   }
 }
 
+
+// Local formatter, consistent with the en-US/USD pattern used across the
+// budget components. Configurable currency is out of scope for now.
+export const formatCurrency = (amount: number) =>
+  new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount)
+
+// Progress bars use the REAL percentage as visible text (it may exceed 100%),
+// while the bar fill is clamped so it never overflows its track.
+export const formatPercentage = (percentage: number) =>
+  new Intl.NumberFormat('en-US', { maximumFractionDigits: 1 }).format(percentage) + '%'
+
+
+
 export const fmtDate = (date: string | Date) => {
   const d = typeof date === 'string' ? new Date(date) : date
   return d.toLocaleDateString('en-US', {

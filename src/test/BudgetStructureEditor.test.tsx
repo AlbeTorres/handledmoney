@@ -67,7 +67,7 @@ vi.mock('@/components/ui/select', () => ({
 }))
 
 import { BudgetStructureEditor } from '@/app/(financeapp)/budget/_components/BudgetStructureEditor'
-import { CreateBudgetForm } from '@/components/CreateBudgetForm'
+import { CreateBudgetForm } from '@/app/(financeapp)/budget/_components/CreateBudgetForm'
 
 const incomeCategories: BudgetCategory[] = [
   {

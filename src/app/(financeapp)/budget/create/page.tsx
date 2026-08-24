@@ -1,9 +1,9 @@
-﻿import { CreateBudgetForm } from '@/components/CreateBudgetForm'
-import { FormWrapper } from '@/components/FormWrapper'
+﻿import { FormWrapper } from '@/components/FormWrapper'
 import { auth } from '@/lib/auth'
 import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { CreateBudgetForm } from '../_components/CreateBudgetForm'
 
 export default async function CreateBudgetPage() {
   const session = await auth.api.getSession({ headers: await headers() })

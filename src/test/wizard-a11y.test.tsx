@@ -1,6 +1,6 @@
+import type { BudgetCategory } from '@/components/CategoryCombobox'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { BudgetCategory } from '@/components/CategoryCombobox'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
@@ -23,7 +23,7 @@ vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 vi.mock('@/actions/budget/create-budget', () => ({ createBudgetAction: mocks.createBudget }))
 vi.mock('@/components/QuickCreateCategoryDrawer', () => ({ QuickCreateCategoryDrawer: () => null }))
 
-import { CreateBudgetForm } from '@/components/CreateBudgetForm'
+import { CreateBudgetForm } from '@/app/(financeapp)/budget/_components/CreateBudgetForm'
 import { FormWrapper } from '@/components/FormWrapper'
 
 const incomeCategories: BudgetCategory[] = [

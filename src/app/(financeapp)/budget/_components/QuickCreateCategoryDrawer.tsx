@@ -2,6 +2,7 @@
 
 import { createCategoryAction } from '@/actions/category/create-category'
 import { ColorPicker } from '@/components/ColorPicker'
+import { FormActions } from '@/components/FormActions'
 import { IconPicker } from '@/components/IconPicker'
 import {
   Drawer,
@@ -20,7 +21,6 @@ import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type { BudgetCategory } from './CategoryCombobox'
-import { FormActions } from './FormActions'
 
 type Values = z.infer<typeof categorySchema>
 

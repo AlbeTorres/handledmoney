@@ -16,8 +16,11 @@ import { CircleDollarSign, CirclePlus, Plus, WalletCards } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 import { useFieldArray, useWatch, type UseFormReturn } from 'react-hook-form'
-import type { BudgetCategory } from '../../../../components/CategoryCombobox'
+
 import { BudgetStructureGroupCard } from './BudgetStructureGroupCard'
+import { StepFooter } from './createsteps/step-footer'
+import { WizardStep } from './BudgetCreationStepper'
+import { BudgetCategory } from './CategoryCombobox'
 
 export type QuickTarget = {
   groupIndex: number
@@ -26,15 +29,25 @@ export type QuickTarget = {
   name: string
 } | null
 
+type BudgetStructureEditorProps = {
+  form: UseFormReturn<CreateBudgetValues>
+  categories: BudgetCategory[]
+  onRequestQuickCreate: (target: QuickTarget) => void
+  isPending: boolean
+  goToAllocation: () => void
+  structureHeadingRef: React.RefObject<HTMLHeadingElement | null>
+  setStep: (step: WizardStep) => void
+}
+
 export function BudgetStructureEditor({
   form,
   categories,
   onRequestQuickCreate,
-}: {
-  form: UseFormReturn<CreateBudgetValues>
-  categories: BudgetCategory[]
-  onRequestQuickCreate: (target: QuickTarget) => void
-}) {
+  isPending,
+  goToAllocation,
+  structureHeadingRef,
+  setStep,
+}: BudgetStructureEditorProps) {
   const t = useTranslations('handledmoney.budget.form')
   const { fields, append, remove } = useFieldArray({ control: form.control, name: 'groups' })
   const groups = useWatch({ control: form.control, name: 'groups' })
@@ -71,6 +84,7 @@ export function BudgetStructureEditor({
     setNewGroup({ name: '', calculationType: 'outflow' })
     setCreateOpen(false)
   }
+
   const removeGroup = async (index: number) => {
     if (await confirmGroup()) remove(index)
   }
@@ -81,6 +95,12 @@ export function BudgetStructureEditor({
   )
 
   return (
+    <>
+      <div className='space-y-2'>
+        <h2 ref={structureHeadingRef} tabIndex={-1} className='text-lg font-semibold'>
+          {t('heading_structure')}
+        </h2>
+      </div>
     <section className='space-y-4 '>
       <ConfirmGroup />
       <div className='flex items-center justify-between'>
@@ -181,6 +201,13 @@ export function BudgetStructureEditor({
       {form.formState.errors.groups?.message && (
         <p className='text-sm text-destructive'>{String(form.formState.errors.groups.message)}</p>
       )}
-    </section>
+      </section>
+
+      <StepFooter
+        onBack={() => setStep('setup')}
+        onNext={() => void goToAllocation()}
+        disabled={isPending}
+      />
+    </>
   )
 }
