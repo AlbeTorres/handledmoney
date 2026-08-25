@@ -9,7 +9,7 @@ export function BudgetSummaryBar({ totalIncome, totalAllocated, remainingToAlloc
   const allocationPct = totalIncome > 0 ? Math.min((totalAllocated / totalIncome) * 100, 100) : 0
   const tone = remainingToAllocate === 0 ? 'text-emerald-700' : remainingToAllocate < 0 ? 'text-destructive' : 'text-amber-700'
   return (
-    <section aria-label='Budget allocation summary' className='sticky top-2 z-10 rounded-xl border border-border bg-card/95 p-4 shadow-sm backdrop-blur sm:p-5'>
+    <section aria-label='Budget allocation summary' className='rounded-xl border border-border bg-card/95 p-4 shadow-sm backdrop-blur sm:p-5'>
       <div className='grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6'>
         <Metric label='Planned income' value={currency(totalIncome)} />
         <Metric label='Assigned' value={currency(totalAllocated)} />

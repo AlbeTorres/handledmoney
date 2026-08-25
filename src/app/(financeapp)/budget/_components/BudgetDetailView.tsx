@@ -116,34 +116,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
         </Link>
 
         <div className='flex-1 min-w-0'>
-          {editing ? (
-            <div className='grid max-w-xl gap-2 sm:grid-cols-3'>
-              <input
-                aria-label='Budget name'
-                value={name}
-                onChange={event => setName(event.target.value)}
-                className='rounded-md border bg-background px-3 py-2 font-semibold sm:col-span-3'
-              />
-              <input
-                aria-label='Start date'
-                type='date'
-                value={startDate}
-                onChange={event => setStartDate(event.target.value)}
-                className='rounded-md border bg-background px-2 py-2 body-sm'
-              />
-              <input
-                aria-label='End date'
-                type='date'
-                value={endDate}
-                onChange={event => setEndDate(event.target.value)}
-                min={startDate}
-                className='rounded-md border bg-background px-2 py-2 body-sm'
-              />
-              <Button size='sm' onClick={saveMetadata} disabled={isPending}>
-                Save changes
-              </Button>
-            </div>
-          ) : (
+
             <>
               <div className='flex flex-wrap items-center gap-3'>
                 <h1 className='display-lg truncate text-foreground'>{budget.name}</h1>
@@ -156,15 +129,10 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
                 {budget.endDate ? ` – ${formatDate(budget.endDate)}` : ' – ongoing'}
               </p>
             </>
-          )}
+
         </div>
 
-        <div className='flex flex-wrap gap-2 lg:justify-end'>
-          {!editing && (
-            <Button variant='outline' size='sm' className='gap-2' onClick={() => setEditing(true)}>
-              <Pencil className='size-4' /> Edit
-            </Button>
-          )}
+        {/*<div className='flex flex-wrap gap-2 lg:justify-end'>
           <Button
             variant='outline'
             size='sm'
@@ -249,7 +217,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-        </div>
+        </div>*/}
       </div>
 
       <BudgetSummaryBar
@@ -266,7 +234,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
               Assign a monthly amount to every category.
             </p>
           </div>
-          <AddBudgetGroupForm budgetId={budget.id} nextSortOrder={budget.groups.length} />
+          {/*<AddBudgetGroupForm budgetId={budget.id} nextSortOrder={budget.groups.length} />*/}
         </div>
         {budget.groups.map(group => (
           <BudgetGroupSection key={group.id} group={group} budgetId={budget.id} />

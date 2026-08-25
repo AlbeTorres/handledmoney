@@ -1,11 +1,11 @@
-import { FieldError } from "@/components/ui/field"
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group"
-import { getCategoryIncomePercentage, clampProgressPercentage } from "@/lib/budget-allocation"
-import { CreateBudgetValues } from "@/lib/schema"
-import { formatPercentage, getIconComponent } from "@/lib/utils"
-import { useTranslations } from "next-intl"
-import { useFormContext, Controller } from "react-hook-form"
-import { BudgetCategory } from "./CategoryCombobox"
+import { FieldError } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
+import { getCategoryIncomePercentage, clampProgressPercentage } from '@/lib/budget-allocation'
+import { CreateBudgetValues } from '@/lib/schema'
+import { formatPercentage, getIconComponent } from '@/lib/utils'
+import { useTranslations } from 'next-intl'
+import { useFormContext, Controller } from 'react-hook-form'
+import { BudgetCategory } from './CategoryCombobox'
 
 interface CategoryRowProps {
   groupIndex: number

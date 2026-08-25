@@ -17,6 +17,7 @@ export default async function BudgetPage() {
     <div className='container space-y-10 px-4 py-6 sm:px-6 lg:px-10 lg:py-10'>
       <div className='flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between'>
         <div>
+
           <h1 className='display-lg text-foreground'>Budgets</h1>
           <p className='body-lg mt-1 text-muted-foreground'>
             Manage the plan for your current financial reality.
