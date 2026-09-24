@@ -34,6 +34,8 @@ export interface ImportConfig {
  * preview and the submit payload (CSV-IMP-11).
  */
 export interface NormalizedRow {
+  /** Stable identity from the original CSV body row, retained across review edits. */
+  sourceRowIndex?: number
   accountId: string
   payee: string
   notes: string

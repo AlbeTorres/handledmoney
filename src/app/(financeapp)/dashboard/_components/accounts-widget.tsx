@@ -8,9 +8,11 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 
+import Link from 'next/link'
+
 import type { AggregateBalance, SupportedAccountType } from '@/interfaces/accounts'
 import type { PresentedAccount } from '@/lib/dashboard/account-presentation'
-import { cn } from '@/lib/utils'
+import { cn, formatMoney } from '@/lib/utils'
 
 const ICONS: Record<SupportedAccountType, LucideIcon> = {
   cash: Banknote,
@@ -28,14 +30,6 @@ const TYPE_LABEL: Record<SupportedAccountType, string> = {
   credit: 'Crédito',
 }
 
-function formatAccountBalance(balance: number, currency: string): string {
-  try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(balance)
-  } catch {
-    return `${currency} ${balance.toFixed(2)}`
-  }
-}
-
 interface Props {
   accounts: PresentedAccount[]
   aggregateBalance: AggregateBalance | null
@@ -49,7 +43,9 @@ export function AccountsWidget({ accounts, aggregateBalance }: Props) {
           <Landmark className='size-4 text-muted-foreground' />
           Mis Cuentas
         </h2>
-        <span className='text-xs text-muted-foreground'>Saldo líquido</span>
+        <Link href='/account' className='text-xs font-medium text-primary hover:underline'>
+          Gestionar
+        </Link>
       </div>
 
       {accounts.length === 0 ? (
@@ -76,10 +72,10 @@ export function AccountsWidget({ accounts, aggregateBalance }: Props) {
                 <span
                   className={cn(
                     'font-mono text-sm font-semibold tabular-nums',
-                    negative ? 'text-danger' : 'text-foreground',
+                    negative ? 'text-destructive' : 'text-foreground',
                   )}
                 >
-                  {formatAccountBalance(account.balance, account.currency)}
+                  {formatMoney(account.balance, account.currency)}
                 </span>
                 <span className='sr-only'>{account.currency}</span>
               </li>
@@ -93,8 +89,13 @@ export function AccountsWidget({ accounts, aggregateBalance }: Props) {
           <span className='text-xs font-medium uppercase tracking-wider text-muted-foreground'>
             Patrimonio neto ({aggregateBalance.currency})
           </span>
-          <span className='font-mono text-lg font-semibold tabular-nums'>
-            {formatAccountBalance(aggregateBalance.balance, aggregateBalance.currency)}
+          <span
+            className={cn(
+              'font-mono text-lg font-semibold tabular-nums',
+              aggregateBalance.balance < 0 ? 'text-destructive' : 'text-foreground',
+            )}
+          >
+            {formatMoney(aggregateBalance.balance, aggregateBalance.currency)}
           </span>
         </div>
       )}

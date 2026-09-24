@@ -7,6 +7,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      // `server-only` is a Next.js build guard that throws outside RSC; tests
+      // load repository/data-access modules directly, so resolve it to a no-op.
+      'server-only': path.resolve(__dirname, './vitest.stub.server-only.ts'),
     },
   },
   test: {

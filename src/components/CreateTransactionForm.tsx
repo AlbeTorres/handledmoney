@@ -5,6 +5,7 @@ import { CreateTransactionSchema } from '@/lib/schema'
 import { Account, Category } from '@/interfaces'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
+import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -12,6 +13,7 @@ import toast from 'react-hot-toast'
 import z from 'zod'
 import { FormActions } from './FormActions'
 import { Tab } from './Tab'
+import { TransactionCategorySelect } from './TransactionCategorySelect'
 import { Button } from './ui/button'
 import { Calendar } from './ui/calendar'
 import { Field, FieldError, FieldGroup, FieldLabel } from './ui/field'
@@ -31,6 +33,7 @@ export const CreateTransactionForm = ({
 }) => {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
+  const t = useTranslations('handledmoney.transaction')
 
   const form = useForm<CreateTransactionValues>({
     resolver: zodResolver(CreateTransactionSchema),
@@ -60,39 +63,43 @@ export const CreateTransactionForm = ({
       if (res.success) {
         toast.success(res.message)
         form.reset()
+        router.push('/transaction')
+      } else {
+        toast.error(res.message || t('form.error_generic'))
       }
-    } catch (error) {
-      console.log(error, 'error')
+    } catch {
+      toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
-      router.push('/transaction')
     }
   }
 
   const handleCancel = useCallback(() => {
     form.reset()
     router.back()
-  }, [form])
+  }, [form, router])
 
   return (
-    <form id='form-create-account' onSubmit={form.handleSubmit(handleSubmit)}>
+    <form id='form-create-transaction' onSubmit={form.handleSubmit(handleSubmit)}>
       <FieldGroup>
         <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
           <div className='p-8 space-y-8 '>
-            <h1>Transaction Details</h1>
-
             <div className='grid grid-cols-1 grid-rows-2 sm:grid-cols-2 gap-6'>
               <Controller
                 name='type'
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-type'>Transaction Type</FieldLabel>
+                    <FieldLabel htmlFor='form-create-transaction-type'>
+                      {t('form.transaction_type')}
+                    </FieldLabel>
 
                     <Tab
                       activeView={field.value}
                       onViewChange={field.onChange}
                       tabs={['income', 'expense']}
+                      labels={{ income: t('form.type_income'), expense: t('form.type_expense') }}
+                      ariaLabel={t('form.transaction_type')}
                     />
                   </Field>
                 )}
@@ -103,16 +110,16 @@ export const CreateTransactionForm = ({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-date'>Date</FieldLabel>
+                    <FieldLabel htmlFor='form-create-transaction-date'>{t('form.date')}</FieldLabel>
 
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
                           variant='outline'
-                          id='date-picker-simple'
+                          id='form-create-transaction-date'
                           className='data-[empty=true]:text-muted-foreground w-[212px] justify-between text-left font-normal'
                         >
-                          {field.value ? format(field.value, 'PPP') : <span>Select a date</span>}
+                          {field.value ? format(field.value, 'PPP') : t('form.date_placeholder')}
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent align='start'>
@@ -134,15 +141,18 @@ export const CreateTransactionForm = ({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-amount'>Amount</FieldLabel>
+                    <FieldLabel htmlFor='form-create-transaction-amount'>
+                      {t('form.amount')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
                         id='form-create-transaction-amount'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., 100'
+                        placeholder={t('form.amount_placeholder')}
                         autoComplete='off'
                         spellCheck={false}
+                        inputMode='decimal'
                         disabled={isPending}
                       />
                     </InputGroup>
@@ -155,13 +165,15 @@ export const CreateTransactionForm = ({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-payee'>Payee</FieldLabel>
+                    <FieldLabel htmlFor='form-create-transaction-payee'>
+                      {t('form.payee')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-create-transaction-amount'
+                        id='form-create-transaction-payee'
                         aria-invalid={fieldState.invalid}
-                        placeholder='e.g., 100'
+                        placeholder={t('form.payee_placeholder')}
                         autoComplete='off'
                         spellCheck={false}
                         disabled={isPending}
@@ -183,14 +195,16 @@ export const CreateTransactionForm = ({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-account'>Account</FieldLabel>
+                    <FieldLabel htmlFor='form-create-transaction-account'>
+                      {t('form.account')}
+                    </FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id='form-create-transaction-account'
                         aria-invalid={fieldState.invalid}
                         className='w-full'
                       >
-                        <SelectValue placeholder='Select' />
+                        <SelectValue placeholder={t('form.select')} />
                       </SelectTrigger>
                       <SelectContent position='item-aligned'>
                         {accounts.map(t => (
@@ -209,23 +223,17 @@ export const CreateTransactionForm = ({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-transaction-category'>Category</FieldLabel>
-                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        id='form-create-transaction-category'
-                        aria-invalid={fieldState.invalid}
-                        className='w-full'
-                      >
-                        <SelectValue placeholder='Select' />
-                      </SelectTrigger>
-                      <SelectContent position='item-aligned'>
-                        {categories.map(t => (
-                          <SelectItem key={t.id} value={t.id}>
-                            {t.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FieldLabel htmlFor='form-create-transaction-category'>
+                      {t('form.category')}
+                    </FieldLabel>
+                    <TransactionCategorySelect
+                      id='form-create-transaction-category'
+                      value={field.value}
+                      categories={categories}
+                      onValueChange={field.onChange}
+                      disabled={isPending}
+                      invalid={fieldState.invalid}
+                    />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -241,12 +249,12 @@ export const CreateTransactionForm = ({
               control={form.control}
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor='form-create-transaction-notes'>Note</FieldLabel>
+                  <FieldLabel htmlFor='form-create-transaction-notes'>{t('form.notes')}</FieldLabel>
                   <Textarea
                     {...field}
                     id='form-create-transaction-notes'
                     aria-invalid={fieldState.invalid}
-                    placeholder='Write a note...'
+                    placeholder={t('form.notes_placeholder')}
                     autoComplete='off'
                     spellCheck={false}
                     disabled={isPending}
@@ -262,8 +270,8 @@ export const CreateTransactionForm = ({
       <FormActions
         onCancel={handleCancel}
         isPending={isPending}
-        text='Create Transaction'
-        loadingText='Creating…'
+        text={t('form.create_button')}
+        loadingText={t('form.creating')}
       />
     </form>
   )

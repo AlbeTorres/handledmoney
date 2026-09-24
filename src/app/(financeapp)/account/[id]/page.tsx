@@ -3,8 +3,13 @@ import { AccountTransactionTable } from '@/components/AccountTransactionTable'
 import { InfoCard } from '@/components/InfoCard'
 import { getBankAccountByIdAction } from '@/data-access/get-account'
 import { getCategoriesByUserData } from '@/data-access/get-categories'
-import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'
+import {
+  getAccountSummaryAction,
+  getTransactionsByAccountIdAction,
+  getTransactionsPaginatedAction,
+} from '@/data-access/get-transaction'
 
+import { Transaction } from '@/interfaces'
 import { auth } from '@/lib/auth'
 import { ArrowDown, ArrowRightLeft, ArrowUp, TrendingUp } from 'lucide-react'
 import { getTranslations } from 'next-intl/server'
@@ -35,16 +40,19 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
   const limit = Number(resolvedSearchParams.limit) || 50
   const search = resolvedSearchParams.search || ''
 
-  const [account, transactions, categoryResult] = await Promise.all([
-    getBankAccountByIdAction(id),
-    getTransactionsPaginatedAction({
-      accountId: id,
-      page,
-      limit,
-      search: '',
-    }),
-    getCategoriesByUserData(),
-  ])
+  const [account, transactions, categoryResult, allTransactions, accountSummary] =
+    await Promise.all([
+      getBankAccountByIdAction(id),
+      getTransactionsPaginatedAction({
+        accountId: id,
+        page,
+        limit,
+        search: '',
+      }),
+      getCategoriesByUserData(),
+      getTransactionsByAccountIdAction(id),
+      getAccountSummaryAction(id),
+    ])
 
   const transactionsData = transactions?.data?.transactions || []
   const totalPages = transactions?.data?.totalPages || 0
@@ -55,75 +63,101 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
     name: cat.name,
   }))
 
+  // Full transaction history for the CSV export — the table above only shows
+  // the current page, so exporting those rows would silently drop every other
+  // transaction of the account.
+  const exportTransactions: Transaction[] = (allTransactions?.data ?? []).map(row => ({
+    id: row.id,
+    type: row.type,
+    amount: row.amount ?? '',
+    payee: row.payee ?? '',
+    accountId: row.accountId,
+    categoryId: row.categoryId ?? null,
+    notes: row.notes ?? null,
+    date: row.date,
+    userId: row.userId,
+    createdAt: null,
+    updatedAt: null,
+    deletedAt: null,
+    accountName: row.accountName ?? '',
+    categoryName: row.categoryName ?? null,
+  }))
+
   const { data: accountData } = account
 
-  if (!accountData || !transactionsData) {
+  if (!accountData) {
     return (
-      <div className='flex items-center justify-center h-screen'>
-        <p>{t('detail.error')}</p>
+      <div className='flex min-h-64 items-center justify-center p-8'>
+        <p className='text-sm text-muted-foreground'>{t('detail.error')}</p>
       </div>
     )
   }
 
-  const incomeTransactions = transactionsData.filter(t => Number(t.amount) > 0)
-  const expenseTransactions = transactionsData.filter(t => Number(t.amount) < 0)
-
-  const totalIncome = incomeTransactions.reduce((acc, t) => acc + Number(t.amount), 0)
-  const totalExpenses = Math.abs(expenseTransactions.reduce((acc, t) => acc + Number(t.amount), 0))
+  // Whole-account aggregates from the summary query: totals cover every
+  // transaction (not just the visible page) and the average daily spend is
+  // measured over the account's real transaction span instead of a mock 30 days.
+  const summary = accountSummary?.data
+  const totalIncome = summary?.totalIncome ?? 0
+  const totalExpenses = summary?.totalExpenses ?? 0
   const netFlow = totalIncome - totalExpenses
-
-  // Calculate average daily spend assuming it's over 30 days for this demo, or based on the transactions
-  // we'll just mock 30 days since there might be no transactions.
-  const avgDailySpend = totalExpenses > 0 ? totalExpenses / 30 : 0
+  const spanDays =
+    summary?.firstDate && summary.lastDate
+      ? Math.max(
+          1,
+          Math.ceil((summary.lastDate.getTime() - summary.firstDate.getTime()) / 86_400_000),
+        )
+      : 0
+  const avgDailySpend = totalExpenses > 0 && spanDays > 0 ? totalExpenses / spanDays : 0
 
   return (
-    <div className='bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display'>
-      <div className='flex  h-screen overflow-hidden'>
-        <main className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-          <AccountInfo account={accountData} />
+    <div className='bg-background text-foreground'>
+      <AccountInfo account={accountData} transactions={exportTransactions} />
 
-          <div className='p-8 container space-y-8'>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-              <InfoCard
-                title={t('detail.total_income')}
-                value={totalIncome}
-                icon={<ArrowDown className='size-4 text-emerald-500' />}
-                category='income'
-              />
+      <div className='container space-y-8 px-4 py-8 sm:px-6 lg:px-8'>
+        <div className='grid grid-cols-1 gap-6 md:grid-cols-4'>
+          <InfoCard
+            title={t('detail.total_income')}
+            value={totalIncome}
+            currency={accountData.currency}
+            icon={<ArrowDown className='size-4 text-income' />}
+            category='income'
+          />
 
-              <InfoCard
-                title={t('detail.total_expenses')}
-                value={totalExpenses}
-                icon={<ArrowUp className='size-4 text-rose-500' />}
-                category='expense'
-              />
+          <InfoCard
+            title={t('detail.total_expenses')}
+            value={totalExpenses}
+            currency={accountData.currency}
+            icon={<ArrowUp className='size-4 text-expense' />}
+            category='expense'
+          />
 
-              <InfoCard
-                title={t('detail.net_flow')}
-                value={netFlow}
-                icon={<ArrowRightLeft className='size-4 text-primary' />}
-              />
+          <InfoCard
+            title={t('detail.net_flow')}
+            value={netFlow}
+            currency={accountData.currency}
+            icon={<ArrowRightLeft className='size-4 text-primary' />}
+          />
 
-              <InfoCard
-                title={t('detail.avg_daily_spend')}
-                value={avgDailySpend}
-                icon={<TrendingUp className='size-4 text-slate-400' />}
-              />
-            </div>
+          <InfoCard
+            title={t('detail.avg_daily_spend')}
+            value={avgDailySpend}
+            currency={accountData.currency}
+            icon={<TrendingUp className='size-4 text-muted-foreground' />}
+          />
+        </div>
 
-            <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
-              <h3 className='font-bold text-lg mb-4'>
-                {t('detail.transactions_for', { name: accountData.name })}
-              </h3>
-              <AccountTransactionTable
-                data={transactionsData}
-                categories={categories}
-                totalPages={totalPages}
-                currentPage={currentPage}
-              />
-            </div>
-          </div>
-        </main>
+        <div className='overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm'>
+          <h3 className='mb-4 text-lg font-bold'>
+            {t('detail.transactions_for', { name: accountData.name })}
+          </h3>
+          <AccountTransactionTable
+            data={transactionsData}
+            categories={categories}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            currency={accountData.currency}
+          />
+        </div>
       </div>
     </div>
   )

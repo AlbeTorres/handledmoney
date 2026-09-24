@@ -1,9 +1,6 @@
 import { useTranslations } from 'next-intl'
 import { TransactionCategoryCell } from './TransactionCategoryCell'
 
-// PLACEHOLDER: no tags table exists yet — replace with real tag data when the schema lands
-const PLACEHOLDER_TAGS = ['Work', 'Q4'] as const
-
 interface TransactionDetailInfoGridProps {
   payee: string
   category: { id: string; name: string; icon: string | null } | null
@@ -18,16 +15,14 @@ export function TransactionDetailInfoGrid({
   const t = useTranslations('handledmoney.transaction.detail')
 
   return (
-    <section className='rounded-sm border bg-white p-5 shadow-sm  dark:bg-slate-900'>
-      <dl className='divide-y divide-slate-100 dark:divide-slate-800'>
+    <section className='rounded-sm border bg-white p-5 shadow-sm dark:bg-slate-900'>
+      <dl className='divide-y divide-border'>
         <div className='flex items-start justify-between gap-4 py-3'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('payee')}</dt>
-          <dd className='text-sm font-semibold text-slate-900 dark:text-slate-100'>{payee}</dd>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('payee')}</dt>
+          <dd className='text-sm font-semibold text-foreground'>{payee}</dd>
         </div>
         <div className='flex items-start justify-between gap-4 py-3'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('category')}
-          </dt>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('category')}</dt>
           <dd>
             {category ? (
               <TransactionCategoryCell
@@ -39,20 +34,10 @@ export function TransactionDetailInfoGrid({
             )}
           </dd>
         </div>
-        <div
-          data-testid='tags-placeholder'
-          data-placeholder='true'
-          className='flex items-start justify-between gap-4 py-3'
-        >
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('tags')}</dt>
-          <dd className='text-sm text-slate-900 dark:text-slate-100'>
-            {PLACEHOLDER_TAGS.join(', ')}
-          </dd>
-        </div>
         <div className='flex items-start justify-between gap-4 py-3'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t('notes')}</dt>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('notes')}</dt>
           <dd className='min-w-0 flex-1'>
-            <p className='wrap-break-word whitespace-pre-wrap text-left text-sm text-slate-900 dark:text-slate-100'>
+            <p className='wrap-break-word whitespace-pre-wrap text-left text-sm text-foreground'>
               {notes ?? '—'}
             </p>
           </dd>

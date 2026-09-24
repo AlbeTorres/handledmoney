@@ -15,7 +15,18 @@ export default async function CategoryPage({ searchParams }: CategoryPageProps) 
 
   const categories = result.data || []
   const resolvedSearchParams = await searchParams
-  const activeType = resolvedSearchParams.type as ('expense' | 'income')[]
+
+  // The type filter is a comma-separated string (e.g. ?type=expense,income), but
+  // may also arrive as repeated params. Parse it explicitly instead of casting
+  // the raw value into an array, which previously let substring checks pass.
+  const rawType = resolvedSearchParams.type
+  const activeType: ('expense' | 'income')[] = (
+    Array.isArray(rawType)
+      ? rawType
+      : typeof rawType === 'string' && rawType.length > 0
+        ? rawType.split(',')
+        : []
+  ).filter((t): t is 'expense' | 'income' => t === 'expense' || t === 'income')
   const search = (resolvedSearchParams.search as string) || ''
   const sort = (resolvedSearchParams.sort as string) || 'default'
 

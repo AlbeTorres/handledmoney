@@ -1,6 +1,5 @@
 import PreferencesSettings from '@/components/PreferencesSettings'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // ── Hoisted mocks ────────────────────────────────────────────────────────────
@@ -19,6 +18,7 @@ const { refreshMock, changeLocaleMock } = vi.hoisted(() => ({
 // predecibles en los tests (por ejemplo: 'heading', 'language_label').
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
+  useLocale: () => 'es',
 }))
 
 // Mockeamos next/navigation para controlar router.refresh y verificar que se llama
@@ -50,7 +50,7 @@ describe('PreferencesSettings', () => {
   it('renders heading and 3 select fields (language, timezone, currency)', () => {
     render(<PreferencesSettings />)
 
-    expect(screen.getByRole('heading', { name: 'heading' })).toBeTruthy()
+    expect(screen.getByText('heading')).toBeTruthy()
 
     const selects = screen.getAllByRole('combobox')
     expect(selects).toHaveLength(3)
@@ -58,64 +58,43 @@ describe('PreferencesSettings', () => {
 
   // ── Selector de idioma ───────────────────────────────────────────────────
 
-  // Verifica que el select de idioma contiene las opciones English (US) y
+  // Verifica que el selector se inicializa desde el locale activo, no desde un
+  // valor codificado, y conserva las opciones soportadas.
   // Español (ES), porque el usuario debe poder elegir entre los dos idiomas
   // soportados por la aplicación.
-  it('language select has en/es options', () => {
-    render(<PreferencesSettings />)
+  it('initializes language from the active locale', () => {
+    const { container } = render(<PreferencesSettings />)
 
-    // El select de idioma es el primero de los 3 combobox, y las opciones
-    // English (US) y Español (ES) son únicas en todo el DOM
     const languageSelect = screen.getAllByRole('combobox')[0]
-    expect(languageSelect).toHaveValue('en')
-    expect(screen.getByRole('option', { name: 'English (US)' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: 'Español (ES)' })).toBeTruthy()
+    expect(languageSelect).toHaveTextContent('Español (ES)')
+    expect(container.querySelector('select')).toHaveValue('es')
   })
 
   // Verifica que al cambiar el valor del select de idioma se invoca changeLocale
   // con el nuevo locale y随后 router.refresh(), porque el componente debe
   // persistir la preferencia en el servidor y recargar la UI con la nueva locale.
   it('changing language calls changeLocale + router.refresh', async () => {
-    const user = userEvent.setup()
     changeLocaleMock.mockResolvedValueOnce(undefined)
 
-    render(<PreferencesSettings />)
+    const { container } = render(<PreferencesSettings />)
 
-    const languageSelect = screen.getAllByRole('combobox')[0]
-    await user.selectOptions(languageSelect, 'es')
+    fireEvent.change(container.querySelector('select')!, { target: { value: 'en' } })
 
     await waitFor(() => {
-      expect(changeLocaleMock).toHaveBeenCalledWith('es')
+      expect(changeLocaleMock).toHaveBeenCalledWith('en')
       expect(refreshMock).toHaveBeenCalled()
     })
   })
 
   // ── Selector de zona horaria ─────────────────────────────────────────────
 
-  // Verifica que el select de zona horaria renderiza las 4 opciones disponibles
-  // (Pacific, Eastern, UTC, CET), porque el usuario necesita ver todas las
-  // zonas horarias soportadas para configurar su preferencia regional.
-  it('timezone select renders all timezone options', () => {
+  it('marks timezone and currency controls unavailable until persistence exists', () => {
     render(<PreferencesSettings />)
 
-    expect(screen.getByRole('option', { name: '(GMT-08:00) Pacific Time' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '(GMT-05:00) Eastern Time' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '(GMT+00:00) UTC' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '(GMT+01:00) Central European Time' })).toBeTruthy()
-  })
-
-  // ── Selector de moneda ──────────────────────────────────────────────────
-
-  // Verifica que el select de moneda renderiza las 4 opciones disponibles
-  // (USD, EUR, GBP, JPY), porque el usuario necesita ver todas las monedas
-  // soportadas para que los montos se muestren con el formato correcto.
-  it('currency select renders all currency options', () => {
-    render(<PreferencesSettings />)
-
-    expect(screen.getByRole('option', { name: '$1,234.56 (USD)' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '1.234,56 € (EUR)' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '£1,234.56 (GBP)' })).toBeTruthy()
-    expect(screen.getByRole('option', { name: '¥123,456 (JPY)' })).toBeTruthy()
+    const [, timezone, currency] = screen.getAllByRole('combobox')
+    expect(timezone).toBeDisabled()
+    expect(currency).toBeDisabled()
+    expect(screen.getAllByText('unavailable_help')).toHaveLength(2)
   })
 
   // ── Texto informativo ───────────────────────────────────────────────────

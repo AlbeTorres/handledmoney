@@ -2,7 +2,7 @@ import { EditCategoryForm } from '@/components/EditCategoryForm'
 import { FormWrapper } from '@/components/FormWrapper'
 import { getCategoryByIdData } from '@/data-access/get-category-by-id'
 import { getTranslations } from 'next-intl/server'
-import { redirect } from 'next/navigation'
+import Link from 'next/link'
 
 interface EditCategoryPageProps {
   params: Promise<{ id: string }>
@@ -15,6 +15,8 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
   const categoryResponse = await getCategoryByIdData(id)
 
   if (!categoryResponse.success || !categoryResponse.data) {
+    // There is no client-side redirect here: this is a server component, so the
+    // go-back affordance must be a real link (event handlers don't run there).
     return (
       <FormWrapper
         title={t('edit.title')}
@@ -23,17 +25,17 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
         oldPathTitle={t('breadcrumbs.categories')}
         pathTitle={t('edit.button')}
       >
-        <div className='flex items-center justify-center h-full'>
-          <div className='text-center'>
-            <h2 className='text-2xl font-bold mb-2'>{t('edit.not_found')}</h2>
-            <p className='text-slate-500 mb-4'>{t('edit.not_found_description')}</p>
-            <button
-              onClick={() => redirect('/category')}
-              className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
-            >
-              {t('edit.go_back')}
-            </button>
-          </div>
+        <div className='flex flex-col items-center justify-center gap-4 py-16 text-center'>
+          <h2 className='text-2xl font-bold text-foreground'>{t('edit.not_found')}</h2>
+          <p className='max-w-md text-sm text-muted-foreground'>
+            {t('edit.not_found_description')}
+          </p>
+          <Link
+            href='/category'
+            className='rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors'
+          >
+            {t('edit.go_back')}
+          </Link>
         </div>
       </FormWrapper>
     )

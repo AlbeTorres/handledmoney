@@ -36,7 +36,7 @@ export function AccountCard({
 
   return (
     <div
-      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 transition-all relative`}
+      className={`group relative rounded-xl border-y border-r border-l-4 border-border bg-card p-6 transition-all`}
       style={{ borderLeftColor: accentColor }}
     >
       <div className='flex justify-between items-start mb-6'>
@@ -67,24 +67,23 @@ export function AccountCard({
         />
       </div>
       <div>
-        <p className='text-[9px] font-semibold text-slate-400 uppercase tracking-widest'>
+        <p className='text-xs font-semibold uppercase tracking-widest text-muted-foreground'>
           {institution}
         </p>
-        <h3 className='text-xl font-bold text-slate-900 dark:text-white mb-4'>{name}</h3>
-        <div className='flex text-xl gap-x-2'>
-          <p className=' font-medium uppercase'>{detail}</p>
-          <p>**** **** **** ****</p>
-        </div>
+        <h3 className='mb-4 text-xl font-bold text-foreground'>{name}</h3>
+        <p className='text-sm font-medium uppercase tracking-wide text-muted-foreground'>
+          {detail}
+        </p>
       </div>
-      <div className='mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 w-full'>
+      <div className='mt-6 w-full border-t border-border pt-4'>
         <div className='flex items-baseline gap-1 tabular-nums'>
-          <div className='flex items-center gap-2 justify-between w-full'>
+          <div className='flex w-full items-center justify-between gap-2'>
             <div>
               <p className='text-2xl font-extrabold'>{balance}</p>
             </div>
             <p
               style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
-              className='text-xs font-medium p-2 rounded-md text-slate-400'
+              className='rounded-md p-2 text-xs font-medium'
             >
               {currency}
             </p>

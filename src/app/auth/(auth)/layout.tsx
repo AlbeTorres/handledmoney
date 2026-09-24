@@ -4,13 +4,8 @@ import Image from 'next/image'
 export default async function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <figure className='relative hidden md:block min-h-96 max-w-lg h-4/6 w-full'>
-        <Image
-          src={authImg}
-          alt='Personal finance dashboard'
-          fill
-          className='rounded-lg shadow-md object-cover'
-        />
+      <figure className='relative hidden min-h-96 w-full max-w-lg md:block'>
+        <Image src={authImg} alt='Personal finance dashboard' fill className='object-cover' />
       </figure>
       {children}
     </>

@@ -77,7 +77,7 @@ describe('CategoryPreview', () => {
     // The component sets backgroundColor: '#' + color + '08' and borderColor: '#' + color + '30'.
     // jsdom normalizes these hex+alpha values to rgba, so we match the normalized output.
     // color '6366f1' = rgb(99,102,241); alpha '08' → 0.03, alpha '30' → 0.19.
-    const card = document.querySelector('.rounded-2xl.border')
+    const card = document.querySelector('.rounded-sm.border')
     expect(card).not.toBeNull()
 
     const style = card!.getAttribute('style')!

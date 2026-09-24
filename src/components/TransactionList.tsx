@@ -1,4 +1,5 @@
 'use client'
+import { deleteTransactionsAction } from '@/actions/transaction/delete-transaction'
 import { updateTransactionsCategoryAction } from '@/actions/transaction/update-transactions-category'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
@@ -22,26 +23,33 @@ export function TransactionList({
   const t = useTranslations('handledmoney.transaction')
   const router = useRouter()
 
-  const onDelete = async (ids: string[]) => {
+  const onDelete = async (ids: string[]): Promise<boolean> => {
     try {
-      // TODO: Implement bulk delete server action (soft delete)
-      console.log('Would delete transactions:', ids)
-      toast.success(t('table.delete_success', { count: ids.length }))
+      const result = await deleteTransactionsAction({ ids })
+      if (result.success) {
+        toast.success(t('table.delete_success', { count: result.count ?? ids.length }))
+        return true
+      }
+      toast.error(t('table.delete_error'))
+      return false
     } catch {
       toast.error(t('form.error_generic'))
+      return false
     }
   }
 
-  const onBulkCategoryChange = async (categoryId: string, ids: string[]) => {
+  const onBulkCategoryChange = async (categoryId: string, ids: string[]): Promise<boolean> => {
     try {
       const result = await updateTransactionsCategoryAction({ categoryId, ids })
       if (result.success) {
         toast.success(t('table.category_update_success', { count: result.count ?? ids.length }))
-      } else {
-        toast.error(t('table.category_update_error'))
+        return true
       }
+      toast.error(t('table.category_update_error'))
+      return false
     } catch {
       toast.error(t('table.category_update_error'))
+      return false
     } finally {
       router.refresh()
     }

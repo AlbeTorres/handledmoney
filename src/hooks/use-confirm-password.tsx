@@ -14,7 +14,7 @@ import { ChangePasswordSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
@@ -50,15 +50,14 @@ export function PasswordConfirmDialog({
     defaultValues: { password: '' },
   })
 
-  useEffect(() => {
-    if (!open) {
-      form.reset()
-      setShowPassword(false)
-    }
-  }, [open, form])
+  const handleDismiss = () => {
+    form.reset()
+    setShowPassword(false)
+    onCancel()
+  }
 
   return (
-    <Dialog open={open} onOpenChange={v => !v && onCancel()}>
+    <Dialog open={open} onOpenChange={v => !v && handleDismiss()}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
@@ -73,7 +72,7 @@ export function PasswordConfirmDialog({
                 <FieldLabel htmlFor='form-signin-password'>
                   {fieldLabel ?? t('password')}
                 </FieldLabel>
-                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='form-signin-password'
@@ -84,18 +83,20 @@ export function PasswordConfirmDialog({
                     disabled={isPending}
                   />
                   <InputGroupAddon>
-                    <button
+                    <Button
                       type='button'
+                      variant='ghost'
+                      size='icon-xs'
                       onClick={() => setShowPassword(v => !v)}
                       disabled={isPending}
-                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                      aria-label={showPassword ? t('hide_password') : t('show_password')}
                     >
                       {showPassword ? (
                         <EyeIcon className='w-4 h-4' />
                       ) : (
                         <EyeOffIcon className='w-4 h-4' />
                       )}
-                    </button>
+                    </Button>
                   </InputGroupAddon>
                 </InputGroup>
                 {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -104,11 +105,11 @@ export function PasswordConfirmDialog({
           />
         </form>
         <DialogFooter className='pt-2'>
-          <Button onClick={onCancel} variant='outline' disabled={isPending} type='button'>
-            Cancel
+          <Button onClick={handleDismiss} variant='outline' disabled={isPending} type='button'>
+            {t('cancel')}
           </Button>
           <Button type='submit' form='confirm-password-form' disabled={isPending}>
-            {isPending ? 'Verifying...' : (submitLabel ?? 'Continue')}
+            {isPending ? t('verifying') : (submitLabel ?? t('continue'))}
           </Button>
         </DialogFooter>
       </DialogContent>

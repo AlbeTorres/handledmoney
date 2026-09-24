@@ -185,7 +185,7 @@ describe('LoginForm', () => {
     await user.click(screen.getByRole('button', { name: 'signin' }))
 
     await waitFor(() => {
-      expect(pushMock).toHaveBeenCalledWith('/auth/two-factor') // ajusta la ruta real
+      expect(pushMock).toHaveBeenCalledWith('/auth/two-factor')
     })
   })
 
@@ -205,7 +205,7 @@ describe('LoginForm', () => {
     await waitFor(() => {
       expect(screen.getByLabelText('email')).toBeDisabled()
       expect(screen.getByLabelText('password')).toBeDisabled()
-      expect(screen.getByRole('button', { name: 'signin' })).toBeDisabled()
+      expect(screen.getByRole('button', { name: 'signing_in' })).toBeDisabled()
     })
   })
 

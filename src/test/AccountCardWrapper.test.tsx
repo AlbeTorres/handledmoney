@@ -22,6 +22,8 @@ vi.mock('@/lib/utils', () => ({
     const MockIcon = (props: any) => <span data-testid='mock-icon' {...props} />
     return MockIcon
   },
+  formatMoney: (amount: number | string, currency: string) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(Number(amount)),
 }))
 
 // Mock TiltCardWrapper — replace with a simple div to isolate
@@ -70,18 +72,12 @@ const MOCK_ACCOUNT = {
   color: '137FEC',
 }
 
-const OTHER_ACCOUNTS = [
-  { id: 'acc-456', name: 'Cuenta Secundaria' },
-]
+const OTHER_ACCOUNTS = [{ id: 'acc-456', name: 'Cuenta Secundaria' }]
 
 const setup = (overrides: Partial<typeof MOCK_ACCOUNT> = {}) => {
   const account = { ...MOCK_ACCOUNT, ...overrides }
   return render(
-    <AccountCardWrapper
-      account={account}
-      hasTransactions={false}
-      otherAccounts={OTHER_ACCOUNTS}
-    />,
+    <AccountCardWrapper account={account} hasTransactions={false} otherAccounts={OTHER_ACCOUNTS} />,
   )
 }
 

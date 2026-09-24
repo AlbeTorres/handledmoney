@@ -1,6 +1,6 @@
 'use client'
 
-import { getIconComponent } from '@/lib/utils'
+import { formatMoney, getIconComponent } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -55,11 +55,8 @@ export function AccountCardWrapper({
           name={account.name ?? t('card.unnamed_account')}
           balance={
             account.balance
-              ? parseFloat(account.balance).toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: account.currency ?? 'USD',
-                })
-              : '$0.00'
+              ? formatMoney(account.balance, account.currency ?? 'USD')
+              : formatMoney(0, account.currency ?? 'USD')
           }
           currency={account.currency ?? 'USD'}
           detail={account.type ?? t('card.general_type')}

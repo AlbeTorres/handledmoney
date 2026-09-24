@@ -9,9 +9,7 @@ vi.mock('next-intl', () => ({
 }))
 
 vi.mock('@/components/CategoryCard', () => ({
-  CategoryCard: ({ category }: any) => (
-    <div data-testid='category-card'>{category.name}</div>
-  ),
+  CategoryCard: ({ category }: any) => <div data-testid='category-card'>{category.name}</div>,
 }))
 
 // ── Test data ────────────────────────────────────────────────────────────────
@@ -53,8 +51,7 @@ const renderAll = (overrides: Partial<Parameters<typeof CategoryContent>[0]> = {
   render(<CategoryContent {...props} />)
 }
 
-const cardNames = () =>
-  screen.getAllByTestId('category-card').map(el => el.textContent)
+const cardNames = () => screen.getAllByTestId('category-card').map(el => el.textContent)
 
 // ── Section: Default rendering ───────────────────────────────────────────────
 
@@ -96,17 +93,20 @@ describe('CategoryContent', () => {
 
   // ── Section: Sorting ─────────────────────────────────────────────────────
 
-  it('sorts alphabetically by name when sort is category_name', () => {
+  it('renders sorting within each type group when sort is category_name', () => {
     renderAll({ sort: 'category_name' })
 
-    expect(cardNames()).toEqual(['Dividends', 'Groceries', 'Rent', 'Salary'])
+    // Cards are grouped under Expenses then Income headings; each group is
+    // sorted alphabetically: Expenses → Groceries, Rent; Income → Dividends, Salary.
+    expect(cardNames()).toEqual(['Groceries', 'Rent', 'Dividends', 'Salary'])
   })
 
-  it('sorts by date descending when sort is recently_added', () => {
+  it('renders groups by newest creation date when sort is recently_added', () => {
     renderAll({ sort: 'recently_added' })
 
-    // Salary 2025-07-01, Groceries 2025-06-01, Rent 2025-05-01, Dividends 2025-04-01
-    expect(cardNames()).toEqual(['Salary', 'Groceries', 'Rent', 'Dividends'])
+    // Per group, newest first: Expenses → Groceries (Jun), Rent (May);
+    // Income → Salary (Jul), Dividends (Apr).
+    expect(cardNames()).toEqual(['Groceries', 'Rent', 'Salary', 'Dividends'])
   })
 
   // ── Section: Combined filtering ──────────────────────────────────────────
@@ -119,9 +119,19 @@ describe('CategoryContent', () => {
 
   // ── Section: Empty results ───────────────────────────────────────────────
 
-  it('shows nothing when no categories match filter', () => {
+  it('shows the translated empty state when no categories match the filter', () => {
     renderAll({ search: 'xyz' })
 
     expect(screen.queryAllByTestId('category-card')).toHaveLength(0)
+    expect(screen.getByText('list.no_results')).toBeInTheDocument()
+    expect(screen.getByText('list.try_adjusting_search')).toBeInTheDocument()
+    expect(screen.getByText('filter.clear_filters')).toBeInTheDocument()
+  })
+
+  it('renders the translated Expense and Income group headings', () => {
+    renderAll()
+
+    expect(screen.getByText('filter.expenses')).toBeInTheDocument()
+    expect(screen.getByText('filter.income')).toBeInTheDocument()
   })
 })

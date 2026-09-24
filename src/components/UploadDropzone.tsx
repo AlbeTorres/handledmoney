@@ -10,6 +10,10 @@ import { useState } from 'react'
 import { useCSVReader } from 'react-papaparse'
 import toast from 'react-hot-toast'
 
+// Minimal contract of react-papaparse's root props: spread onto the dropzone
+// element; the library wires click/keyboard handling.
+type RootProps = () => React.HTMLAttributes<HTMLDivElement>
+
 export const UploadDropzone = () => {
   const t = useTranslations('handledmoney.transaction')
   const { CSVReader } = useCSVReader()
@@ -43,7 +47,7 @@ export const UploadDropzone = () => {
 
   return (
     <CSVReader onUploadAccepted={onUpload}>
-      {({ getRootProps }: any) => (
+      {({ getRootProps }: { getRootProps: RootProps }) => (
         <div
           {...getRootProps({
             onDragEnter: () => setIsDragging(true),
@@ -65,7 +69,7 @@ export const UploadDropzone = () => {
           <p className='text-sm text-muted-foreground'>{t('import.dropzone_drag_hint')}</p>
           <button
             type='button'
-            className='mt-3 inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2 text-sm font-medium shadow-md shadow-primary/20 transition-all duration-300 hover:bg-primary/90 hover:scale-105 outline-none'
+            className='mt-3 inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2 text-sm font-medium shadow-sm transition-colors hover:bg-primary/90 outline-none'
           >
             {t('import.upload_button')}
           </button>

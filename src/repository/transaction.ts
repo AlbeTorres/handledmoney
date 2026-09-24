@@ -227,6 +227,7 @@ export const getTransactionsByAccountId = async (accountId: string, userId: stri
     const transactions = await db
       .select({
         id: transactionsTable.id,
+        type: transactionsTable.type,
         amount: transactionsTable.amount,
         payee: transactionsTable.payee,
         notes: transactionsTable.notes,
@@ -250,6 +251,57 @@ export const getTransactionsByAccountId = async (accountId: string, userId: stri
   }
 }
 
+export interface AccountTransactionSummary {
+  totalIncome: number
+  totalExpenses: number
+  transactionCount: number
+  firstDate: Date | null
+  lastDate: Date | null
+}
+
+/**
+ * Whole-account aggregates for the account detail KPIs. Scans every transaction
+ * of the account so the totals and the average daily spend are truthful — the
+ * previous implementation reduced only the first page of paginated rows and
+ * divided by a hard-coded 30 days.
+ */
+export const getAccountTransactionSummary = async (
+  accountId: string,
+  userId: string,
+): Promise<AccountTransactionSummary> => {
+  const rows = await db
+    .select({
+      type: transactionsTable.type,
+      total: sql<string>`sum(CAST(${transactionsTable.amount} AS NUMERIC))`,
+      minDate: sql<Date | null>`min(${transactionsTable.date})`,
+      maxDate: sql<Date | null>`max(${transactionsTable.date})`,
+      count: count(),
+    })
+    .from(transactionsTable)
+    .where(and(eq(transactionsTable.accountId, accountId), eq(transactionsTable.userId, userId)))
+    .groupBy(transactionsTable.type)
+
+  let totalIncome = 0
+  let totalExpenses = 0
+  let transactionCount = 0
+  let firstDate: Date | null = null
+  let lastDate: Date | null = null
+
+  for (const row of rows) {
+    transactionCount += row.count
+    const total = Number(row.total ?? 0)
+    if (row.type === 'income') {
+      totalIncome += total
+    } else {
+      totalExpenses += Math.abs(total)
+    }
+    if (row.minDate && (!firstDate || row.minDate < firstDate)) firstDate = row.minDate
+    if (row.maxDate && (!lastDate || row.maxDate > lastDate)) lastDate = row.maxDate
+  }
+
+  return { totalIncome, totalExpenses, transactionCount, firstDate, lastDate }
+}
+
 export const getTransactionsPaginated = async ({
   userId,
   type,
@@ -270,10 +322,14 @@ export const getTransactionsPaginated = async ({
     : undefined
 
   const accountCondition = accountId ? eq(transactionsTable.accountId, accountId) : undefined
-  const typeValues = type ? type.split(',').filter((v): v is 'income' | 'expense' => v === 'income' || v === 'expense') : []
-  const typeCondition = typeValues.length > 0 ? inArray(transactionsTable.type, typeValues) : undefined
+  const typeValues = type
+    ? type.split(',').filter((v): v is 'income' | 'expense' => v === 'income' || v === 'expense')
+    : []
+  const typeCondition =
+    typeValues.length > 0 ? inArray(transactionsTable.type, typeValues) : undefined
   const categoryIds = categoryId ? categoryId.split(',').filter(Boolean) : []
-  const categoryCondition = categoryIds.length > 0 ? inArray(transactionsTable.categoryId, categoryIds) : undefined
+  const categoryCondition =
+    categoryIds.length > 0 ? inArray(transactionsTable.categoryId, categoryIds) : undefined
 
   const whereClause = and(
     eq(transactionsTable.userId, userId),
@@ -595,6 +651,72 @@ export const deleteTransaction = async (id: string, userId: string) => {
         transactionsCount: sql`GREATEST(${bankAccountsTable.transactionsCount} - 1, 0)`,
       })
       .where(eq(bankAccountsTable.id, transaction.accountId))
+
+    return deleted
+  })
+}
+
+/**
+ * Bulk-deletes multiple transactions with ownership enforcement and truthful
+ * per-account balance reversal, all inside one database transaction.
+ *
+ * Selection is scoped to the signed-in user: rows belonging to other users
+ * are ignored instead of throwing, and the returned array only contains rows
+ * that were actually deleted.
+ */
+export const deleteTransactions = async (ids: string[], userId: string) => {
+  if (ids.length === 0) return []
+
+  return db.transaction(async tx => {
+    const owned = await tx
+      .select({
+        id: transactionsTable.id,
+        amount: transactionsTable.amount,
+        type: transactionsTable.type,
+        accountId: transactionsTable.accountId,
+      })
+      .from(transactionsTable)
+      .where(and(inArray(transactionsTable.id, ids), eq(transactionsTable.userId, userId)))
+
+    if (owned.length === 0) return []
+
+    const deleted = await tx
+      .delete(transactionsTable)
+      .where(
+        and(
+          inArray(
+            transactionsTable.id,
+            owned.map(t => t.id),
+          ),
+          eq(transactionsTable.userId, userId),
+        ),
+      )
+      .returning()
+
+    // Reverse balance/count effects per affected account, mirroring
+    // deleteTransaction: removing income subtracts, removing expense adds back.
+    // `agg.balance` is the NET effect the deleted rows had on the account
+    // (income +, expense −); the SQL sign flips it to undo that effect.
+    const byAccount = new Map<string, { balance: number; count: number }>()
+    for (const row of owned) {
+      const current = byAccount.get(row.accountId) ?? { balance: 0, count: 0 }
+      const amount = parseFloat(row.amount ?? '0')
+      current.balance += row.type === 'income' ? amount : -amount
+      current.count += 1
+      byAccount.set(row.accountId, current)
+    }
+
+    for (const [accountId, agg] of byAccount) {
+      const sign = agg.balance >= 0 ? '-' : '+'
+      const value = String(Math.round(Math.abs(agg.balance) * 100) / 100)
+      await tx
+        .update(bankAccountsTable)
+        .set({
+          balance: sql`${bankAccountsTable.balance} ${sql.raw(sign)} ${value}`,
+          transactionsCount: sql`GREATEST(${bankAccountsTable.transactionsCount} - ${agg.count}, 0)`,
+        })
+        .where(eq(bankAccountsTable.id, accountId))
+    }
 
     return deleted
   })

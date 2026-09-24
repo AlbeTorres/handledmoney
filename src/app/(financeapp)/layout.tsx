@@ -14,7 +14,7 @@ export default async function HandledMoneyLayout({
       <div className='flex h-screen overflow-hidden'>
         <SidebarProvider>
           <AppSidebar />
-          <section className='flex-1 flex flex-col overflow-y-auto dark:bg-background-dark/50'>
+          <section className='flex-1 flex flex-col overflow-y-auto bg-background'>
             <AppHeader userName={'Usuario Ejemplo'} avatarUrl={null} />
             {children}
             <DashboardFooter />

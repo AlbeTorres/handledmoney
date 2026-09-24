@@ -52,7 +52,7 @@ describe('ResetForm', () => {
     localStorage.clear()
   })
 
-  // ── Renderizado ──────────────────────────────────────────────────────────────
+  // ── Rendering ────────────────────────────────────────────────────────────────
 
   it('renders email field, submit button and back link', () => {
     setup()
@@ -68,7 +68,7 @@ describe('ResetForm', () => {
     expect(screen.getByText('email')).toBeInTheDocument()
   })
 
-  // ── Validación ───────────────────────────────────────────────────────────────
+  // ── Validation ───────────────────────────────────────────────────────────────
 
   it('does NOT call requestPasswordReset when email is empty', async () => {
     const { user } = setup()
@@ -87,7 +87,7 @@ describe('ResetForm', () => {
     expect(requestPasswordResetMock).not.toHaveBeenCalled()
   })
 
-  // ── Llamada a la API ─────────────────────────────────────────────────────────
+  // ── API call ─────────────────────────────────────────────────────────────────
 
   it('calls requestPasswordReset with the correct email on valid submit', async () => {
     const { user } = setup()
@@ -120,7 +120,7 @@ describe('ResetForm', () => {
     })
   })
 
-  // ── Respuesta exitosa ────────────────────────────────────────────────────────
+  // ── Successful response ──────────────────────────────────────────────────────
 
   it('shows success toast when API call succeeds', async () => {
     const { user } = setup()
@@ -130,7 +130,7 @@ describe('ResetForm', () => {
     await user.click(screen.getByRole('button', { name: 'send_reset_email' }))
 
     await waitFor(() => {
-      expect(toastSuccessMock).toHaveBeenCalledWith('password_reset_email_sent')
+      expect(toastSuccessMock).toHaveBeenCalledWith('password_reset_requested')
     })
   })
 
@@ -147,7 +147,7 @@ describe('ResetForm', () => {
     })
   })
 
-  // ── Respuesta con error ──────────────────────────────────────────────────────
+  // ── Error response ───────────────────────────────────────────────────────────
 
   it('shows error toast with the API error message when call fails', async () => {
     const { user } = setup()
@@ -186,7 +186,7 @@ describe('ResetForm', () => {
     })
   })
 
-  // ── Estado loading ───────────────────────────────────────────────────────────
+  // ── Loading state ────────────────────────────────────────────────────────────
 
   it('disables submit button while request is in flight', async () => {
     const { user } = setup()

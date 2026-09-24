@@ -1,60 +1,39 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { PieChart, Shield, TrendingUp } from 'lucide-react'
-import Image from 'next/image'
+import { Landmark, ListChecks, WalletCards } from 'lucide-react'
 
 const Feature = () => {
   return (
-    <section className='w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800'>
-      <div className='container mx-auto px-4 md:px-6'>
-        <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12'>
-          Key Features
-        </h2>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
+    <section className='border-y bg-muted/40 py-16 md:py-20'>
+      <div className='container px-4 md:px-6'>
+        <div className='max-w-2xl space-y-3'>
+          <p className='label-caps text-primary'>Built around your records</p>
+          <h2 className='headline-lg'>Tools for the financial information you choose to keep.</h2>
+        </div>
+        <div className='mt-10 grid gap-4 md:grid-cols-3'>
           <Card>
-            <CardContent className='flex flex-col items-center space-y-4 p-6'>
-              <Image
-                src='/placeholder.svg?height=200&width=200'
-                alt='Smart Budgeting'
-                width={200}
-                height={200}
-                className='rounded-full mb-4'
-              />
-              <PieChart className='h-12 w-12 text-primary' />
-              <h3 className='text-2xl font-bold text-center'>Smart Budgeting</h3>
-              <p className='text-center text-gray-500 dark:text-gray-400'>
-                Automatically categorize your expenses and create personalized budgets.
+            <CardContent className='space-y-3 p-6'>
+              <WalletCards className='size-6 text-primary' aria-hidden='true' />
+              <h3 className='title-md'>Accounts</h3>
+              <p className='body-sm text-muted-foreground'>
+                Keep the accounts you add organized in one view.
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='flex flex-col items-center space-y-4 p-6'>
-              <Image
-                src='/placeholder.svg?height=200&width=200'
-                alt='Investment Tracking'
-                width={200}
-                height={200}
-                className='rounded-full mb-4'
-              />
-              <TrendingUp className='h-12 w-12 text-primary' />
-              <h3 className='text-2xl font-bold text-center'>Investment Tracking</h3>
-              <p className='text-center text-gray-500 dark:text-gray-400'>
-                Monitor your investments in real-time and get insights to grow your wealth.
+            <CardContent className='space-y-3 p-6'>
+              <ListChecks className='size-6 text-primary' aria-hidden='true' />
+              <h3 className='title-md'>Transactions</h3>
+              <p className='body-sm text-muted-foreground'>
+                Record and review the income and expenses you enter.
               </p>
             </CardContent>
           </Card>
           <Card>
-            <CardContent className='flex flex-col items-center space-y-4 p-6'>
-              <Image
-                src='/placeholder.svg?height=200&width=200'
-                alt='Secure Banking'
-                width={200}
-                height={200}
-                className='rounded-full mb-4'
-              />
-              <Shield className='h-12 w-12 text-primary' />
-              <h3 className='text-2xl font-bold text-center'>Secure Banking</h3>
-              <p className='text-center text-gray-500 dark:text-gray-400'>
-                Bank-level encryption keeps your financial data safe and secure.
+            <CardContent className='space-y-3 p-6'>
+              <Landmark className='size-6 text-primary' aria-hidden='true' />
+              <h3 className='title-md'>Budgets</h3>
+              <p className='body-sm text-muted-foreground'>
+                Plan amounts by category and follow your recorded activity.
               </p>
             </CardContent>
           </Card>

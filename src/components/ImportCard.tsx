@@ -76,12 +76,11 @@ export const ImportCard = ({ data, accounts, onCancel }: Props) => {
     return -1
   }
   const dateColumnIndex = findColumnIndex('date')
-  const dateSamples =
-    dateColumnIndex === -1 ? [] : body.map(row => row[dateColumnIndex] ?? '')
+  const dateSamples = dateColumnIndex === -1 ? [] : body.map(row => row[dateColumnIndex] ?? '')
   const detectedOrder = detectDateOrder(dateSamples)
   const dateAmbiguous = detectedOrder === 'ambiguous'
   const localeBias: DateOrder = locale.toLowerCase().startsWith('es') ? 'dd/mm' : 'mm/dd'
-  const dateOrder: DateOrder = dateAmbiguous ? config.dateOrder ?? localeBias : detectedOrder
+  const dateOrder: DateOrder = dateAmbiguous ? (config.dateOrder ?? localeBias) : detectedOrder
 
   const handleContinue = () => {
     // Build raw mapped rows keyed by target column (CSV-IMP-11: the same rows
@@ -114,6 +113,7 @@ export const ImportCard = ({ data, accounts, onCancel }: Props) => {
     setNormalizedRows(
       normalized.map((row, index) => ({
         ...row,
+        sourceRowIndex: index,
         possibleDuplicate: duplicateIndices.has(index),
       })),
     )

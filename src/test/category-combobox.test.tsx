@@ -1,4 +1,4 @@
-import { CategoryCombobox } from '@/components/CategoryCombobox'
+import { CategoryCombobox } from '@/app/(financeapp)/budget/_components/CategoryCombobox'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 

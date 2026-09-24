@@ -16,6 +16,7 @@ const {
   toastSuccessMock,
   toastErrorMock,
   useSessionMock,
+  refreshMock,
 } = vi.hoisted(() => ({
   confirmEnableMock: vi.fn(),
   confirmDisableMock: vi.fn(),
@@ -25,6 +26,7 @@ const {
   toastSuccessMock: vi.fn(),
   toastErrorMock: vi.fn(),
   useSessionMock: vi.fn(),
+  refreshMock: vi.fn(),
 }))
 
 // ── Module mocks ─────────────────────────────────────────────────────────────
@@ -34,6 +36,10 @@ const {
 // predecibles en los tests (por ejemplo: 'toast.enabled_success').
 vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
+}))
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ refresh: refreshMock }),
 }))
 
 // Mockeamos react-hot-toast para verificar que se muestran toasts de éxito/error
@@ -62,7 +68,11 @@ vi.mock('@/lib/auth-client', () => ({
 // (que es la key de traducción, por eso incluimos 'enable' en el check).
 // PasswordConfirmDialog se renderiza como null porque no necesitamos testearlo aquí.
 vi.mock('@/hooks/use-confirm-password', () => ({
-  useConfirmAction: (opts: { title: string; description: string; onSubmit: (pw: string) => Promise<unknown> }) => ({
+  useConfirmAction: (opts: {
+    title: string
+    description: string
+    onSubmit: (pw: string) => Promise<unknown>
+  }) => ({
     confirm: opts.title.includes('enable') ? confirmEnableMock : confirmDisableMock,
     dialogProps: {
       open: false,
@@ -87,10 +97,7 @@ vi.mock('@/components/QRDialog', () => ({
   }) =>
     props.open ? (
       <div data-testid='qr-dialog'>
-        <input
-          data-testid='totp-input'
-          onChange={(e) => props.onCodeChange(e.target.value)}
-        />
+        <input data-testid='totp-input' onChange={e => props.onCodeChange(e.target.value)} />
         <button onClick={props.onSubmit}>Submit QR</button>
       </div>
     ) : null,
@@ -199,6 +206,17 @@ describe('TwoFASettings', () => {
     })
   })
 
+  it('keeps two-factor cancellation silent', async () => {
+    const user = userEvent.setup()
+    confirmEnableMock.mockResolvedValueOnce(null)
+    render(<TwoFASettings />)
+
+    await user.click(screen.getByRole('button', { name: /enable_button/ }))
+
+    await waitFor(() => expect(confirmEnableMock).toHaveBeenCalled())
+    expect(toastErrorMock).not.toHaveBeenCalled()
+  })
+
   // ── Flujo de verificación ───────────────────────────────────────────────
 
   // Verifica el flujo de verificación TOTP: después de abrir el QR dialog,
@@ -230,6 +248,7 @@ describe('TwoFASettings', () => {
     await waitFor(() => {
       expect(twoFactorVerifyMock).toHaveBeenCalledWith({ code: '123456' })
       expect(screen.getByTestId('backup-dialog')).toBeTruthy()
+      expect(refreshMock).toHaveBeenCalled()
     })
   })
 

@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/dialog'
 import type { BudgetWithGroups } from '@/interfaces'
 import { ArrowLeft, Copy, Loader2, Pencil, Star, Trash2 } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -35,6 +36,7 @@ interface BudgetDetailViewProps {
 }
 
 export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
+  const t = useTranslations('handledmoney.budget')
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [editing, setEditing] = useState(false)
@@ -104,7 +106,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
     <div className='space-y-7'>
       <div className='flex flex-col gap-5 lg:flex-row lg:items-start'>
         <Button variant='ghost' size='icon' asChild className='hidden shrink-0 lg:inline-flex'>
-          <Link href='/budget' aria-label='Back to budgets'>
+          <Link href='/budget' aria-label={t('detail.back_aria')}>
             <ArrowLeft className='size-4' />
           </Link>
         </Button>
@@ -112,24 +114,22 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
           href='/budget'
           className='inline-flex w-fit items-center gap-2 body-sm text-muted-foreground hover:text-foreground lg:hidden'
         >
-          <ArrowLeft className='size-4' /> All budgets
+          <ArrowLeft className='size-4' /> {t('detail.all_budgets')}
         </Link>
 
         <div className='flex-1 min-w-0'>
-
-            <>
-              <div className='flex flex-wrap items-center gap-3'>
-                <h1 className='display-lg truncate text-foreground'>{budget.name}</h1>
-                <span className='label-caps rounded-full bg-primary/15 px-2.5 py-1 text-primary'>
-                  Budget plan
-                </span>
-              </div>
-              <p className='body-lg mt-1 text-muted-foreground'>
-                {periodLabel}
-                {budget.endDate ? ` – ${formatDate(budget.endDate)}` : ' – ongoing'}
-              </p>
-            </>
-
+          <>
+            <div className='flex flex-wrap items-center gap-3'>
+              <h1 className='display-lg truncate text-foreground'>{budget.name}</h1>
+              <span className='label-caps rounded-full bg-primary/15 px-2.5 py-1 text-primary'>
+                {t('detail.plan_badge')}
+              </span>
+            </div>
+            <p className='body-lg mt-1 text-muted-foreground'>
+              {periodLabel}
+              {budget.endDate ? ` – ${formatDate(budget.endDate)}` : t('list.ongoing')}
+            </p>
+          </>
         </div>
 
         {/*<div className='flex flex-wrap gap-2 lg:justify-end'>
@@ -229,10 +229,8 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
       <div className='space-y-4'>
         <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
           <div>
-            <h2 className='headline-lg text-foreground'>Plan</h2>
-            <p className='body-sm text-muted-foreground'>
-              Assign a monthly amount to every category.
-            </p>
+            <h2 className='headline-lg text-foreground'>{t('detail.plan_title')}</h2>
+            <p className='body-sm text-muted-foreground'>{t('detail.plan_description')}</p>
           </div>
           {/*<AddBudgetGroupForm budgetId={budget.id} nextSortOrder={budget.groups.length} />*/}
         </div>

@@ -64,7 +64,7 @@ export function EmailActionForm({
     if (isPending) return t('sending')
     if (isCooldownActive)
       return t('resend_email_cooldown', { time: formatCooldown(cooldownSeconds) })
-    return t(submitButtonLabelKey as any)
+    return t(submitButtonLabelKey as Parameters<typeof t>[0])
   }, [cooldownSeconds, isCooldownActive, isPending, t, submitButtonLabelKey])
 
   const handleFormSubmit = async (data: z.infer<typeof ResetSchema>) => {
@@ -90,9 +90,9 @@ export function EmailActionForm({
 
   return (
     <CardWrapper
-      headerLabel={headerLabelKey ? t(headerLabelKey as any) : ''}
+      headerLabel={headerLabelKey ? t(headerLabelKey as Parameters<typeof t>[0]) : ''}
       backButtonHref={backButtonHref}
-      backButtonLabel={t(backButtonLabelKey as any)}
+      backButtonLabel={t(backButtonLabelKey as Parameters<typeof t>[0])}
       callbackUrl={callbackUrl}
       isPending={isPending}
       classname='mx-auto pt-2'
@@ -106,15 +106,15 @@ export function EmailActionForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   {showFieldLabel && (
-                    <FieldLabel htmlFor='form-signup-email'>{t('email')}</FieldLabel>
+                    <FieldLabel htmlFor='form-email-action-email'>{t('email')}</FieldLabel>
                   )}
                   <InputGroup>
                     <InputGroupInput
                       {...field}
-                      id='form-signup-email'
+                      id='form-email-action-email'
                       aria-invalid={fieldState.invalid}
                       placeholder={t('email_placeholder')}
-                      autoComplete='off'
+                      autoComplete='email'
                       type='email'
                       disabled={isPending}
                     />
@@ -128,11 +128,7 @@ export function EmailActionForm({
             />
           </FieldGroup>
         </div>
-        <Button
-          disabled={isSubmitDisabled}
-          type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300 disabled:opacity-70'
-        >
+        <Button disabled={isSubmitDisabled} type='submit' className='mt-8 w-full'>
           {buttonLabel}
         </Button>
       </form>

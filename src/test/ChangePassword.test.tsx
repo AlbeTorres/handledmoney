@@ -60,7 +60,7 @@ describe('ChangePassword', () => {
     withToken()
   })
 
-  // ── Renderizado ──────────────────────────────────────────────────────────────
+  // ── Rendering ────────────────────────────────────────────────────────────────
 
   it('renders password field, submit button and back link', () => {
     setup()
@@ -82,7 +82,7 @@ describe('ChangePassword', () => {
     expect(screen.getByRole('button', { name: 'reset_password' })).not.toBeDisabled()
   })
 
-  // ── Toggle de visibilidad ────────────────────────────────────────────────────
+  // ── Password visibility toggle ───────────────────────────────────────────────
 
   it('toggles password visibility when clicking the eye icon', async () => {
     const { user } = setup()
@@ -100,7 +100,7 @@ describe('ChangePassword', () => {
     expect(passwordInput).toHaveAttribute('type', 'password')
   })
 
-  // ── Validación del schema ────────────────────────────────────────────────────
+  // ── Schema validation ────────────────────────────────────────────────────────
 
   it('does NOT call resetPassword when password is empty', async () => {
     const { user } = setup()
@@ -157,7 +157,7 @@ describe('ChangePassword', () => {
     })
   })
 
-  // ── Token ausente ────────────────────────────────────────────────────────────
+  // ── Missing token ────────────────────────────────────────────────────────────
 
   it('shows error.missing_token toast and does NOT call API when token is null', async () => {
     withNoToken()
@@ -184,7 +184,7 @@ describe('ChangePassword', () => {
     })
   })
 
-  // ── Submit exitoso ───────────────────────────────────────────────────────────
+  // ── Successful submission ────────────────────────────────────────────────────
 
   it('calls resetPassword with the correct newPassword and token on valid submit', async () => {
     const { user } = setup()
@@ -202,7 +202,7 @@ describe('ChangePassword', () => {
     })
   })
 
-  it('shows success toast and redirects to "/" on success', async () => {
+  it('shows success toast and redirects to login on success', async () => {
     const { user } = setup()
     resetPasswordMock.mockResolvedValue({ data: { status: true }, error: null })
 
@@ -211,7 +211,7 @@ describe('ChangePassword', () => {
 
     await waitFor(() => {
       expect(toastSuccessMock).toHaveBeenCalledWith('success.password_reset')
-      expect(pushMock).toHaveBeenCalledWith('/')
+      expect(pushMock).toHaveBeenCalledWith('/auth/login')
     })
   })
 
@@ -247,7 +247,7 @@ describe('ChangePassword', () => {
     })
   })
 
-  // ── Error genérico ───────────────────────────────────────────────────────────
+  // ── Generic error ────────────────────────────────────────────────────────────
 
   it('shows error.unknown_error toast when API returns a generic error', async () => {
     const { user } = setup()
@@ -279,7 +279,7 @@ describe('ChangePassword', () => {
     })
   })
 
-  // ── Estado loading ───────────────────────────────────────────────────────────
+  // ── Loading state ────────────────────────────────────────────────────────────
 
   it('disables submit button while request is in flight', async () => {
     const { user } = setup()

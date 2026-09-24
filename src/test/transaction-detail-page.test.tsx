@@ -28,7 +28,11 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('next/link', () => ({
   __esModule: true,
-  default: ({ href, children, ...props }: any) => (
+  default: ({
+    href,
+    children,
+    ...props
+  }: React.PropsWithChildren<{ href: string }> & Record<string, unknown>) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -46,18 +50,19 @@ vi.mock('@/actions/transaction/delete-transaction', () => ({
   deleteTransactionAction: vi.fn(),
 }))
 
-vi.mock('@/actions/transaction/get-transaction', () => ({
+vi.mock('@/data-access/get-transaction', () => ({
   getTransactionByIdAction: mockGetTransactionByIdAction,
 }))
 
 // Dialog stays closed on the page; mock renders nothing when closed (jsdom-safe)
 vi.mock('@/components/ui/dialog', () => ({
-  Dialog: ({ open, children }: any) => (open ? <div>{children}</div> : null),
-  DialogContent: ({ children }: any) => <div>{children}</div>,
-  DialogDescription: ({ children }: any) => <p>{children}</p>,
-  DialogFooter: ({ children }: any) => <div>{children}</div>,
-  DialogHeader: ({ children }: any) => <div>{children}</div>,
-  DialogTitle: ({ children }: any) => <h2>{children}</h2>,
+  Dialog: ({ open, children }: React.PropsWithChildren<{ open: boolean }>) =>
+    open ? <div>{children}</div> : null,
+  DialogContent: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  DialogDescription: ({ children }: React.PropsWithChildren) => <p>{children}</p>,
+  DialogFooter: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  DialogHeader: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  DialogTitle: ({ children }: React.PropsWithChildren) => <h2>{children}</h2>,
 }))
 
 // ── Test data ──────────────────────────────────────────────────────────────────
@@ -138,11 +143,12 @@ describe('TransactionDetailPage (Server Component)', () => {
     expect(screen.getByText('transaction_type_income')).toBeInTheDocument()
     expect(screen.getByText('amount.income_prefix$5,000.00')).toBeInTheDocument()
 
-    // Info grid + metadata + attachments
+    // Info grid + metadata + attachments (empty/unavailable state, no fake files)
     expect(screen.getByText('Monthly invoice')).toBeInTheDocument()
     expect(screen.getByText('transaction_id')).toBeInTheDocument()
     expect(screen.getByText(TRANSACTION_ID)).toBeInTheDocument()
-    expect(screen.getByText('Paystub_Oct24.pdf')).toBeInTheDocument()
+    expect(screen.getByTestId('attachments-empty')).toBeInTheDocument()
+    expect(screen.queryByText('Paystub_Oct24.pdf')).not.toBeInTheDocument()
 
     // Income breakdown present, expense breakdown absent
     expect(screen.getByText('income_breakdown')).toBeInTheDocument()

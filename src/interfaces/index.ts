@@ -1,4 +1,4 @@
-export * from './Account'
+export * from './account'
 export * from './Budget'
 export * from './Category'
 export * from './CSV'

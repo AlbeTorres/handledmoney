@@ -14,31 +14,36 @@ import { TransactionDetailAttachments } from '@/components/TransactionDetailAtta
 // ── Tests ──────────────────────────────────────────────────────────────────────
 
 describe('TransactionDetailAttachments', () => {
-  it('renders the two placeholder files with names, sizes, and a count badge', () => {
+  it('renders the translated empty state when no files exist', () => {
     render(<TransactionDetailAttachments />)
 
     expect(screen.getByText('attachments')).toBeInTheDocument()
-    expect(screen.getByText('attachments_placeholder_note')).toBeInTheDocument()
-
-    expect(screen.getByText('Paystub_Oct24.pdf')).toBeInTheDocument()
-    expect(screen.getByText('142 KB')).toBeInTheDocument()
-    expect(screen.getByText('Bonus_Letter.png')).toBeInTheDocument()
-    expect(screen.getByText('1.2 MB')).toBeInTheDocument()
-
-    expect(screen.getByTestId('attachments-count').textContent).toBe('2')
+    expect(screen.getByTestId('attachments-empty')).toBeInTheDocument()
+    expect(screen.getByTestId('attachments-empty').textContent).toContain('attachments_empty')
+    expect(screen.getByTestId('attachments-count').textContent).toBe('0')
   })
 
-  it('renders a download affordance per file', () => {
+  it('renders an explicit empty state instead of fabricated files', () => {
     render(<TransactionDetailAttachments />)
 
-    expect(screen.getAllByTestId('attachment-download')).toHaveLength(2)
+    expect(screen.queryByText('Paystub_Oct24.pdf')).not.toBeInTheDocument()
+    expect(screen.queryByText('Bonus_Letter.png')).not.toBeInTheDocument()
   })
 
-  it('renders an empty state without crashing when the file list is empty', () => {
-    render(<TransactionDetailAttachments files={[]} />)
+  it('never renders download affordances (no fake download links)', () => {
+    render(<TransactionDetailAttachments />)
 
-    expect(screen.getByTestId('attachments-empty')).toBeInTheDocument()
-    expect(screen.queryByText('Paystub_Oct24.pdf')).not.toBeInTheDocument()
-    expect(screen.getByTestId('attachments-count').textContent).toBe('0')
+    expect(screen.queryByTestId('attachment-download')).not.toBeInTheDocument()
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('renders real files when provided', () => {
+    render(<TransactionDetailAttachments files={[{ name: 'receipt.pdf', size: '48 KB' }]} />)
+
+    expect(screen.getByText('receipt.pdf')).toBeInTheDocument()
+    expect(screen.getByText('48 KB')).toBeInTheDocument()
+    expect(screen.getByTestId('attachments-count').textContent).toBe('1')
+    expect(screen.queryByTestId('attachments-empty')).not.toBeInTheDocument()
   })
 })

@@ -3,60 +3,46 @@ import { Bell } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
+import { getPageTitle } from '@/lib/shell-nav'
+import { SidebarTrigger } from '@/components/ui/sidebar'
+
 interface AppHeaderProps {
   userName: string
   avatarUrl: string | null
 }
 
-const BELL_ICON = <Bell aria-hidden='true' />
-
-const TITLE_MAP: Record<string, string> = {
-  category: 'Category Overview',
-  account: 'Accounts Overview',
-  transactions: 'Transactions',
-}
-
-function getTitleFromPathname(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean) // ["category", "create"]
-  const firstSegment = segments[0]
-
-  if (!firstSegment) return 'Accounts Overview' // fallback para "/"
-
-  return TITLE_MAP[firstSegment] ?? firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1)
-}
-
 export function AppHeader({ userName, avatarUrl }: AppHeaderProps) {
   const pathname = usePathname()
-  const title = getTitleFromPathname(pathname)
+  const title = getPageTitle(pathname)
 
   return (
-    <header className='sticky shadow-sm top-0 z-10 flex items-center justify-between px-8 py-4 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
-      <div className='flex items-center gap-8'>
-        <h2 className='text-xl font-bold tracking-tight'>{title}</h2>
+    <header className='sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-border bg-background/80 px-4 py-3 backdrop-blur-md sm:px-6 lg:px-8'>
+      <div className='flex min-w-0 items-center gap-2 sm:gap-3'>
+        <SidebarTrigger aria-label='Open navigation menu' className='size-11 md:size-9' />
+        <h2 className='truncate text-lg font-bold tracking-tight sm:text-xl'>{title}</h2>
       </div>
-      <div className='flex items-center gap-3'>
+      <div className='flex items-center gap-2 sm:gap-3'>
         <button
-          className='p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors relative focus-visible:ring-2 focus-visible:ring-slate-400 outline-none'
+          type='button'
           aria-label='Notifications'
+          className='relative flex size-11 items-center justify-center rounded-lg text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 focus-visible:ring-ring md:size-10'
         >
-          {BELL_ICON}
-          <span className='absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark'></span>
+          <Bell aria-hidden='true' className='size-5' />
+          <span className='absolute top-2.5 right-2.5 size-2 rounded-full bg-destructive ring-2 ring-background'></span>
         </button>
-        <div className='size-9 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border border-slate-300 dark:border-slate-600 relative'>
+        <div className='relative flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-muted text-muted-foreground md:size-10'>
           {avatarUrl && (
             <Image
-              alt={`${userName} Profile`}
-              className='w-full h-full object-cover'
+              alt={`${userName} profile`}
+              className='size-full object-cover'
               src={avatarUrl}
-              width={36}
-              height={36}
+              width={40}
+              height={40}
               priority
             />
           )}
           {!avatarUrl && (
-            <div className='w-full h-full flex items-center justify-center text-slate-500 dark:text-slate-400'>
-              {userName.charAt(0).toUpperCase()}
-            </div>
+            <span className='text-sm font-semibold'>{userName.charAt(0).toUpperCase()}</span>
           )}
         </div>
       </div>

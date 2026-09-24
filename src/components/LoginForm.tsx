@@ -12,7 +12,6 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
-import { SocialButtons } from './SocialButtons'
 import { Checkbox } from './ui/checkbox'
 
 export const LoginForm = () => {
@@ -70,13 +69,13 @@ export const LoginForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signin-email'>{t('email')}</FieldLabel>
-                <InputGroup className='w-full border rounded-md focus:outline-none focus:ring-1! focus:ring-blue-600!'>
+                <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='form-signin-email'
                     aria-invalid={fieldState.invalid}
                     placeholder={t('email_placeholder')}
-                    autoComplete='off'
+                    autoComplete='email'
                     type='email'
                     disabled={isPending}
                   />
@@ -95,13 +94,13 @@ export const LoginForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signin-password'>{t('password')}</FieldLabel>
-                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='form-signin-password'
                     aria-invalid={fieldState.invalid}
                     placeholder={t('password_placeholder')}
-                    autoComplete='off'
+                    autoComplete='current-password'
                     type={showPassword ? 'text' : 'password'}
                     disabled={isPending}
                   />
@@ -110,7 +109,8 @@ export const LoginForm = () => {
                       type='button'
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isPending}
-                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                      className='pl-1.5 text-muted-foreground hover:text-foreground'
+                      aria-label={showPassword ? t('hide_password') : t('show_password')}
                     >
                       {showPassword ? (
                         <EyeIcon className='w-4 h-4' />
@@ -135,7 +135,6 @@ export const LoginForm = () => {
                   checked={field.value}
                   onCheckedChange={field.onChange}
                   disabled={isPending}
-                  className='data-[state=checked]:text-white'
                 />
                 <label
                   htmlFor='form-signin-remember'
@@ -148,15 +147,10 @@ export const LoginForm = () => {
           />
         </FieldGroup>
 
-        <Button
-          disabled={isPending}
-          type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
-        >
-          {t('signin')}
+        <Button disabled={isPending} type='submit' className='mt-8 w-full'>
+          {isPending ? t('signing_in') : t('signin')}
         </Button>
       </form>
-      <SocialButtons callbackUrl={'/dashboard'} isPending={isPending} />
     </>
   )
 }

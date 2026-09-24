@@ -17,8 +17,14 @@ vi.mock('next-intl', () => ({
 
 // Native-select stand-in for the Radix Select (BulkTypeDrawer).
 vi.mock('@/components/ui/select', () => ({
-  Select: ({ value, onValueChange, children, ...rest }: any) => (
-    <select value={value ?? ''} onChange={e => onValueChange(e.target.value)} {...rest}>
+  Select: ({
+    value,
+    onValueChange,
+    children,
+    ...rest
+  }: React.PropsWithChildren<{ value?: string; onValueChange?: (v: string) => void }> &
+    Record<string, unknown>) => (
+    <select value={value ?? ''} onChange={e => onValueChange?.(e.target.value)} {...rest}>
       {children}
     </select>
   ),
@@ -29,7 +35,11 @@ vi.mock('@/components/ui/select', () => ({
     </option>
   ),
   SelectContent: ({ children }: React.PropsWithChildren) => <>{children}</>,
-  SelectItem: ({ value, children, disabled }: any) => (
+  SelectItem: ({
+    value,
+    children,
+    disabled,
+  }: React.PropsWithChildren<{ value: string; disabled?: boolean }>) => (
     <option value={value} disabled={disabled}>
       {children}
     </option>
@@ -38,8 +48,15 @@ vi.mock('@/components/ui/select', () => ({
 
 // Sheet renders directly when open (jsdom has no Radix portals).
 vi.mock('@/components/ui/sheet', () => ({
-  Sheet: ({ open, children }: React.PropsWithChildren<{ open: boolean; onOpenChange: (open: boolean) => void }>) =>
-    open ? <div data-testid='sheet' data-state='open'>{children}</div> : null,
+  Sheet: ({
+    open,
+    children,
+  }: React.PropsWithChildren<{ open: boolean; onOpenChange: (open: boolean) => void }>) =>
+    open ? (
+      <div data-testid='sheet' data-state='open'>
+        {children}
+      </div>
+    ) : null,
   SheetContent: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
   SheetHeader: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
   SheetTitle: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
@@ -49,7 +66,14 @@ vi.mock('@/components/ui/checkbox', () => ({
   // The real Radix Checkbox maps checked='indeterminate' to the DOM
   // indeterminate property; jsdom doesn't apply it from a JSX prop, so the
   // mock surfaces it as a data attribute (same component contract).
-  Checkbox: ({ checked, onCheckedChange, ...props }: any) => {
+  Checkbox: ({
+    checked,
+    onCheckedChange,
+    ...props
+  }: {
+    checked?: boolean | 'indeterminate'
+    onCheckedChange?: (checked: boolean) => void
+  } & Record<string, unknown>) => {
     const indeterminate = checked === 'indeterminate'
     return (
       <input
@@ -111,7 +135,12 @@ const ROWS: NormalizedRow[] = [
   makeRow({ payee: 'Grocery Store', amount: 120.5, type: 'expense', typeConflict: true }),
 ]
 
-const DEFAULT_CONFIG = { accountId: 'acc-1', typeMode: 'auto' as const, dateOrder: null, numberFormat: 'us' as const }
+const DEFAULT_CONFIG = {
+  accountId: 'acc-1',
+  typeMode: 'auto' as const,
+  dateOrder: null,
+  numberFormat: 'us' as const,
+}
 
 function seedStore() {
   useCSVState.setState({
@@ -209,7 +238,11 @@ describe('ReviewImportTable', () => {
     const payload = onSubmitMock.mock.calls[0][0]
     expect(payload.accountId).toBe('acc-1')
     expect(payload.rows).toHaveLength(1)
-    expect(payload.rows[0]).toMatchObject({ payee: 'Opening balance', amount: 100, type: 'expense' })
+    expect(payload.rows[0]).toMatchObject({
+      payee: 'Opening balance',
+      amount: 100,
+      type: 'expense',
+    })
     // date converted at the payload boundary via local parts, never new Date(raw)
     const date: Date = payload.rows[0].date
     expect(date.getFullYear()).toBe(2024)
@@ -240,7 +273,11 @@ describe('ReviewImportTable', () => {
   it('disables the submit control and shows a loading state during submit (CSV-IMP-10)', async () => {
     const user = userEvent.setup()
     let resolveSubmit: (value: { success: boolean }) => void = () => {}
-    onSubmitMock.mockReturnValueOnce(new Promise(resolve => { resolveSubmit = resolve }))
+    onSubmitMock.mockReturnValueOnce(
+      new Promise(resolve => {
+        resolveSubmit = resolve
+      }),
+    )
 
     render(<ReviewImportTable onBack={vi.fn()} onSubmit={onSubmitMock} />)
 
@@ -252,5 +289,55 @@ describe('ReviewImportTable', () => {
 
     resolveSubmit({ success: true })
     await waitFor(() => expect(submitButton.disabled).toBe(false))
+  })
+
+  it('disables submit when every row is excluded (zero-row guard)', async () => {
+    const user = userEvent.setup()
+    render(<ReviewImportTable onBack={vi.fn()} onSubmit={onSubmitMock} />)
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[0]) // select-all
+    await user.click(screen.getByTestId('bulk-exclude-button'))
+
+    const submitButton = screen.getByTestId('submit-button') as HTMLButtonElement
+    expect(submitButton.disabled).toBe(true)
+
+    await user.click(submitButton)
+    expect(onSubmitMock).not.toHaveBeenCalled()
+  })
+
+  it('re-includes excluded rows via the bulk action and submits them (undo)', async () => {
+    const user = userEvent.setup()
+    render(<ReviewImportTable onBack={vi.fn()} onSubmit={onSubmitMock} />)
+
+    const checkboxes = screen.getAllByRole('checkbox')
+    await user.click(checkboxes[1]) // row 1
+    await user.click(screen.getByTestId('bulk-exclude-button'))
+    expect(useCSVState.getState().normalizedRows[0].excluded).toBe(true)
+
+    // Select the excluded row again: the bulk action now re-includes it.
+    await user.click(checkboxes[1])
+    expect(screen.getByText('import.bulk_include:{"count":1}')).toBeTruthy()
+    await user.click(screen.getByTestId('bulk-exclude-button'))
+
+    expect(useCSVState.getState().normalizedRows[0].excluded).toBe(false)
+
+    await user.click(screen.getByTestId('submit-button'))
+    expect(onSubmitMock).toHaveBeenCalledTimes(1)
+    const payload = onSubmitMock.mock.calls[0][0]
+    expect(payload.rows).toHaveLength(3)
+  })
+
+  it('announces the import report as an alert (role=alert)', async () => {
+    const user = userEvent.setup()
+    onSubmitMock.mockResolvedValueOnce({
+      success: false,
+      errors: [{ rowIndex: 1, field: 'amount', reason: 'Amount must be positive' }],
+    })
+    render(<ReviewImportTable onBack={vi.fn()} onSubmit={onSubmitMock} />)
+
+    await user.click(screen.getByTestId('submit-button'))
+
+    expect(await screen.findByTestId('import-report')).toHaveAttribute('role', 'alert')
   })
 })

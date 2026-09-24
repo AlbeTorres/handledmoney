@@ -50,13 +50,15 @@ export function CreateAccountForm() {
       if (res.success) {
         toast.success(res.message)
         form.reset()
+        router.push('/account')
+        return
       }
+      toast.error(t('form.error_generic'))
     } catch (error) {
       console.log(error, 'error')
       toast.error(t('form.error_generic'))
     } finally {
       setIsPending(false)
-      router.push('/account')
     }
   }
 
@@ -66,7 +68,7 @@ export function CreateAccountForm() {
   }, [form])
 
   return (
-    <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+    <div className='overflow-hidden rounded-xl border border-border bg-card shadow-sm'>
       <form id='form-create-account' onSubmit={form.handleSubmit(handleSubmit)}>
         <div className='p-8 space-y-8'>
           {/* Basic Info */}
@@ -77,7 +79,9 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-name'>{t('form.account_name')}</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-name'>
+                      {t('form.account_name')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
@@ -99,7 +103,9 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-bank'>{t('form.bank_name')}</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-bank'>
+                      {t('form.bank_name')}
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
@@ -122,7 +128,9 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-type'>{t('form.account_type')}</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-type'>
+                      {t('form.account_type')}
+                    </FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id='form-create-account-type'
@@ -148,7 +156,9 @@ export function CreateAccountForm() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-create-account-currency'>{t('form.currency')}</FieldLabel>
+                    <FieldLabel htmlFor='form-create-account-currency'>
+                      {t('form.currency')}
+                    </FieldLabel>
                     <Select name={field.name} value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger
                         id='form-create-account-currency'
@@ -172,7 +182,7 @@ export function CreateAccountForm() {
             </div>
           </FieldGroup>
 
-          <div className='border-t border-slate-100 dark:border-slate-800' />
+          <div className='border-t border-border' />
 
           <AppearanceSection
             iconValue={form.watch('icon')}

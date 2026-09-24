@@ -12,10 +12,9 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
-import { SocialButtons } from './SocialButtons'
 
 export const RegisterForm = () => {
   const router = useRouter()
@@ -33,7 +32,7 @@ export const RegisterForm = () => {
     },
   })
 
-  const termsAccepted = form.watch('termsAccepted')
+  const termsAccepted = useWatch({ control: form.control, name: 'termsAccepted' })
 
   const handleSubmit = async (data: z.infer<typeof RegisterSchema>) => {
     setIsPending(true)
@@ -53,10 +52,10 @@ export const RegisterForm = () => {
       })
     } else {
       setIsPending(false)
-      toast.success(t('success.email_sent'), {
+      toast.success(t('success.account_created'), {
         duration: 5000,
       })
-      router.replace('/auth/login')
+      router.replace(`/auth/new-verification?email=${encodeURIComponent(data.email)}`)
     }
   }
 
@@ -70,13 +69,13 @@ export const RegisterForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signup-name'>{t('name')}</FieldLabel>
-                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='form-signup-name'
                     aria-invalid={fieldState.invalid}
                     placeholder={t('name_placeholder')}
-                    autoComplete='off'
+                    autoComplete='name'
                     type='text'
                     disabled={isPending}
                   />
@@ -103,7 +102,7 @@ export const RegisterForm = () => {
                     id='form-signup-email'
                     aria-invalid={fieldState.invalid}
                     placeholder={t('email_placeholder')}
-                    autoComplete='off'
+                    autoComplete='email'
                     type='email'
                     disabled={isPending}
                   />
@@ -125,13 +124,13 @@ export const RegisterForm = () => {
             render={({ field, fieldState }) => (
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor='form-signup-password'>{t('password')}</FieldLabel>
-                <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                <InputGroup>
                   <InputGroupInput
                     {...field}
                     id='form-signup-password'
                     aria-invalid={fieldState.invalid}
                     placeholder={t('password_placeholder')}
-                    autoComplete='off'
+                    autoComplete='new-password'
                     type={showPassword ? 'text' : 'password'}
                     disabled={isPending}
                   />
@@ -140,7 +139,8 @@ export const RegisterForm = () => {
                       type='button'
                       onClick={() => setShowPassword(!showPassword)}
                       disabled={isPending}
-                      className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                      className='pl-1.5 text-muted-foreground hover:text-foreground'
+                      aria-label={showPassword ? t('hide_password') : t('show_password')}
                     >
                       {showPassword ? (
                         <EyeIcon className='w-4 h-4' />
@@ -169,7 +169,6 @@ export const RegisterForm = () => {
                     checked={!!field.value}
                     onCheckedChange={field.onChange}
                     disabled={isPending}
-                    className='data-[state=checked]:text-white'
                   />
                   <Label htmlFor='form-signup-terms' className='text-sm leading-normal'>
                     <Link href='/terms' className='text-primary hover:underline underline-offset-4'>
@@ -184,16 +183,10 @@ export const RegisterForm = () => {
             )}
           />
         </div>
-        <Button
-          disabled={isPending || !termsAccepted}
-          type='submit'
-          className='block! px-6 py-2 mt-8 w-full rounded-lg text-white hover:bg-secondary hover:border-secondary transition-all duration-300'
-        >
-          {t('signup')}
+        <Button disabled={isPending || !termsAccepted} type='submit' className='mt-8 w-full'>
+          {isPending ? t('creating_account') : t('signup')}
         </Button>
       </form>
-
-      <SocialButtons callbackUrl={'/'} isPending={isPending} />
     </>
   )
 }

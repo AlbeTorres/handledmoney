@@ -65,11 +65,11 @@ describe('TransactionDetailInfoGrid', () => {
     expect(screen.getByText('—')).toBeInTheDocument()
   })
 
-  it('renders the placeholder tags from the typed constant, marked as placeholder', () => {
+  it('never renders placeholder tags (no persisted tags table)', () => {
     render(<TransactionDetailInfoGrid payee='Whole Foods' category={category} notes={null} />)
 
-    expect(screen.getByText('Work, Q4')).toBeInTheDocument()
-    const tagsRow = screen.getByTestId('tags-placeholder')
-    expect(tagsRow).toHaveAttribute('data-placeholder', 'true')
+    expect(screen.queryByText('Work, Q4')).not.toBeInTheDocument()
+    expect(screen.queryByTestId('tags-placeholder')).not.toBeInTheDocument()
+    expect(screen.queryByText('tags')).not.toBeInTheDocument()
   })
 })

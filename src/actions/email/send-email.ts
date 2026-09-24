@@ -3,8 +3,6 @@
 import { EmailTemplate } from '@/components/email/email-template'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function sendEmail({
   email,
   firstName,
@@ -18,7 +16,13 @@ export async function sendEmail({
   content: string
   url: string
 }) {
-  const { data, error } = await resend.emails.send({
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    throw new Error('RESEND_API_KEY is not configured')
+  }
+
+  const resend = new Resend(apiKey)
+  const { error } = await resend.emails.send({
     from: 'Acme <onboarding@resend.dev>',
     to: [email],
     subject,

@@ -101,8 +101,8 @@ describe('RegisterForm', () => {
         termsAcceptedAt: expect.any(Date),
         callbackURL: '/auth/new-verification?redirect=false',
       })
-      expect(toastSuccessMock).toHaveBeenCalledWith('success.email_sent', { duration: 5000 })
-      expect(replaceMock).toHaveBeenCalledWith('/auth/login')
+      expect(toastSuccessMock).toHaveBeenCalledWith('success.account_created', { duration: 5000 })
+      expect(replaceMock).toHaveBeenCalledWith('/auth/new-verification?email=jane%40example.com')
     })
   })
 

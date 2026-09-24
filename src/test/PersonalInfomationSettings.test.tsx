@@ -10,6 +10,9 @@ const {
   updateUserMock,
   changeEmailMock,
   confirmActionMock,
+  confirmPasswordSubmitMock,
+  twoFactorEnableMock,
+  verifyPasswordActionMock,
   toastSuccessMock,
   toastErrorMock,
 } = vi.hoisted(() => ({
@@ -17,6 +20,9 @@ const {
   updateUserMock: vi.fn(),
   changeEmailMock: vi.fn(),
   confirmActionMock: vi.fn(),
+  confirmPasswordSubmitMock: vi.fn(),
+  twoFactorEnableMock: vi.fn(),
+  verifyPasswordActionMock: vi.fn(),
   toastSuccessMock: vi.fn(),
   toastErrorMock: vi.fn(),
 }))
@@ -51,21 +57,29 @@ vi.mock('@/lib/auth-client', () => ({
     }),
     updateUser: updateUserMock,
     changeEmail: changeEmailMock,
+    twoFactor: { enable: twoFactorEnableMock },
   },
 }))
 
+vi.mock('@/actions/auth/verify-password', () => ({
+  verifyPasswordAction: verifyPasswordActionMock,
+}))
+
 vi.mock('@/hooks/use-confirm-password', () => ({
-  useConfirmAction: () => ({
-    confirm: confirmActionMock,
-    dialogProps: {
-      open: false,
-      title: '',
-      description: '',
-      isPending: false,
-      onCancel: vi.fn(),
-      onSubmit: vi.fn(),
-    },
-  }),
+  useConfirmAction: (options: { onSubmit: (password: string) => Promise<unknown> }) => {
+    confirmPasswordSubmitMock.mockImplementation(options.onSubmit)
+    return {
+      confirm: confirmActionMock,
+      dialogProps: {
+        open: false,
+        title: '',
+        description: '',
+        isPending: false,
+        onCancel: vi.fn(),
+        onSubmit: vi.fn(),
+      },
+    }
+  },
   PasswordConfirmDialog: () => null,
 }))
 
@@ -79,7 +93,7 @@ const mockUser = {
 
 describe('PersonalInfomationSettings', () => {
   beforeEach(() => {
-    vi.clearAllMocks()
+    vi.resetAllMocks()
   })
 
   // ── Renderizado inicial ──────────────────────────────────────────────────
@@ -344,6 +358,16 @@ describe('PersonalInfomationSettings', () => {
   })
 
   // ── Submit — email cambia ────────────────────────────────────────────────
+
+  it('verifies an email-change password without enabling two-factor authentication', async () => {
+    verifyPasswordActionMock.mockResolvedValueOnce({ success: true })
+    render(<PersonalInfomationSettings user={mockUser} />)
+
+    await confirmPasswordSubmitMock('current-password')
+
+    expect(verifyPasswordActionMock).toHaveBeenCalledWith('current-password')
+    expect(twoFactorEnableMock).not.toHaveBeenCalled()
+  })
 
   // Cuando el email cambia, primero se actualiza el nombre con updateUser,
   // luego se llama a confirm() para verificar la password antes de proceder

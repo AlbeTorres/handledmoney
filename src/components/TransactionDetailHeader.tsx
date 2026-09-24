@@ -1,10 +1,9 @@
 'use client'
 
-import { TransactionStatusBadge } from '@/components/TransactionStatusBadge'
 import { Badge } from '@/components/ui/badge'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
 import { fmtDate, formatMoney, getIconComponent } from '@/lib/utils'
-import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
+import { ArrowBigDown, ArrowBigUp, type LucideIcon } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 
 interface TransactionDetailHeaderProps {
@@ -13,6 +12,17 @@ interface TransactionDetailHeaderProps {
   payee: string
   date: Date
   account: { bank: string; name: string; currency: string; icon?: string }
+}
+
+function AccountLine({ icon: Icon, bank, name }: { icon: LucideIcon; bank: string; name: string }) {
+  return (
+    <div className='flex items-center gap-2 mt-2'>
+      <Icon className='size-5 text-muted-foreground shrink-0' />
+      <p className='text-sm text-muted-foreground truncate'>
+        {bank} · {name}
+      </p>
+    </div>
+  )
 }
 
 export function TransactionDetailHeader({
@@ -27,45 +37,37 @@ export function TransactionDetailHeader({
   const typeConfig = getTransactionTypeConfig(type)
   const prefix = type === 'income' ? t('amount.income_prefix') : t('amount.expense_prefix')
 
-  const Icon = getIconComponent(account.icon ?? 'account_balance')
+  const accountIcon = getIconComponent(account.icon ?? 'account_balance')
 
   return (
     <section className='bg-background'>
-      <div className='flex flex-col md:flex-row  mt-5  justify-between items-center'>
-        <div>
-          <div className='flex flex-wrap items-center  gap-2'>
+      <div className='flex flex-col md:flex-row mt-5 justify-between items-center gap-6'>
+        <div className='min-w-0'>
+          <div className='flex flex-wrap items-center gap-2'>
             <Badge variant={typeConfig.variant}>
               {type === 'income' ? <ArrowBigUp /> : <ArrowBigDown />}
               {t(typeConfig.labelKey)}
             </Badge>
-            <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{fmtDate(date)}</p>
+            <p className='mt-1 text-sm text-muted-foreground'>{fmtDate(date)}</p>
           </div>
 
           <div className='py-2'>
-            <h1 className='text-5xl font-semibold tracking-tight  text-slate-900 dark:text-slate-100'>
+            <h1 className='text-3xl sm:text-4xl font-semibold tracking-tight text-foreground break-words'>
               {payee}
             </h1>
-            <div className='flex items-center gap-2 mt-2'>
-              <Icon className='size-5 text-slate-500 dark:text-slate-400' />
-              <p className='mt-0.5 text-md text-slate-500 dark:text-slate-400'>
-                {account.bank} · {account.name}
-              </p>
-            </div>
+            <AccountLine icon={accountIcon} bank={account.bank} name={account.name} />
           </div>
         </div>
 
-        <div className='flex flex-col items-end gap-4'>
+        <div className='flex flex-col items-start md:items-end gap-4'>
           <p
-            className={`text-5xl tracking-tighter font-bold ${
-              type === 'income'
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-rose-600 dark:text-rose-400'
+            className={`text-3xl sm:text-4xl tracking-tighter font-bold tabular-nums ${
+              type === 'income' ? 'text-income' : 'text-expense'
             }`}
           >
             {prefix}
             {formatMoney(amount ?? '0', account.currency)}
           </p>
-          <TransactionStatusBadge status='cleared' />
         </div>
       </div>
     </section>

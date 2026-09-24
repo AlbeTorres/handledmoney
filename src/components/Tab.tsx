@@ -1,22 +1,59 @@
+'use client'
+
+import { useRef } from 'react'
+
 type Props = {
   activeView: 'expense' | 'income'
   onViewChange: (view: 'expense' | 'income') => void
   tabs: ['income', 'expense']
   labels?: Record<string, string>
+  ariaLabel?: string
 }
 
-export const Tab = ({ activeView, onViewChange, tabs, labels }: Props) => {
+/**
+ * Two-option income/expense selector with radiogroup semantics: each option is
+ * a radio button, selection is announced via aria-checked and arrow keys move
+ * focus and selection like a native radio group.
+ */
+export const Tab = ({
+  activeView,
+  onViewChange,
+  tabs,
+  labels,
+  ariaLabel = 'Transaction type',
+}: Props) => {
+  const optionRefs = useRef<(HTMLButtonElement | null)[]>([])
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return
+    event.preventDefault()
+    const direction = event.key === 'ArrowRight' || event.key === 'ArrowDown' ? 1 : -1
+    const nextIndex = (index + direction + tabs.length) % tabs.length
+    onViewChange(tabs[nextIndex])
+    optionRefs.current[nextIndex]?.focus()
+  }
+
   return (
-    <div className='flex items-center w-fit gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg'>
-      {tabs.map(view => (
+    <div
+      role='radiogroup'
+      aria-label={ariaLabel}
+      className='flex items-center w-fit gap-1 bg-muted p-1 rounded-lg'
+    >
+      {tabs.map((view, index) => (
         <button
           key={view}
+          ref={node => {
+            optionRefs.current[index] = node
+          }}
           type='button'
+          role='radio'
+          aria-checked={activeView === view}
           onClick={() => onViewChange(view)}
-          className={`px-4 py-1.5 w-full rounded-md text-sm font-semibold capitalize transition-all ${
+          onKeyDown={event => onKeyDown(event, index)}
+          className={`px-4 py-1.5 w-full rounded-md text-sm font-semibold capitalize transition-colors ${
             activeView === view
-              ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm'
-              : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+              ? 'bg-card text-foreground shadow-sm ring-1 ring-border'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           {labels?.[view] ?? view}

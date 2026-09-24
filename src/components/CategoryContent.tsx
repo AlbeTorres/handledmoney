@@ -3,17 +3,20 @@
 import { CategorySelect } from '@/repository/categories'
 
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { CategoryCard } from './CategoryCard'
 import { Button } from './ui/button'
 
 interface CategoryListProps {
-  categories: (CategorySelect & { children?: any[] })[]
+  categories: (CategorySelect & { children?: unknown[] })[]
   activeType: ('expense' | 'income')[]
   search: string
   sort: string
 }
 
 export function CategoryContent({ categories, activeType, search, sort }: CategoryListProps) {
+  const t = useTranslations('handledmoney.category')
+
   const clearFilters = () => {
     const params = new URLSearchParams(window.location.search)
     params.delete('type')
@@ -42,11 +45,12 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
       <div className='w-full mt-14 gap-5 h-full flex flex-col items-center justify-center'>
         <div className='flex flex-col items-center justify-center'>
           <Search size={32} className='text-muted-foreground mb-4' />
+          <p className='text-center text-muted-foreground text-sm'>{t('list.no_results')}</p>
           <p className='text-center text-muted-foreground text-sm'>
-            No categories match your filters
+            {t('list.try_adjusting_search')}
           </p>
         </div>
-        <Button onClick={clearFilters}>Clear Filters</Button>
+        <Button onClick={clearFilters}>{t('filter.clear_filters')}</Button>
       </div>
     )
   }
@@ -55,8 +59,8 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
     <div className='flex flex-col overflow-y-auto space-y-14 pb-8 '>
       {expensesCategories.length > 0 && (
         <div className='flex flex-col gap-4'>
-          <p className='text-lg font-semibold'>Expenses</p>
-          <div className='w-full bg-gray-200 h-px' />
+          <h2 className='text-lg font-semibold text-foreground'>{t('filter.expenses')}</h2>
+          <div className='w-full bg-border h-px' />
           <div className='grid grid-cols-1 md:grid-cols-3 items-center content-start justify-center gap-4'>
             {expensesCategories.map(category => (
               <CategoryCard key={category.id} category={category} />
@@ -67,8 +71,8 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
 
       {incomeCategories.length > 0 && (
         <div className='flex flex-col gap-4'>
-          <p className='text-lg font-semibold'>Income</p>
-          <div className='w-full bg-gray-200 h-px' />
+          <h2 className='text-lg font-semibold text-foreground'>{t('filter.income')}</h2>
+          <div className='w-full bg-border h-px' />
           <div className='grid grid-cols-1 md:grid-cols-3 items-center content-start justify-center gap-4'>
             {incomeCategories.map(category => (
               <CategoryCard key={category.id} category={category} />

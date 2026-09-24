@@ -3,7 +3,7 @@
 import { useConfirm } from '@/hooks/use-confirm'
 import { Transaction } from '@/interfaces'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
-import { fmtDate } from '@/lib/utils'
+import { fmtDate, formatMoney } from '@/lib/utils'
 import { Trash } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -20,11 +20,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 interface DataTableProps {
   data: Transaction[]
   categories: { id: string; name: string }[]
-  onBulkDelete: (ids: string[]) => void
-  onBulkCategoryChange: (categoryId: string, ids: string[]) => void
+  onBulkDelete: (ids: string[]) => Promise<boolean>
+  onBulkCategoryChange: (categoryId: string, ids: string[]) => Promise<boolean>
   disabled?: boolean
   totalPages: number
   currentPage: number
+  currency?: string
 }
 
 export function DataTable({
@@ -35,6 +36,7 @@ export function DataTable({
   disabled,
   totalPages,
   currentPage,
+  currency,
 }: DataTableProps) {
   const t = useTranslations('handledmoney.transaction')
   const router = useRouter()
@@ -88,15 +90,20 @@ export function DataTable({
 
   async function handleBulkDelete() {
     const ok = await confirm()
-    if (ok) {
-      onBulkDelete(Array.from(selectedIds))
+    if (!ok) return
+    const ids = Array.from(selectedIds)
+    const success = await onBulkDelete(ids)
+    // Keep the selection on failure so the user can retry or change it.
+    if (success) {
       setSelectedIds(new Set())
     }
   }
 
-  function handleBulkCategoryChange(categoryId: string, ids: string[]) {
-    onBulkCategoryChange(categoryId, ids)
-    setSelectedIds(new Set())
+  async function handleBulkCategoryChange(categoryId: string, ids: string[]) {
+    const success = await onBulkCategoryChange(categoryId, ids)
+    if (success) {
+      setSelectedIds(new Set())
+    }
   }
 
   return (
@@ -145,7 +152,7 @@ export function DataTable({
               <TableHead>{t('table.header_account')}</TableHead>
               <TableHead>{t('table.header_category')}</TableHead>
               <TableHead>{t('table.header_notes')}</TableHead>
-              <TableHead className='w-17.5'></TableHead>
+              <TableHead className='w-20'></TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -168,7 +175,11 @@ export function DataTable({
                     <TableCell>
                       <Badge variant={config.variant}>{t(config.labelKey)}</Badge>
                     </TableCell>
-                    <TableCell>{transaction.amount}</TableCell>
+                    <TableCell className='text-right font-mono tabular-nums'>
+                      {currency
+                        ? formatMoney(Number(transaction.amount), currency)
+                        : transaction.amount}
+                    </TableCell>
                     <TableCell>{transaction.accountName}</TableCell>
                     <TableCell>
                       <CategoryColumn categoryName={transaction.categoryName} />

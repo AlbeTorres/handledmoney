@@ -1,4 +1,5 @@
 'use client'
+import { deleteTransactionsAction } from '@/actions/transaction/delete-transaction'
 import { updateTransactionsCategoryAction } from '@/actions/transaction/update-transactions-category'
 import { Transaction } from '@/interfaces'
 import { useTranslations } from 'next-intl'
@@ -11,6 +12,7 @@ interface AccountTransactionTableProps {
   categories: { id: string; name: string }[]
   totalPages: number
   currentPage: number
+  currency?: string
 }
 
 export function AccountTransactionTable({
@@ -18,25 +20,40 @@ export function AccountTransactionTable({
   categories,
   totalPages,
   currentPage,
+  currency,
 }: AccountTransactionTableProps) {
   const t = useTranslations('handledmoney.transaction')
   const router = useRouter()
 
-  function onDelete(ids: string[]) {
-    // TODO: Connect this to actual delete server action if needed
-    console.log('Deleting these ids:', ids)
+  async function onDelete(ids: string[]): Promise<boolean> {
+    try {
+      const result = await deleteTransactionsAction({ ids })
+      if (result.success) {
+        toast.success(t('table.delete_success', { count: result.count ?? ids.length }))
+        return true
+      }
+      toast.error(t('form.error_generic'))
+      return false
+    } catch {
+      toast.error(t('form.error_generic'))
+      return false
+    } finally {
+      router.refresh()
+    }
   }
 
-  async function onBulkCategoryChange(categoryId: string, ids: string[]) {
+  async function onBulkCategoryChange(categoryId: string, ids: string[]): Promise<boolean> {
     try {
       const result = await updateTransactionsCategoryAction({ categoryId, ids })
       if (result.success) {
         toast.success(t('table.category_update_success', { count: result.count ?? ids.length }))
-      } else {
-        toast.error(t('table.category_update_error'))
+        return true
       }
+      toast.error(t('table.category_update_error'))
+      return false
     } catch {
       toast.error(t('table.category_update_error'))
+      return false
     } finally {
       router.refresh()
     }
@@ -51,6 +68,7 @@ export function AccountTransactionTable({
       onBulkCategoryChange={onBulkCategoryChange}
       totalPages={totalPages}
       currentPage={currentPage}
+      currency={currency}
     />
   )
 }

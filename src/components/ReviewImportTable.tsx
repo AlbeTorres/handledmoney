@@ -3,7 +3,14 @@
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { CSVTransaction } from '@/interfaces'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
 import type { BulkImportInput, NormalizedRow, RowError } from '@/lib/csv/types'
@@ -32,7 +39,7 @@ type Props = {
  */
 export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
   const t = useTranslations('handledmoney.transaction')
-  const { config, normalizedRows, excludeRows, setRowType } = useCSVState()
+  const { config, normalizedRows, excludeRows, includeRows, setRowType } = useCSVState()
 
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set())
   const [isTypeDrawerOpen, setIsTypeDrawerOpen] = useState(false)
@@ -41,6 +48,12 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
   const [lastPayload, setLastPayload] = useState<BulkImportInput | null>(null)
 
   const includedCount = normalizedRows.filter(row => !row.excluded).length
+
+  // Bulk action mode for the selected rows: when every selected row is already
+  // excluded the action becomes re-include (undo), otherwise exclude.
+  const selectedRows = normalizedRows.filter((_, index) => selectedIds.has(index))
+  const selectedAreExcluded = selectedRows.length > 0 && selectedRows.every(row => row.excluded)
+  const canSubmit = includedCount > 0 && !submitting
 
   const toggleRow = (index: number) =>
     setSelectedIds(prev => {
@@ -72,7 +85,7 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
   }
 
   const handleExclude = () => {
-    excludeRows(Array.from(selectedIds))
+    ;(selectedAreExcluded ? includeRows : excludeRows)(Array.from(selectedIds))
     setSelectedIds(new Set())
   }
 
@@ -80,9 +93,7 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
    *  the payload boundary with local-midnight Date parts (never new Date(raw)). */
   const buildPayload = (): BulkImportInput => ({
     accountId: config.accountId,
-    rows: normalizedRows
-      .filter(row => !row.excluded)
-      .map(toCSVTransaction),
+    rows: normalizedRows.filter(row => !row.excluded).map(toCSVTransaction),
   })
 
   const handleSubmit = async () => {
@@ -129,7 +140,12 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
           >
             {t('import.back_to_edit')}
           </Button>
-          <Button size={'sm'} onClick={handleSubmit} disabled={submitting} data-testid='submit-button'>
+          <Button
+            size={'sm'}
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            data-testid='submit-button'
+          >
             {submitting ? t('import.submitting') : `${t('import.submit')} (${includedCount})`}
           </Button>
         </div>
@@ -155,7 +171,9 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
               disabled={submitting}
               data-testid='bulk-exclude-button'
             >
-              {t('import.bulk_exclude', { count: selectedIds.size })}
+              {selectedAreExcluded
+                ? t('import.bulk_include', { count: selectedIds.size })
+                : t('import.bulk_exclude', { count: selectedIds.size })}
             </Button>
           </>
         )}
@@ -185,7 +203,7 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
               const typeConfig = getTransactionTypeConfig(row.type)
               return (
                 <TableRow
-                  key={index}
+                  key={row.sourceRowIndex ?? index}
                   data-state={selectedIds.has(index) ? 'selected' : undefined}
                   className={row.excluded ? 'opacity-50' : undefined}
                 >
@@ -240,7 +258,11 @@ export const ReviewImportTable = ({ onBack, onSubmit }: Props) => {
 
       {/* Per-row error report + retry (CSV-IMP-09/10) */}
       {report && report.length > 0 && (
-        <div className='mt-4 rounded-md border border-destructive/40 p-4' data-testid='import-report'>
+        <div
+          role='alert'
+          className='mt-4 rounded-md border border-destructive/40 p-4'
+          data-testid='import-report'
+        >
           <h3 className='font-semibold'>{t('import.report_title')}</h3>
           <ul className='mt-2 list-inside list-disc text-sm text-destructive'>
             {report.map((error, index) => (

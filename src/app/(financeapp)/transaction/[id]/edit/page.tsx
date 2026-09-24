@@ -3,14 +3,16 @@ import { FormWrapper } from '@/components/FormWrapper'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
 import { getCategoriesByUserData } from '@/data-access/get-categories'
 import { getTransactionByIdAction } from '@/data-access/get-transaction'
+import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'
-import toast from 'react-hot-toast'
 
 interface EditTransactionPageProps {
   params: Promise<{ id: string }>
 }
 
 export default async function EditTransactionPage({ params }: EditTransactionPageProps) {
+  const t = await getTranslations('handledmoney.transaction')
+
   const [accounts, categories] = await Promise.all([
     getBankAccountByUserAction(),
     getCategoriesByUserData(),
@@ -24,19 +26,29 @@ export default async function EditTransactionPage({ params }: EditTransactionPag
   const response = await getTransactionByIdAction(id)
 
   if (!response.success || !response.data) {
-    //todo: show a toast with the error message user friendly not the error message from the database
-    toast.error(response.message)
+    // The transaction does not exist (or belongs to another user). Render a
+    // translated recovery state instead of a client-only toast error.
     return (
       <FormWrapper
-        title='Edit Account'
-        description='Update your account details.'
-        oldPath='/account'
-        oldPathTitle='Accounts'
-        pathTitle='Edit'
+        title={t('edit.title')}
+        description={t('edit.description')}
+        oldPath='/transaction'
+        oldPathTitle={t('breadcrumbs.transactions')}
+        pathTitle={t('breadcrumbs.edit')}
       >
-        <div className='flex items-center justify-center'>
-          <p>Account not found</p>
-          <Link href='/account'>Go back to accounts</Link>
+        <div className='flex flex-col items-center justify-center gap-4 py-16 text-center'>
+          <h2 className='text-2xl font-bold text-slate-900 dark:text-white'>
+            {t('edit.not_found')}
+          </h2>
+          <p className='max-w-md text-sm text-muted-foreground'>
+            {t('edit.not_found_description')}
+          </p>
+          <Link
+            href='/transaction'
+            className='rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors'
+          >
+            {t('edit.go_back')}
+          </Link>
         </div>
       </FormWrapper>
     )
@@ -57,11 +69,11 @@ export default async function EditTransactionPage({ params }: EditTransactionPag
 
   return (
     <FormWrapper
-      title='Edit Transaction'
-      description='Set up your transaction details.'
+      title={t('edit.title')}
+      description={t('edit.description')}
       oldPath='/transaction'
-      oldPathTitle='Transactions'
-      pathTitle='Edit'
+      oldPathTitle={t('breadcrumbs.transactions')}
+      pathTitle={t('breadcrumbs.edit')}
     >
       <EditTransactionForm
         accounts={accountsData}

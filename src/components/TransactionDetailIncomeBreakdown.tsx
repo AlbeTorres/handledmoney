@@ -34,10 +34,12 @@ interface IncomeDetailsSlice {
 
 interface TransactionDetailIncomeBreakdownProps {
   incomeDetails: IncomeDetailsSlice | null
+  currency?: string
 }
 
 export function TransactionDetailIncomeBreakdown({
   incomeDetails,
+  currency = 'USD',
 }: TransactionDetailIncomeBreakdownProps) {
   const t = useTranslations('handledmoney.transaction.detail')
   const tTx = useTranslations('handledmoney.transaction')
@@ -55,19 +57,19 @@ export function TransactionDetailIncomeBreakdown({
 
   return (
     <section className='rounded-sm border bg-white p-5 shadow-sm dark:bg-slate-900'>
-      <h2 className='mb-4 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
+      <h2 className='mb-4 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
         {t('income_breakdown')}
       </h2>
 
       {(incomeLabel || billingLabel) && (
         <div className='mb-4 flex flex-wrap gap-2'>
           {incomeLabel && (
-            <span className='inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'>
+            <span className='inline-flex items-center rounded-full bg-income/10 px-2.5 py-0.5 text-xs font-semibold text-income'>
               {incomeLabel}
             </span>
           )}
           {billingLabel && (
-            <span className='inline-flex items-center rounded-full bg-sky-50 px-2.5 py-0.5 text-xs font-semibold text-sky-700 dark:bg-sky-500/10 dark:text-sky-400'>
+            <span className='inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-semibold text-muted-foreground'>
               {billingLabel}
             </span>
           )}
@@ -76,35 +78,25 @@ export function TransactionDetailIncomeBreakdown({
 
       <dl className='space-y-3'>
         <div className='flex items-start justify-between gap-4'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('gross_amount')}
-          </dt>
-          <dd className='text-sm font-semibold text-slate-900 dark:text-slate-100'>
-            {formatMoney(gross)}
-          </dd>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('gross_amount')}</dt>
+          <dd className='text-sm font-semibold text-foreground'>{formatMoney(gross, currency)}</dd>
         </div>
         <div className='flex items-start justify-between gap-4'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('taxes_withheld')}
-          </dt>
-          <dd className='text-sm font-semibold text-rose-600 dark:text-rose-400'>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('taxes_withheld')}</dt>
+          <dd className='text-sm font-semibold text-expense'>
             {expensePrefix}
-            {formatMoney(withheld)}
+            {formatMoney(withheld, currency)}
           </dd>
         </div>
         <div className='flex items-start justify-between gap-4'>
-          <dt className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-            {t('net_amount')}
-          </dt>
-          <dd className='text-sm font-semibold text-emerald-600 dark:text-emerald-400'>
-            {formatMoney(net)}
-          </dd>
+          <dt className='text-sm font-medium text-muted-foreground'>{t('net_amount')}</dt>
+          <dd className='text-sm font-semibold text-income'>{formatMoney(net, currency)}</dd>
         </div>
       </dl>
 
       {taxBreakdown && (
-        <div className='mt-4 border-t border-slate-100 pt-4 dark:border-slate-800'>
-          <h3 className='mb-3 text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400'>
+        <div className='mt-4 border-t border-border pt-4'>
+          <h3 className='mb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
             {t('tax_details')}
           </h3>
           <dl className='space-y-2'>
@@ -112,9 +104,9 @@ export function TransactionDetailIncomeBreakdown({
               if (!(key in taxBreakdown)) return null
               return (
                 <div key={key} className='flex items-start justify-between gap-4'>
-                  <dt className='text-sm text-slate-500 dark:text-slate-400'>{t(`tax_${key}`)}</dt>
-                  <dd className='text-sm text-slate-900 dark:text-slate-100'>
-                    {formatMoney(Number(taxBreakdown[key]))}
+                  <dt className='text-sm text-muted-foreground'>{t(`tax_${key}`)}</dt>
+                  <dd className='text-sm text-foreground'>
+                    {formatMoney(Number(taxBreakdown[key]), currency)}
                   </dd>
                 </div>
               )

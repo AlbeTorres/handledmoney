@@ -60,6 +60,7 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
 
           {transaction.type === 'income' ? (
             <TransactionDetailIncomeBreakdown
+              currency={transaction.account.currency}
               incomeDetails={
                 transaction.incomeDetails
                   ? {
@@ -77,6 +78,7 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
             />
           ) : (
             <TransactionDetailExpenseBreakdown
+              currency={transaction.account.currency}
               expenseDetails={
                 transaction.expenseDetails
                   ? {

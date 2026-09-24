@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   updateBudget: vi.fn(),
   deleteBudget: vi.fn(),
   push: vi.fn(),
+  refresh: vi.fn(),
   success: vi.fn(),
   error: vi.fn(),
 }))
@@ -36,13 +37,19 @@ vi.mock('@/actions/budget/select-current-budget', () => ({
 vi.mock('@/actions/budget/duplicate-budget', () => ({ duplicateBudgetAction: mocks.duplicate }))
 vi.mock('@/actions/budget/update-budget', () => ({ updateBudgetAction: mocks.updateBudget }))
 vi.mock('@/actions/budget/delete-budget', () => ({ deleteBudgetAction: mocks.deleteBudget }))
-vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mocks.push }) }))
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: mocks.push, refresh: mocks.refresh }),
+}))
 vi.mock('next/link', () => ({
   default: ({ children, href }: { children: React.ReactNode; href: string }) => (
     <a href={href}>{children}</a>
   ),
 }))
 vi.mock('sonner', () => ({ toast: { success: mocks.success, error: mocks.error } }))
+// Standard repo mock: useTranslations returns the key path itself.
+vi.mock('next-intl', () => ({
+  useTranslations: () => (key: string) => key,
+}))
 
 import { BudgetDetailView } from '@/app/(financeapp)/budget/_components/BudgetDetailView'
 import { BudgetGrid } from '@/app/(financeapp)/budget/_components/BudgetGrid'
@@ -94,7 +101,7 @@ describe('Budget operation components', () => {
     )
   })
 
-  it('renames a rendered budget group', async () => {
+  it('renders a budget group header and collapses its category rows', async () => {
     const user = userEvent.setup()
     render(
       <BudgetGroupSection
@@ -113,16 +120,15 @@ describe('Budget operation components', () => {
         }}
       />,
     )
-    await user.click(screen.getByRole('button', { name: 'Rename Bills' }))
-    await user.clear(screen.getByLabelText('Group name'))
-    await user.type(screen.getByLabelText('Group name'), 'Home')
-    await user.click(screen.getByRole('button', { name: 'Save group name' }))
-    await waitFor(() =>
-      expect(mocks.updateGroup).toHaveBeenCalledWith({ id: 'group-1', name: 'Home' }, budgetId),
-    )
+    expect(screen.getByText('Bills')).toBeInTheDocument()
+    expect(screen.getByText('group.expense_badge')).toBeInTheDocument()
+    expect(screen.getByText('group.no_categories')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'group.toggle' }))
+    expect(screen.queryByText('group.no_categories')).not.toBeInTheDocument()
   })
 
-  it('filters item categories by group type and auto-selects an inline created category', async () => {
+  it('quick-creates a category from the item name and auto-selects it', async () => {
     const user = userEvent.setup()
     render(
       <AddBudgetItemForm
@@ -132,7 +138,6 @@ describe('Budget operation components', () => {
       />,
     )
     await user.click(screen.getByRole('button', { name: /add item/i }))
-    await waitFor(() => expect(mocks.getCategories).toHaveBeenCalledWith('income'))
     await user.type(screen.getByLabelText('Name'), 'Salary')
     await user.click(screen.getByRole('button', { name: /create category from item name/i }))
     await waitFor(() =>
@@ -143,7 +148,7 @@ describe('Budget operation components', () => {
     await waitFor(() => expect(mocks.success).toHaveBeenCalledWith('Category created and selected'))
   })
 
-  it('marks the current card and exposes current selection plus dated duplication controls', async () => {
+  it('marks the current card and drives set-current plus dated duplication from the card menu', async () => {
     const user = userEvent.setup()
     render(
       <>
@@ -151,14 +156,18 @@ describe('Budget operation components', () => {
         <BudgetDetailView budget={budget} />
       </>,
     )
-    expect(screen.getByText('Current')).toBeInTheDocument()
-    await user.click(screen.getByRole('button', { name: /set current/i }))
+    expect(screen.getByText('list.current')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: 'card.options_aria' }))
+    await user.click(screen.getByRole('menuitem', { name: 'card.set_current' }))
     await waitFor(() => expect(mocks.setCurrent).toHaveBeenCalledWith(budgetId))
-    await user.click(screen.getByRole('button', { name: /^duplicate$/i }))
-    const startDate = screen.getByLabelText('Duplicate start date')
+
+    await user.click(screen.getByRole('button', { name: 'card.options_aria' }))
+    await user.click(screen.getByRole('menuitem', { name: 'card.duplicate' }))
+    const startDate = screen.getByLabelText('card.duplicate_start_date')
     await user.clear(startDate)
     await user.type(startDate, '2025-12-01')
-    await user.click(screen.getByRole('button', { name: /duplicate budget/i }))
+    await user.click(screen.getByRole('button', { name: 'card.duplicate_submit' }))
     await waitFor(() =>
       expect(mocks.duplicate).toHaveBeenCalledWith(
         expect.objectContaining({ id: budgetId, startDate: expect.any(Date) }),
@@ -168,8 +177,8 @@ describe('Budget operation components', () => {
 
   it('shows a zero-based card summary with date, planned income, allocation and balance', () => {
     render(<BudgetGrid budgets={[budget]} currentBudgetId={budgetId} />)
-    expect(screen.getByText('Planned income')).toBeInTheDocument()
-    expect(screen.getByText('Ready to assign')).toBeInTheDocument()
+    expect(screen.getByText('list.planned_income')).toBeInTheDocument()
+    expect(screen.getByText('list.ready_to_assign')).toBeInTheDocument()
     expect(screen.getByText('$1,000.00')).toBeInTheDocument()
     expect(screen.getByText('$300.00')).toBeInTheDocument()
     expect(screen.getByText(/Jan 1, 2026/)).toBeInTheDocument()

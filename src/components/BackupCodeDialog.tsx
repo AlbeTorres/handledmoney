@@ -1,4 +1,5 @@
 import { CheckCheck, Copy, Download } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 
 import toast from 'react-hot-toast'
 import { Button } from './ui/button'
@@ -26,22 +27,21 @@ export default function BackupCodeDialog({
   copied,
   setCopied,
 }: Props) {
-  // Función para copiar códigos
+  const t = useTranslations('handledmoney.settings.two_fa')
   const copyCodes = () => {
     navigator.clipboard.writeText(recoveryCodes.join('\n'))
     setCopied(true)
-    toast.success('Codes copied to clipboard')
+    toast.success(t('backup_copied'))
     setTimeout(() => setCopied(false), 2000)
   }
 
-  // Función para descargar códigos como archivo de texto
   const downloadCodes = () => {
-    const text = `Backup Codes for your account\n\nKeep these codes in a safe place. You can only use each code once.\n\n${recoveryCodes.join('\n')}`
+    const text = `${t('backup_title')}\n\n${t('backup_description')}\n\n${recoveryCodes.join('\n')}`
     const blob = new Blob([text], { type: 'text/plain' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = '2fa-backup-codes.txt'
+    a.download = t('backup_filename')
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -50,10 +50,9 @@ export default function BackupCodeDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className='sm:max-w-md'>
         <DialogHeader>
-          <DialogTitle>Save your Backup Codes</DialogTitle>
+          <DialogTitle>{t('backup_title')}</DialogTitle>
           <DialogDescription className='text-destructive font-semibold'>
-            If you lose access to your authenticator app, you will need these codes to log in. Save
-            them now, you won't see them again!
+            {t('backup_description')}
           </DialogDescription>
         </DialogHeader>
 
@@ -68,15 +67,15 @@ export default function BackupCodeDialog({
         <div className='flex gap-2'>
           <Button variant='outline' className='flex-1' onClick={copyCodes}>
             {copied ? <CheckCheck className='mr-2 h-4 w-4' /> : <Copy className='mr-2 h-4 w-4' />}
-            {copied ? 'Copied!' : 'Copy All'}
+            {copied ? t('backup_copied_short') : t('backup_copy')}
           </Button>
           <Button variant='outline' className='flex-1' onClick={downloadCodes}>
-            <Download className='mr-2 h-4 w-4' /> Download .txt
+            <Download className='mr-2 h-4 w-4' /> {t('backup_download')}
           </Button>
         </div>
 
         <DialogFooter>
-          <Button onClick={() => onOpenChange(false)}>I have saved my codes</Button>
+          <Button onClick={() => onOpenChange(false)}>{t('backup_close')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

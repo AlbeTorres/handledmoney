@@ -96,28 +96,17 @@ describe('ProfileBadgeSettings', () => {
     expect(button).toBeTruthy()
   })
 
-  // ── Imagen de avatar ─────────────────────────────────────────────────────
-
-  // Verifica que la imagen de avatar se renderiza con el atributo src correcto
-  // apuntando a la URL del servicio de imágenes de Google.
-  it('renderiza la imagen de avatar con el src correcto', () => {
+  it('renders an accessible initials fallback instead of a fake remote avatar', () => {
     render(<ProfileBadgeSettings user={mockUser} />)
 
-    const img = screen.getByRole('img')
-    expect(img).toBeTruthy()
-    expect(img).toHaveAttribute(
-      'src',
-      expect.stringContaining('googleusercontent.com'),
-    )
+    expect(screen.queryByRole('img')).toBeNull()
+    expect(screen.getByText('J')).toBeTruthy()
+    expect(screen.getByText('avatar_fallback')).toBeTruthy()
   })
 
-  // Verifica que el atributo data-alt contiene la descripción de la imagen,
-  // lo cual es importante para la accesibilidad y SEO del componente.
-  it('renderiza la imagen de avatar con la descripción en data-alt', () => {
+  it('disables the avatar control until an upload flow exists', () => {
     render(<ProfileBadgeSettings user={mockUser} />)
 
-    const img = screen.getByRole('img')
-    expect(img).toHaveAttribute('data-alt')
-    expect(img.getAttribute('data-alt')!.length).toBeGreaterThan(0)
+    expect(screen.getByRole('button', { name: 'avatar_unavailable' })).toBeDisabled()
   })
 })

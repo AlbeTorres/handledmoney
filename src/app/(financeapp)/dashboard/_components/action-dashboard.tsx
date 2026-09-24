@@ -27,8 +27,6 @@ const MODES = [
   { label: 'Anual', value: 'annual' },
 ]
 
-// http://localhost:3000/dashboard?mode=monthly&year=2001&month=7
-
 const YEARS = Array.from({ length: MAX_YEAR - MIN_YEAR + 1 }, (_, i) => {
   const value = MIN_YEAR + i
   return { label: String(value), value: String(value) }

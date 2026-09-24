@@ -1,6 +1,6 @@
 'use client'
 
-import { Account, Category, Transaction } from '../interfaces'
+import { Account, Transaction } from '../interfaces'
 import { useTransactionDrawer } from '@/hooks/use-transaction-drawer'
 import TransactionActionBar from './TransactionActionBar'
 import { TransactionList } from './TransactionList'
@@ -42,6 +42,7 @@ export const TransactionPageContent = ({
         data={data}
         totalPages={totalPages}
         currentPage={currentPage}
+        categories={categories}
         onRowClick={onOpen}
       />
       <TransactionQuickEdit

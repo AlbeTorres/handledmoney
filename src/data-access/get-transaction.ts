@@ -1,6 +1,7 @@
 import { Transaction, TransactionResponse } from '@/interfaces'
 import { auth } from '@/lib/auth'
 import {
+  getAccountTransactionSummary,
   getTransactionById,
   getTransactionsByAccountId,
   getTransactionsPaginated,
@@ -8,6 +9,27 @@ import {
 } from '@/repository/transaction'
 import { headers } from 'next/headers'
 import 'server-only'
+
+export const getAccountSummaryAction = async (accountId: string) => {
+  const session = await auth.api.getSession({ headers: await headers() })
+
+  if (!session?.user?.id) {
+    return { success: false, status: 401, message: 'Unauthorized', data: null }
+  }
+
+  try {
+    const summary = await getAccountTransactionSummary(accountId, session.user.id)
+    return {
+      success: true,
+      status: 200,
+      message: 'Account summary fetched successfully',
+      data: summary,
+    }
+  } catch (error) {
+    console.error('Error fetching account summary:', error)
+    return { success: false, status: 500, message: 'Something went wrong', data: null }
+  }
+}
 
 export const getTransactionByIdAction = async (id: string) => {
   const session = await auth.api.getSession({ headers: await headers() })

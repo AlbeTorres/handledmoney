@@ -1,31 +1,28 @@
-import heroImage from '@/assets/hero.png'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 
 const Hero = () => {
   return (
-    <section className='container px-4 md:px-6 py-12 md:py-24 lg:py-32 xl:py-48 '>
-      <div className='flex flex-col items-center space-y-4 text-center'>
-        <div className='space-y-2'>
-          <h1 className='text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none'>
-            Take Control of Your Finances
-          </h1>
-          <p className='mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400'>
-            Simplify your financial life with our all-in-one personal finance app. Budget, save, and
-            invest smarter.
+    <section className='container px-4 py-16 md:px-6 md:py-24'>
+      <div className='mx-auto flex max-w-3xl flex-col items-start gap-6'>
+        <div className='space-y-4'>
+          <p className='label-caps text-primary'>Personal finance workspace</p>
+          <h1 className='display-lg max-w-2xl'>A clear place to manage the money you track.</h1>
+          <p className='body-lg max-w-2xl text-muted-foreground'>
+            HandledMoney helps you organize accounts, record transactions, and build budgets in one
+            focused workspace.
           </p>
         </div>
-        <figure className='mt-8 mb-10 relative w-full max-w-3xl aspect-video mx-auto'>
-          <Image
-            src={heroImage}
-            alt='Personal finance dashboard'
-            fill
-            className='rounded-xl shadow-2xl object-cover'
-          />
-        </figure>
-        <div className='space-x-4'>
-          <Button>Get Started</Button>
-          <Button variant='outline'>Learn More</Button>
+        <div className='flex flex-col gap-3 sm:flex-row'>
+          <Button asChild>
+            <Link href='/auth/new-account'>
+              Create an account <ArrowRight aria-hidden='true' />
+            </Link>
+          </Button>
+          <Button asChild variant='outline'>
+            <Link href='/auth/login'>Sign in</Link>
+          </Button>
         </div>
       </div>
     </section>

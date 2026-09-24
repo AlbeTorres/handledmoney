@@ -31,6 +31,7 @@ type Props = {
   setConfig: (patch: Partial<ImportConfig>) => void
   setNormalizedRows: (rows: NormalizedRow[]) => void
   excludeRows: (indices: number[]) => void
+  includeRows: (indices: number[]) => void
   setRowType: (indices: number[], type: 'expense' | 'income') => void
 }
 
@@ -52,6 +53,13 @@ export const useCSVState = create<Props>(set => ({
     set(state => ({
       normalizedRows: state.normalizedRows.map((row, index) =>
         indices.includes(index) ? { ...row, excluded: true } : row,
+      ),
+    })),
+  // Undo for D6: re-including restores excluded rows into the submit payload.
+  includeRows: (indices: number[]) =>
+    set(state => ({
+      normalizedRows: state.normalizedRows.map((row, index) =>
+        indices.includes(index) ? { ...row, excluded: false } : row,
       ),
     })),
   setRowType: (indices: number[], type: 'expense' | 'income') =>

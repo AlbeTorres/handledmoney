@@ -16,13 +16,6 @@ import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import * as z from 'zod'
 
-const requirements = [
-  { label: 'Minimum 8 characters', test: (v: string) => v.length >= 8 },
-  { label: 'At least one uppercase letter', test: (v: string) => /[A-Z]/.test(v) },
-  { label: 'At least one number', test: (v: string) => /[0-9]/.test(v) },
-  { label: 'At least one special character', test: (v: string) => /[^A-Za-z0-9]/.test(v) },
-]
-
 export const ChangePassword = () => {
   const t = useTranslations('handledmoney.auth')
   const [isPending, startLoading] = useState(false)
@@ -36,7 +29,6 @@ export const ChangePassword = () => {
     },
   })
 
-  const passwordValue = form.watch('password')
   const router = useRouter()
   const token = useSearchParams().get('token')
 
@@ -64,7 +56,7 @@ export const ChangePassword = () => {
     } else {
       startLoading(false)
       toast.success(t('success.password_reset'))
-      router.push('/')
+      router.push('/auth/login')
     }
   }
 
@@ -73,8 +65,6 @@ export const ChangePassword = () => {
       headerLabel={t('forgot_password_title')}
       backButtonHref='/auth/login'
       backButtonLabel={t('back_to_login')}
-      callbackUrl={'/'}
-      isPending={isPending}
     >
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className='mt-4 space-y-4'>
@@ -85,13 +75,13 @@ export const ChangePassword = () => {
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor='form-signin-password'>{t('password')}</FieldLabel>
-                  <InputGroup className='focus:outline-none focus:ring-1 focus:ring-blue-600'>
+                  <InputGroup>
                     <InputGroupInput
                       {...field}
                       id='form-signin-password'
                       aria-invalid={fieldState.invalid}
                       placeholder={t('password_placeholder')}
-                      autoComplete='off'
+                      autoComplete='new-password'
                       type={showPassword ? 'text' : 'password'}
                       disabled={isPending}
                     />
@@ -100,7 +90,8 @@ export const ChangePassword = () => {
                         type='button'
                         onClick={() => setShowPassword(!showPassword)}
                         disabled={isPending}
-                        className='text-gray-500 pl-1.5 hover:text-foreground/80'
+                        className='pl-1.5 text-muted-foreground hover:text-foreground'
+                        aria-label={showPassword ? t('hide_password') : t('show_password')}
                       >
                         {showPassword ? (
                           <EyeIcon className='w-4 h-4' />
@@ -120,11 +111,7 @@ export const ChangePassword = () => {
           </FieldGroup>
         </div>
 
-        <Button
-          disabled={isPending}
-          type='submit'
-          className='block! px-6 py-2 mt-8 w-full text-white rounded-lg hover:bg-secondary transition-all duration-300'
-        >
+        <Button disabled={isPending} type='submit' className='mt-8 w-full'>
           {t('reset_password')}
         </Button>
       </form>

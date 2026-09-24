@@ -19,6 +19,7 @@ import {
   WalletCards,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
+import { isRouteActive } from '@/lib/shell-nav'
 import { SidebarNavItem } from './SidebarNavItem'
 
 const NAV_ITEMS = [
@@ -37,14 +38,15 @@ export function AppSidebar() {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size='lg' className='pointer-events-none' tooltip='FintechPro'>
-              <div className='size-8 bg-primary rounded-lg flex items-center justify-center text-white shrink-0'>
+            <SidebarMenuButton size='lg' className='pointer-events-none' tooltip='HandledMoney'>
+              <div className='flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground'>
                 <LandmarkIcon aria-hidden='true' />
               </div>
               {/* This block is auto-hidden when collapsed */}
               <div>
-                <h1 className='text-lg font-bold tracking-tight'>FintechPro</h1>
-                <p className='text-xs'>Premium Plan</p>
+                <h1 className='text-lg font-bold tracking-tight text-sidebar-foreground'>
+                  HandledMoney
+                </h1>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -61,15 +63,15 @@ export function AppSidebar() {
                   href={href}
                   icon={Icon}
                   label={label}
-                  active={pathname === href}
+                  active={isRouteActive(pathname, href)}
                 />
               ))}
-              <div className='my-4 border-t border-slate-200 dark:border-slate-800'></div>
+              <div className='my-4 border-t border-sidebar-border'></div>
               <SidebarNavItem
                 href={'/settings'}
                 icon={Settings}
                 label={'Settings'}
-                active={pathname === '/settings'}
+                active={isRouteActive(pathname, '/settings')}
               />
             </SidebarMenu>
           </SidebarGroupContent>

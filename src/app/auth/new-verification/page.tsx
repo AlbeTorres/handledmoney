@@ -1,8 +1,9 @@
 import { ResendEmailForm } from '@/components/ResendEmailForm'
 import { getTranslations } from 'next-intl/server'
+import Link from 'next/link'
 
 interface Props {
-  searchParams: Promise<{ error?: string; token?: string; email?: string, redirect?: string }>
+  searchParams: Promise<{ error?: string; token?: string; email?: string; redirect?: string }>
 }
 
 export default async function NewVerification({ searchParams }: Props) {
@@ -32,19 +33,17 @@ export default async function NewVerification({ searchParams }: Props) {
 
   return (
     <>
-      <p className={showLoginButton ? 'text-gray-500' : undefined}>
-        {t(messageKey)}
-      </p>
+      <p className='body-sm text-muted-foreground'>{t(messageKey)}</p>
 
       {showForm && <ResendEmailForm email={params.email} />}
 
       {showLoginButton && (
-        <a
+        <Link
           href='/auth/login'
-          className='inline-block px-6 py-2 text-white bg-primary rounded-lg hover:bg-secondary transition-all duration-300'
+          className='inline-flex rounded-sm bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
         >
           {t('verification_page_go_to_login')}
-        </a>
+        </Link>
       )}
     </>
   )

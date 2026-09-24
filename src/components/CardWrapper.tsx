@@ -23,22 +23,36 @@ export const CardWrapper = ({
   classname,
 }: CardWrapperProps) => {
   return (
-    <div className={cx('px-8 py-6 w-11/12 md:w-96 text-left', classname)}>
-      <h3 className='text-2xl font-bold mb-5'>{headerLabel}</h3>
+    <section
+      className={cx(
+        'w-full max-w-md border bg-card p-6 text-left text-card-foreground sm:p-8',
+        classname,
+      )}
+      aria-labelledby='auth-heading'
+    >
+      <h1 id='auth-heading' className='headline-lg mb-5'>
+        {headerLabel}
+      </h1>
       {children}
 
       <div className='mt-5 flex flex-col gap-3'>
-        <Link href={backButtonHref || '/'}>
-          <p className='text-xs text-center hover:text-primary hover:underline'>
+        {backButtonLabel && backButtonHref && (
+          <Link
+            className='rounded-sm text-center text-sm text-muted-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+            href={backButtonHref}
+          >
             {backButtonLabel}
-          </p>
-        </Link>
-        <Link href={recoverButtonHref || '/'}>
-          <p className='text-xs text-center hover:text-primary hover:underline mt-2'>
+          </Link>
+        )}
+        {recoverButtonLabel && recoverButtonHref && (
+          <Link
+            className='rounded-sm text-center text-sm text-muted-foreground hover:text-primary hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
+            href={recoverButtonHref}
+          >
             {recoverButtonLabel}
-          </p>
-        </Link>
+          </Link>
+        )}
       </div>
-    </div>
+    </section>
   )
 }
