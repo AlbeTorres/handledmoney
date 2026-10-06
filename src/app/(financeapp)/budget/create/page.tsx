@@ -1,5 +1,5 @@
-﻿import { CreateBudgetForm } from '@/components/CreateBudgetForm'
-import { FormWrapper } from '@/components/FormWrapper'
+import { CreateBudgetForm } from '@/components/CreateBudgetForm'
+import { FormWrapper } from '@/components/shared/FormWrapper'
 import { auth } from '@/lib/auth'
 import { getCategoriesByUserId } from '@/repository/categories'
 import { headers } from 'next/headers'

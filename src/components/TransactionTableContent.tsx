@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { Transaction } from '../interfaces'
 
 import { Row } from '@tanstack/react-table'
-import { DataTable } from './DataTable'
+import { DataTable } from './shared/transaction-table/DataTable'
 import { columns } from './columns'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 

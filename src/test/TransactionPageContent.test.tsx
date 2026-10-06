@@ -59,7 +59,7 @@ vi.mock('@/components/ui/button', () => ({
   ),
 }))
 
-vi.mock('@/components/Pagination', () => ({
+vi.mock('@/components/shared/transaction-table/Pagination', () => ({
   default: ({ page, totalPages, total }: { page: number; totalPages: number; total: number }) => (
     <div data-testid='pagination'>
       <span>{page}</span>
@@ -94,13 +94,13 @@ vi.mock('@/hooks/use-confirm', () => ({
   useConfirm: () => [() => null, () => Promise.resolve(true)],
 }))
 
-vi.mock('@/components/CategoryColumn', () => ({
+vi.mock('@/components/shared/transaction-table/CategoryColumn', () => ({
   CategoryColumn: ({ categoryName }: { categoryName?: string }) => (
     <span data-testid='category-cell'>{categoryName ?? 'uncategorized'}</span>
   ),
 }))
 
-vi.mock('@/components/actions', () => ({
+vi.mock('@/components/shared/transaction-table/actions', () => ({
   Actions: ({ id }: { id: string }) => <span data-testid='actions-cell'>{id}</span>,
 }))
 

@@ -12,10 +12,10 @@ import { BulkCategoryDrawer } from './BulkCategoryDrawer'
 import { CategoryColumn } from './CategoryColumn'
 import Pagination from './Pagination'
 import { Actions } from './actions'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
-import { Checkbox } from './ui/checkbox'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
+import { Badge } from '../../ui/badge'
+import { Button } from '../../ui/button'
+import { Checkbox } from '../../ui/checkbox'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../ui/table'
 
 interface DataTableProps {
   data: Transaction[]

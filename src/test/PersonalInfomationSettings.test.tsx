@@ -1,4 +1,4 @@
-import PersonalInfomationSettings from '@/components/PersonalInfomationSettings'
+import PersonalInfomationSettings from '@/app/(financeapp)/settings/components/PersonalInfomationSettings'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'

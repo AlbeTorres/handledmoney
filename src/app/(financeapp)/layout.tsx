@@ -1,6 +1,6 @@
-import { AppHeader } from '@/components/AppHeader'
-import { DashboardFooter } from '@/components/DashboardFooter'
-import { AppSidebar } from '@/components/Sidemenu'
+﻿import { AppHeader } from '@/app/(financeapp)/components/AppHeader'
+import { DashboardFooter } from '@/app/(financeapp)/components/DashboardFooter'
+import { AppSidebar } from '@/app/(financeapp)/components/Sidemenu'
 
 import { SidebarProvider } from '@/components/ui/sidebar'
 
@@ -24,3 +24,4 @@ export default async function HandledMoneyLayout({
     </main>
   )
 }
+

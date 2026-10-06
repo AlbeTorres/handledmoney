@@ -1,5 +1,5 @@
-import Footer from '@/components/Footer'
-import Header from '@/components/Header'
+import Footer from '@/components/shared/Footer'
+import Header from '@/components/shared/Header'
 
 const APP_NAME = 'FinanceApp'
 const CONTACT_EMAIL = 'privacy@financeapp.com'

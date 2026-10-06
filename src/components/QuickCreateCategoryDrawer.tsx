@@ -1,8 +1,8 @@
-﻿'use client'
+'use client'
 
 import { createCategoryAction } from '@/actions/category/create-category'
-import { ColorPicker } from '@/components/ColorPicker'
-import { IconPicker } from '@/components/IconPicker'
+import { ColorPicker } from '@/components/shared/ColorPicker'
+import { IconPicker } from '@/components/shared/IconPicker'
 import {
   Drawer,
   DrawerContent,
@@ -20,7 +20,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type { BudgetCategory } from './CategoryCombobox'
-import { FormActions } from './FormActions'
+import { FormActions } from './shared/FormActions'
 
 type Values = z.infer<typeof categorySchema>
 

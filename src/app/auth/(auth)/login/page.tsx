@@ -1,4 +1,5 @@
-import { CardWrapper, LoginForm } from '@/components'
+﻿import { CardWrapper } from '@/app/auth/components/CardWrapper'
+import { LoginForm } from '@/app/auth/(auth)/login/components/LoginForm'
 import { useTranslations } from 'next-intl'
 
 export default function LoginPage() {
@@ -15,3 +16,4 @@ export default function LoginPage() {
     </CardWrapper>
   )
 }
+

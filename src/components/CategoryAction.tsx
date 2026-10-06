@@ -4,9 +4,9 @@ import { useDebouncedSearchParam } from '@/hooks/use-debounced-search-params'
 import { useFilterParam } from '@/hooks/use-filter-params'
 import { useSortParam } from '@/hooks/use-sort-params'
 import { useTranslations } from 'next-intl'
-import ActionBar from './ActionBar'
-import FilterDropdown from './FilterDropdown'
-import SortDropdown from './SortDropdown'
+import ActionBar from './shared/ActionBar'
+import FilterDropdown from './shared/FilterDropdown'
+import SortDropdown from './shared/SortDropdown'
 
 export default function CategoryAction() {
   const [searchTerm, setSearchTerm] = useDebouncedSearchParam('search')

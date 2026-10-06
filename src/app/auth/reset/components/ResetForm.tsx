@@ -1,8 +1,8 @@
-'use client'
+﻿'use client'
 import { authClient } from '@/lib/auth-client'
 import { useSearchParams } from 'next/navigation'
 import { useTranslations } from 'next-intl'
-import { EmailActionForm } from './EmailActionForm'
+import { EmailActionForm } from '../../components/EmailActionForm'
 
 export const ResetForm = () => {
   const t = useTranslations('handledmoney.auth')
@@ -37,3 +37,4 @@ export const ResetForm = () => {
     />
   )
 }
+

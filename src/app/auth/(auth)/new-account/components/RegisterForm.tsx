@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import z from 'zod'
-import { SocialButtons } from './SocialButtons'
+import { SocialButtons } from '@/app/auth/components/SocialButtons'
 
 export const RegisterForm = () => {
   const router = useRouter()
@@ -197,3 +197,4 @@ export const RegisterForm = () => {
     </>
   )
 }
+

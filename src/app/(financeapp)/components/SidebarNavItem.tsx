@@ -1,6 +1,6 @@
+import { SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar'
 import { LucideIcon } from 'lucide-react'
 import Link from 'next/link'
-import { SidebarMenuButton, SidebarMenuItem } from './ui/sidebar'
 
 interface SidebarNavItemProps {
   href: string

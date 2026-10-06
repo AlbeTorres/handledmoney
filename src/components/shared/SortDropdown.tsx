@@ -4,7 +4,7 @@
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { ArrowUpDown, Check } from 'lucide-react'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,7 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '../ui/dropdown-menu'
 
 export type SortOption = {
   label: string

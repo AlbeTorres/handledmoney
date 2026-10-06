@@ -1,4 +1,4 @@
-import { EmptyState } from '@/components/EmptyState'
+import { EmptyState } from '@/components/shared/EmptyState'
 import TransactionActionBar from '@/components/TransactionActionBar'
 import { TransactionList } from '@/components/TransactionList'
 import { getBankAccountByUserAction } from '@/data-access/get-account'

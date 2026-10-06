@@ -59,7 +59,7 @@ vi.mock('@/hooks/use-confirm', () => ({
   ],
 }))
 
-vi.mock('@/components/AppearanceSection', () => ({
+vi.mock('@/components/shared/AppearanceSection', () => ({
   AppearanceSection: () => <div data-testid="appearance-section" />,
 }))
 
@@ -67,7 +67,7 @@ vi.mock('@/components/CategoryPreview', () => ({
   CategoryPreview: ({ name }: { name: string }) => <div data-testid="category-preview">{name}</div>,
 }))
 
-vi.mock('@/components/FormActions', () => ({
+vi.mock('@/components/shared/FormActions', () => ({
   FormActions: ({ onCancel, handleDelete, isPending, text }: any) => (
     <div>
       <button onClick={onCancel} disabled={isPending}>{text}</button>

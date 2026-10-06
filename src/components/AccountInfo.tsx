@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl'
 
 import { Download } from 'lucide-react'
 import { Account } from '../interfaces/Account'
-import { Breadcrumb } from './Breadcrumb'
+import { Breadcrumb } from './shared/Breadcrumb'
 import { Button } from './ui/button'
 
 type AccountInfoProps = {

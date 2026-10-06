@@ -1,5 +1,5 @@
 import { CreateCategoryForm } from '@/components/CreateCategoryForm'
-import { FormWrapper } from '@/components/FormWrapper'
+import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getTranslations } from 'next-intl/server'
 
 export default async function CreateCategoryPage() {

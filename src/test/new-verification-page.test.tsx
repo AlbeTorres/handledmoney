@@ -6,7 +6,7 @@ vi.mock('next-intl/server', () => ({
   getTranslations: () => Promise.resolve((key: string) => key),
 }))
 
-vi.mock('@/components/ResendEmailForm', () => ({
+vi.mock('@/app/auth/new-verification/components/ResendEmailForm', () => ({
   ResendEmailForm: ({ email }: { email: string | undefined }) => (
     <div data-testid="resend-email-form" data-email={email || ''} />
   ),

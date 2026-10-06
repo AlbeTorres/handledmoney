@@ -58,13 +58,13 @@ vi.mock('@/lib/utils', () => ({
   fmtDate: (d: Date) => d.toLocaleDateString(),
 }))
 
-vi.mock('@/components/CategoryColumn', () => ({
+vi.mock('@/components/shared/transaction-table/CategoryColumn', () => ({
   CategoryColumn: ({ categoryName }: { categoryName?: string }) => (
     <span data-testid='category-cell'>{categoryName ?? 'uncategorized'}</span>
   ),
 }))
 
-vi.mock('@/components/actions', () => ({
+vi.mock('@/components/shared/transaction-table/actions', () => ({
   Actions: ({ id }: { id: string }) => (
     <span data-testid='actions-cell'>{id}</span>
   ),

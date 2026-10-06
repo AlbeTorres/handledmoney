@@ -72,15 +72,15 @@ vi.mock('@/hooks/use-sort-params', () => ({
   useSortParam: vi.fn(() => ['date', setSortMock]),
 }))
 
-vi.mock('@/components/ActionBar', () => ({
+vi.mock('@/components/shared/ActionBar', () => ({
   default: mockActionBar,
 }))
 
-vi.mock('@/components/FilterDropdown', () => ({
+vi.mock('@/components/shared/FilterDropdown', () => ({
   default: mockFilterDropdown,
 }))
 
-vi.mock('@/components/SortDropdown', () => ({
+vi.mock('@/components/shared/SortDropdown', () => ({
   default: mockSortDropdown,
 }))
 

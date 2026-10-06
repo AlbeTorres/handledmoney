@@ -33,11 +33,11 @@ vi.mock('@/actions/account/update-account', () => ({
   editBankAccount: (...args: any[]) => editBankAccountMock(...args),
 }))
 
-vi.mock('@/components/AppearanceSection', () => ({
+vi.mock('@/components/shared/AppearanceSection', () => ({
   AppearanceSection: () => <div data-testid='appearance-section' />,
 }))
 
-vi.mock('@/components/FormActions', () => ({
+vi.mock('@/components/shared/FormActions', () => ({
   FormActions: ({ onCancel, isPending, text, loadingText }: any) => (
     <div data-testid='form-actions'>
       <button onClick={onCancel} disabled={isPending}>cancel</button>

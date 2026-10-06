@@ -21,7 +21,7 @@ vi.mock('@/hooks/use-sort-params', () => ({
 }))
 
 // Mock ActionBar — verify it receives the correct props.
-vi.mock('@/components/ActionBar', () => ({
+vi.mock('@/components/shared/ActionBar', () => ({
   default: ({ searchTerm, href, placeholder, buttonText, children }: any) => (
     <div data-testid='action-bar'>
       <span data-testid='search-term'>{searchTerm}</span>
@@ -33,7 +33,7 @@ vi.mock('@/components/ActionBar', () => ({
   ),
 }))
 
-vi.mock('@/components/FilterDropdown', () => ({
+vi.mock('@/components/shared/FilterDropdown', () => ({
   default: ({ label, options, selected }: any) => (
     <div data-testid='filter-dropdown'>
       <span data-testid='filter-label'>{label}</span>
@@ -43,7 +43,7 @@ vi.mock('@/components/FilterDropdown', () => ({
   ),
 }))
 
-vi.mock('@/components/SortDropdown', () => ({
+vi.mock('@/components/shared/SortDropdown', () => ({
   default: ({ options, selected }: any) => (
     <div data-testid='sort-dropdown'>
       <span data-testid='sort-options'>{options.length}</span>
