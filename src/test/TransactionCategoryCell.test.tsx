@@ -31,7 +31,7 @@ vi.mock('@/lib/data', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionCategoryCell } from '@/components/TransactionCategoryCell'
+import { TransactionCategoryCell } from '@/app/(financeapp)/transaction/[id]/components/TransactionCategoryCell'
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-import { CreateCategoryForm } from '@/components/CreateCategoryForm'
+import { CreateCategoryForm } from '@/app/(financeapp)/category/create/components/CreateCategoryForm'
 import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getTranslations } from 'next-intl/server'
 

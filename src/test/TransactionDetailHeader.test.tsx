@@ -68,7 +68,7 @@ vi.mock('@/components/ui/button', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionDetailHeader } from '@/components/TransactionDetailHeader'
+import { TransactionDetailHeader } from '@/app/(financeapp)/transaction/[id]/components/TransactionDetailHeader'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

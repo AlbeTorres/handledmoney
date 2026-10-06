@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { AccountCardWrapper } from '@/components/AccountCardWrapper'
+import { AccountCardWrapper } from '@/app/(financeapp)/account/components/AccountCardWrapper'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -26,13 +26,13 @@ vi.mock('@/lib/utils', () => ({
 
 // Mock TiltCardWrapper — replace with a simple div to isolate
 // AccountCardWrapper from the 3D effect (tested separately).
-vi.mock('@/components/TiltCardWrapper', () => ({
+vi.mock('@/app/(financeapp)/account/components/TiltCardWrapper', () => ({
   TiltCardWrapper: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
 // Mock AccountCard — verify it receives the correct props without
 // testing its internal rendering (already covered in AccountCard.test.tsx).
-vi.mock('@/components/AccountCard', () => ({
+vi.mock('@/app/(financeapp)/account/components/AccountCard', () => ({
   AccountCard: ({ name, institution, onDetails, onEdit, onDelete, balance, currency }: any) => (
     <div data-testid='account-card'>
       <span data-testid='card-name'>{name}</span>
@@ -47,7 +47,7 @@ vi.mock('@/components/AccountCard', () => ({
 }))
 
 // Mock DeleteAccountDialog — verify it opens/closes correctly.
-vi.mock('@/components/DeleteAccountDialog', () => ({
+vi.mock('@/app/(financeapp)/account/components/DeleteAccountDialog', () => ({
   DeleteAccountDialog: ({ isOpen, onClose, name }: any) =>
     isOpen ? (
       <div data-testid='delete-dialog'>

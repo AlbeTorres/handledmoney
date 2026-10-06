@@ -18,8 +18,8 @@ import { useCallback, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { z } from 'zod'
-import { AppearanceSection } from './shared/AppearanceSection'
-import { FormActions } from './shared/FormActions'
+import { AppearanceSection } from '@/components/shared/AppearanceSection'
+import { FormActions } from '@/components/shared/FormActions'
 
 type CreateAccountValues = z.infer<typeof CreateAccountSchema>
 

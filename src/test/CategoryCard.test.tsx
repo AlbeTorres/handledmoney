@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { CategoryCard } from '@/components/CategoryCard'
+import { CategoryCard } from '@/app/(financeapp)/category/components/CategoryCard'
 
 // ── Module mocks ─────────────────────────────────────────────────────────────
 

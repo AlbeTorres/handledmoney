@@ -8,7 +8,7 @@ const mocks = vi.hoisted(() => ({
   repoAccounts: vi.fn(),
 }))
 
-vi.mock('@/app/(financeapp)/dashboard/_components/finance-charts-client', () => ({
+vi.mock('@/app/(financeapp)/dashboard/components/finance-charts-client', () => ({
   FinanceChartsClient: mocks.FinanceChartsClient,
 }))
 // Sections must never issue their own reads — they consume page-created promises only.
@@ -16,16 +16,16 @@ vi.mock('@/repository/dashboard/actuals', () => ({ getDashboardActuals: mocks.re
 vi.mock('@/repository/dashboard/budget', () => ({ getDashboardPlan: mocks.repoPlan }))
 vi.mock('@/repository/dashboard/accounts', () => ({ getDashboardAccounts: mocks.repoAccounts }))
 
-import { AccountsSection } from '@/app/(financeapp)/dashboard/_components/accounts-section'
-import { BudgetSection } from '@/app/(financeapp)/dashboard/_components/budget-section'
-import { ChartsSection } from '@/app/(financeapp)/dashboard/_components/charts-section'
-import { InsightSection } from '@/app/(financeapp)/dashboard/_components/insight-section'
-import { KpisSection } from '@/app/(financeapp)/dashboard/_components/kpis-section'
-import { SectionUnavailable } from '@/app/(financeapp)/dashboard/_components/section-unavailable'
-import { AccountsWidget } from '@/app/(financeapp)/dashboard/_components/accounts-widget'
-import { BudgetTable } from '@/app/(financeapp)/dashboard/_components/budget-table'
-import { InsightCard } from '@/app/(financeapp)/dashboard/_components/insight-card'
-import { KpiCards } from '@/app/(financeapp)/dashboard/_components/kpi-cards'
+import { AccountsSection } from '@/app/(financeapp)/dashboard/components/accounts-section'
+import { BudgetSection } from '@/app/(financeapp)/dashboard/components/budget-section'
+import { ChartsSection } from '@/app/(financeapp)/dashboard/components/charts-section'
+import { InsightSection } from '@/app/(financeapp)/dashboard/components/insight-section'
+import { KpisSection } from '@/app/(financeapp)/dashboard/components/kpis-section'
+import { SectionUnavailable } from '@/app/(financeapp)/dashboard/components/section-unavailable'
+import { AccountsWidget } from '@/app/(financeapp)/dashboard/components/accounts-widget'
+import { BudgetTable } from '@/app/(financeapp)/dashboard/components/budget-table'
+import { InsightCard } from '@/app/(financeapp)/dashboard/components/insight-card'
+import { KpiCards } from '@/app/(financeapp)/dashboard/components/kpi-cards'
 import type { DashboardActual } from '@/lib/dashboard/actuals'
 import type { DashboardAccount } from '@/lib/dashboard/accounts'
 import type { DashboardPeriod } from '@/lib/dashboard/period'

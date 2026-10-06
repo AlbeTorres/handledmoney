@@ -5,7 +5,7 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
-vi.mock('@/components/TransactionStatusBadge', () => ({
+vi.mock('@/app/(financeapp)/transaction/[id]/components/TransactionStatusBadge', () => ({
   TransactionStatusBadge: ({ status }: { status: string }) => (
     <span data-testid='status-badge'>{status}</span>
   ),

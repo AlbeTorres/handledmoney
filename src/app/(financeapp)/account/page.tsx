@@ -1,5 +1,5 @@
-import AccountAction from '@/components/AccountAction'
-import { AccountGrid } from '@/components/AccountGrid'
+import AccountAction from './components/AccountAction'
+import { AccountGrid } from './components/AccountGrid'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { auth } from '@/lib/auth'
 import { getBankAccountsByUser } from '@/repository/account'

@@ -4,9 +4,9 @@ import { fmt, getIconComponent } from '@/lib/utils'
 import { useTranslations } from 'next-intl'
 
 import { Download } from 'lucide-react'
-import { Account } from '../interfaces/Account'
-import { Breadcrumb } from './shared/Breadcrumb'
-import { Button } from './ui/button'
+import { Account } from '@/interfaces/Account'
+import { Breadcrumb } from '@/components/shared/Breadcrumb'
+import { Button } from '@/components/ui/button'
 
 type AccountInfoProps = {
   account: Account

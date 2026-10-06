@@ -12,7 +12,7 @@ vi.mock('next-intl', () => ({
 
 // Mock CategoryCard so we can assert on props without rendering the full card tree.
 // Each mock renders a div with data-testid="category-card" and the category name.
-vi.mock('@/components/CategoryCard', () => ({
+vi.mock('@/app/(financeapp)/category/components/CategoryCard', () => ({
   CategoryCard: ({ category }: { category: { name: string } }) => (
     <div data-testid='category-card'>{category.name}</div>
   ),

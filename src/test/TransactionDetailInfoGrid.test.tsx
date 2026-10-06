@@ -30,7 +30,7 @@ vi.mock('@/lib/data', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionDetailInfoGrid } from '@/components/TransactionDetailInfoGrid'
+import { TransactionDetailInfoGrid } from '@/app/(financeapp)/transaction/[id]/components/TransactionDetailInfoGrid'
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 

@@ -9,7 +9,7 @@ vi.mock('next-intl', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionStatusBadge } from '@/components/TransactionStatusBadge'
+import { TransactionStatusBadge } from '@/app/(financeapp)/transaction/[id]/components/TransactionStatusBadge'
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 

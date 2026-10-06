@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { EditAccountForm } from '@/components/EditAccountForm'
+import { EditAccountForm } from '@/app/(financeapp)/account/[id]/edit/components/EditAccountForm'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 

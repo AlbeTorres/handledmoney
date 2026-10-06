@@ -82,7 +82,7 @@ vi.mock('@/components/ui/table', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { ReviewImportTable } from '@/components/ReviewImportTable'
+import { ReviewImportTable } from '@/app/(financeapp)/transaction/bulk/components/ReviewImportTable'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

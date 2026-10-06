@@ -1,6 +1,6 @@
 import { EmptyState } from '@/components/shared/EmptyState'
-import TransactionActionBar from '@/components/TransactionActionBar'
-import { TransactionList } from '@/components/TransactionList'
+import TransactionActionBar from './components/TransactionActionBar'
+import { TransactionList } from './components/TransactionList'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
 import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import { getTransactionsPaginatedAction } from '@/data-access/get-transaction'

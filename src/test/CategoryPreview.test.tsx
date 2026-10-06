@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { CategoryPreview } from '@/components/CategoryPreview'
+import { CategoryPreview } from '@/app/(financeapp)/category/components/CategoryPreview'
 import { LucideIcon } from 'lucide-react'
 
 // ── Module mocks ─────────────────────────────────────────────────────────────

@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { DeleteAccountDialog } from '@/components/DeleteAccountDialog'
+import { DeleteAccountDialog } from '@/app/(financeapp)/account/components/DeleteAccountDialog'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 

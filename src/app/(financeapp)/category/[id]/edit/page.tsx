@@ -1,4 +1,4 @@
-import { EditCategoryForm } from '@/components/EditCategoryForm'
+import { EditCategoryForm } from '@/app/(financeapp)/category/[id]/edit/components/EditCategoryForm'
 import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getCategoryByIdAction } from '@/data-access/get-category-by-id'
 import { getTranslations } from 'next-intl/server'

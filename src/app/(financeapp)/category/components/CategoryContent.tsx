@@ -4,7 +4,7 @@ import { CategorySelect } from '@/repository/categories'
 
 import { Search } from 'lucide-react'
 import { CategoryCard } from './CategoryCard'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 
 interface CategoryListProps {
   categories: (CategorySelect & { children?: any[] })[]

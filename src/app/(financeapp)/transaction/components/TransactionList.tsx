@@ -3,8 +3,8 @@ import { updateTransactionsCategoryAction } from '@/actions/transaction/update-t
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { Transaction } from '../interfaces'
-import { DataTable } from './shared/transaction-table/DataTable'
+import { Transaction } from '@/interfaces'
+import { DataTable } from '@/components/shared/transaction-table/DataTable'
 
 interface TransactionListProps {
   data: Transaction[]

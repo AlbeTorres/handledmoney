@@ -1,5 +1,5 @@
-import CategoryAction from '@/components/CategoryAction'
-import { CategoryContent } from '@/components/CategoryContent'
+import CategoryAction from '@/app/(financeapp)/category/components/CategoryAction'
+import { CategoryContent } from '@/app/(financeapp)/category/components/CategoryContent'
 import { EmptyState } from '@/components/shared/EmptyState'
 import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import { getTranslations } from 'next-intl/server'

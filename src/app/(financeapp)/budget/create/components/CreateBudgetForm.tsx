@@ -1,7 +1,7 @@
 'use client'
 
 import { createBudgetAction } from '@/actions/budget/create-budget'
-import { BudgetCreationStepper, type WizardStep } from '@/components/BudgetCreationStepper'
+import { BudgetCreationStepper, type WizardStep } from './BudgetCreationStepper'
 import { FormActions } from '@/components/shared/FormActions'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
@@ -28,8 +28,8 @@ import { BudgetStructureEditor, type QuickTarget } from './BudgetStructureEditor
 import type { BudgetCategory } from './CategoryCombobox'
 import { QuickCreateCategoryDrawer } from './QuickCreateCategoryDrawer'
 import TemplateBudgetSelect from './TemplateBudgetSelect'
-import { Calendar } from './ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
+import { Calendar } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 // Kept for existing consumers; new drafts must use createTemplateGroups for fresh values.
 export const initialGroups = createTemplateGroups('starter')

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { AccountCard, AccountCardProps } from '@/components/AccountCard'
+import { AccountCard, AccountCardProps } from '@/app/(financeapp)/account/components/AccountCard'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
@@ -11,7 +11,7 @@ vi.mock('next-intl', () => ({
 
 // Full AccountCard mock to isolate it from Radix UI DropdownMenu.
 // The real component uses Radix which requires portals/overlays that jsdom doesn't support.
-vi.mock('@/components/AccountCard', () => ({
+vi.mock('@/app/(financeapp)/account/components/AccountCard', () => ({
   AccountCard: ({ institution, name, balance, currency, detail, onDetails, onEdit, onDelete, accentColor }: any) => (
     <div data-testid='account-card' style={{ borderLeftColor: accentColor }}>
       <span data-testid='card-institution'>{institution}</span>
