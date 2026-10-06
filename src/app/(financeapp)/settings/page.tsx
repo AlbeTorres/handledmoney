@@ -1,10 +1,10 @@
-import DangerZoneSettings from '@/components/DangerZoneSettings'
-import NotificationChannelSettings from '@/components/NotificationChannelSettings'
-import PersonalInfomationSettings from '@/components/PersonalInfomationSettings'
-import PreferencesSettings from '@/components/PreferencesSettings'
-import ProfileBadgeSettings from '@/components/ProfileBadgeSettings'
-import TwoFASettings from '@/components/TwoFASettings'
-import UpdatePasswordSettings from '@/components/UpdatePasswordSettings'
+﻿import DangerZoneSettings from '@/app/(financeapp)/settings/components/DangerZoneSettings'
+import NotificationChannelSettings from '@/app/(financeapp)/settings/components/NotificationChannelSettings'
+import PersonalInfomationSettings from '@/app/(financeapp)/settings/components/PersonalInfomationSettings'
+import PreferencesSettings from '@/app/(financeapp)/settings/components/PreferencesSettings'
+import ProfileBadgeSettings from '@/app/(financeapp)/settings/components/ProfileBadgeSettings'
+import TwoFASettings from '@/app/(financeapp)/settings/components/TwoFASettings'
+import UpdatePasswordSettings from '@/app/(financeapp)/settings/components/UpdatePasswordSettings'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
@@ -34,3 +34,4 @@ export default async function Settings() {
     </div>
   )
 }
+

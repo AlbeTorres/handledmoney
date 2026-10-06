@@ -1,4 +1,4 @@
-import { ResendEmailForm } from '@/components/ResendEmailForm'
+﻿import { ResendEmailForm } from '@/app/auth/new-verification/components/ResendEmailForm'
 import { getTranslations } from 'next-intl/server'
 
 interface Props {
@@ -49,3 +49,4 @@ export default async function NewVerification({ searchParams }: Props) {
     </>
   )
 }
+

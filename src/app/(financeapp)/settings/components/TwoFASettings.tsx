@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { toast } from 'react-hot-toast'
 import BackupCodeDialog from './BackupCodeDialog'
 import QRDialog from './QRDialog'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 
 export default function TwoFASettings() {
   const t = useTranslations('handledmoney.settings.two_fa')

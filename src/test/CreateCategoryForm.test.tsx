@@ -46,7 +46,7 @@ vi.mock('@/actions/category/create-category', () => ({
   createCategoryAction: createCategoryActionMock,
 }))
 
-vi.mock('@/components/AppearanceSection', () => ({
+vi.mock('@/components/shared/AppearanceSection', () => ({
   AppearanceSection: () => <div data-testid='appearance-section' />,
 }))
 

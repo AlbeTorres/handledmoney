@@ -1,5 +1,5 @@
-import { CardWrapper } from '@/components'
-import { TwoFactorForm } from '@/components/TwoFactorForm'
+﻿import { CardWrapper } from '@/app/auth/components/CardWrapper'
+import { TwoFactorForm } from '@/app/auth/two-factor/components/TwoFactorForm'
 import { useTranslations } from 'next-intl'
 
 export default function TwoFactorAuthPage() {
@@ -14,3 +14,4 @@ export default function TwoFactorAuthPage() {
     </CardWrapper>
   )
 }
+

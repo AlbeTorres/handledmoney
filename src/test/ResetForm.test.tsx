@@ -1,7 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ResetForm } from '@/components/ResetForm'
+import { ResetForm } from '@/app/auth/reset/components/ResetForm'
 
 // ─── Hoisted mocks ─────────────────────────────────────────────────────────────
 

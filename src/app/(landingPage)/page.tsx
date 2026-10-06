@@ -1,9 +1,9 @@
-import Feature from '@/components/Feature'
-import Footer from '@/components/Footer'
-import Header from '@/components/Header'
-import Hero from '@/components/Hero'
-import ReLogin from '@/components/Relogin'
-import Testimony from '@/components/Testimony'
+﻿import Feature from '@/app/(landingPage)/components/Feature'
+import Footer from '@/components/shared/Footer'
+import Header from '@/components/shared/Header'
+import Hero from '@/app/(landingPage)/components/Hero'
+import ReLogin from '@/app/(landingPage)/components/Relogin'
+import Testimony from '@/app/(landingPage)/components/Testimony'
 
 export default function Home() {
   return (
@@ -19,3 +19,4 @@ export default function Home() {
     </>
   )
 }
+

@@ -18,7 +18,7 @@ vi.mock('@/lib/utils', () => ({
   },
 }))
 
-vi.mock('@/components/Breadcrumb', () => ({
+vi.mock('@/components/shared/Breadcrumb', () => ({
   Breadcrumb: ({ pathTitle }: { pathTitle: string }) => (
     <nav data-testid='breadcrumb'>{pathTitle}</nav>
   ),

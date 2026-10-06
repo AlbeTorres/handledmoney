@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 import { ResetSchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { MailIcon } from 'lucide-react'
@@ -10,9 +10,9 @@ import z from 'zod'
 import { useCooldown } from '@/hooks/use-cooldown'
 import toast from 'react-hot-toast'
 import { CardWrapper } from './CardWrapper'
-import { Button } from './ui/button'
-import { Field, FieldError, FieldGroup, FieldLabel } from './ui/field'
-import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
+import { Button } from '@/components/ui/button'
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
 
 type Props = {
   initialEmail?: string
@@ -139,3 +139,4 @@ export function EmailActionForm({
     </CardWrapper>
   )
 }
+

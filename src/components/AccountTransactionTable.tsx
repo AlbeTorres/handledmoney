@@ -4,7 +4,7 @@ import { Transaction } from '@/interfaces'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import toast from 'react-hot-toast'
-import { DataTable } from './DataTable'
+import { DataTable } from './shared/transaction-table/DataTable'
 
 interface AccountTransactionTableProps {
   data: Transaction[]

@@ -2,7 +2,7 @@
 
 import { createBudgetAction } from '@/actions/budget/create-budget'
 import { BudgetCreationStepper, type WizardStep } from '@/components/BudgetCreationStepper'
-import { FormActions } from '@/components/FormActions'
+import { FormActions } from '@/components/shared/FormActions'
 import { Button } from '@/components/ui/button'
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput } from '@/components/ui/input-group'

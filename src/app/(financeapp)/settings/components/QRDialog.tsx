@@ -1,6 +1,6 @@
 import { QRCodeSVG } from 'qrcode.react'
 
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -8,8 +8,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from './ui/dialog'
-import { Input } from './ui/input'
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 
 type Props = {
   totpURI: string

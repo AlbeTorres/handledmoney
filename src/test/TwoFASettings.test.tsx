@@ -1,4 +1,4 @@
-import TwoFASettings from '@/components/TwoFASettings'
+import TwoFASettings from '@/app/(financeapp)/settings/components/TwoFASettings'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -79,7 +79,7 @@ vi.mock('@/hooks/use-confirm-password', () => ({
 // Mockeamos QRDialog para controlar su comportamiento en tests.
 // Incluimos un input real que llama a onCodeChange para poder simular
 // la ingresión del código TOTP sin depender de la implementación real.
-vi.mock('@/components/QRDialog', () => ({
+vi.mock('@/app/(financeapp)/settings/components/QRDialog', () => ({
   default: (props: {
     open: boolean
     onCodeChange: (code: string) => void
@@ -97,7 +97,7 @@ vi.mock('@/components/QRDialog', () => ({
 }))
 
 // Mockeamos BackupCodeDialog para verificar que se abre después de un verify exitoso.
-vi.mock('@/components/BackupCodeDialog', () => ({
+vi.mock('@/app/(financeapp)/settings/components/BackupCodeDialog', () => ({
   default: (props: { open: boolean }) =>
     props.open ? <div data-testid='backup-dialog'>Backup Codes</div> : null,
 }))

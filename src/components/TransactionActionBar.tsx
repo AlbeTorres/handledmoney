@@ -8,9 +8,9 @@ import { exportTransactionsToCSV } from '@/lib/export-csv'
 import { Download, Upload } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import ActionBar from './ActionBar'
-import FilterDropdown from './FilterDropdown'
-import SortDropdown from './SortDropdown'
+import ActionBar from './shared/ActionBar'
+import FilterDropdown from './shared/FilterDropdown'
+import SortDropdown from './shared/SortDropdown'
 import { Button } from './ui/button'
 
 type Props = {

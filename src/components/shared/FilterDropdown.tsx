@@ -4,8 +4,8 @@
 import { cn } from '@/lib/utils'
 import { Check, ChevronDown, ListFilter, LucideIcon } from 'lucide-react' // Importamos LucideIcon
 import { useTranslations } from 'next-intl'
-import { Badge } from './ui/badge'
-import { Button } from './ui/button'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+} from '../ui/dropdown-menu'
 
 export type FilterOption = {
   label: string

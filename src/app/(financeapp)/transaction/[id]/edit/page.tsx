@@ -1,5 +1,5 @@
 import { EditTransactionForm } from '@/components/EditTransactionForm'
-import { FormWrapper } from '@/components/FormWrapper'
+import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getBankAccountByUserAction } from '@/data-access/get-account'
 import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import { getTransactionByIdAction } from '@/data-access/get-transaction'

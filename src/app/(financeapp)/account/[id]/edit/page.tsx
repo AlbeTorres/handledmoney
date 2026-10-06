@@ -1,5 +1,5 @@
 import { EditAccountForm } from '@/components/EditAccountForm'
-import { FormWrapper } from '@/components/FormWrapper'
+import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getBankAccountByIdAction } from '@/data-access/get-account'
 import { getTranslations } from 'next-intl/server'
 import Link from 'next/link'

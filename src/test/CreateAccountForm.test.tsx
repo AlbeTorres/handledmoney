@@ -33,12 +33,12 @@ vi.mock('@/actions/account/create-account', () => ({
 }))
 
 // Mock AppearanceSection — simplify the icon/color selection UI.
-vi.mock('@/components/AppearanceSection', () => ({
+vi.mock('@/components/shared/AppearanceSection', () => ({
   AppearanceSection: () => <div data-testid='appearance-section' />,
 }))
 
 // Mock FormActions — verify the props it receives.
-vi.mock('@/components/FormActions', () => ({
+vi.mock('@/components/shared/FormActions', () => ({
   FormActions: ({ onCancel, isPending, text, loadingText }: any) => (
     <div data-testid='form-actions'>
       <button onClick={onCancel} disabled={isPending}>cancel</button>

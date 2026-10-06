@@ -1,7 +1,7 @@
 import { CheckCheck, Copy, Download } from 'lucide-react'
 
 import toast from 'react-hot-toast'
-import { Button } from './ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from './ui/dialog'
+} from '@/components/ui/dialog'
 
 type Props = {
   open: boolean

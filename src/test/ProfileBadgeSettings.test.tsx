@@ -1,4 +1,4 @@
-import ProfileBadgeSettings from '@/components/ProfileBadgeSettings'
+import ProfileBadgeSettings from '@/app/(financeapp)/settings/components/ProfileBadgeSettings'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 

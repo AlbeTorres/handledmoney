@@ -20,7 +20,7 @@ const dropdowns = vi.hoisted(() => ({
   render: vi.fn(),
 }))
 
-vi.mock('@/components/FilterDropdown', () => ({
+vi.mock('@/components/shared/FilterDropdown', () => ({
   default: (props: {
     label: string
     options: Array<{ label: string; value: string }>

@@ -7,7 +7,7 @@ import { Transaction } from '@/interfaces'
 
 // Mock DataTable — it's a complex component with TanStack Table dependencies,
 // so we mock it completely and verify AccountTransactionTable passes the correct props.
-vi.mock('@/components/DataTable', () => ({
+vi.mock('@/components/shared/transaction-table/DataTable', () => ({
   DataTable: ({ data, totalPages, currentPage, categories, onBulkDelete, onBulkCategoryChange }: any) => (
     <div data-testid='data-table'>
       <span data-testid='data-count'>{data.length}</span>

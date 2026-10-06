@@ -24,7 +24,7 @@ vi.mock('@/actions/budget/create-budget', () => ({ createBudgetAction: mocks.cre
 vi.mock('@/components/QuickCreateCategoryDrawer', () => ({ QuickCreateCategoryDrawer: () => null }))
 
 import { CreateBudgetForm } from '@/components/CreateBudgetForm'
-import { FormWrapper } from '@/components/FormWrapper'
+import { FormWrapper } from '@/components/shared/FormWrapper'
 
 const incomeCategories: BudgetCategory[] = [
   { id: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', name: 'Salary', type: 'income', icon: 'wallet', color: '137FEC' },

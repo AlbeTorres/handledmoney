@@ -1,4 +1,5 @@
-import { CardWrapper, RegisterForm } from '@/components'
+﻿import { CardWrapper } from '@/app/auth/components/CardWrapper'
+import { RegisterForm } from '@/app/auth/(auth)/new-account/components/RegisterForm'
 import { useTranslations } from 'next-intl'
 
 export default function RegisterPage() {
@@ -15,3 +16,4 @@ export default function RegisterPage() {
     </CardWrapper>
   )
 }
+

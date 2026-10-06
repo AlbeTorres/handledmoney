@@ -1,7 +1,7 @@
 import { render, screen, waitFor, act } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { EmailActionForm } from '@/components/EmailActionForm'
+import { EmailActionForm } from '@/app/auth/components/EmailActionForm'
 
 const { toastSuccessMock, toastErrorMock } = vi.hoisted(() => ({
   toastSuccessMock: vi.fn(),

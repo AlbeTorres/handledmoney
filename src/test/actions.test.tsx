@@ -68,7 +68,7 @@ vi.mock('@/components/ui/button', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { Actions } from '@/components/actions'
+import { Actions } from '@/components/shared/transaction-table/actions'
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 

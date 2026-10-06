@@ -1,8 +1,8 @@
 'use client'
 
 import { editBankAccount } from '@/actions/account/update-account'
-import { AppearanceSection } from '@/components/AppearanceSection'
-import { FormActions } from '@/components/FormActions'
+import { AppearanceSection } from '@/components/shared/AppearanceSection'
+import { FormActions } from '@/components/shared/FormActions'
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 import {

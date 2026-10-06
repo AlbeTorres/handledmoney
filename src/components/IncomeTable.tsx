@@ -1,7 +1,7 @@
 'use client'
 
 import IncomeRow from './IncomeRow'
-import Pagination from './Pagination'
+import Pagination from './shared/transaction-table/Pagination'
 
 type Props = {
   data: any[]

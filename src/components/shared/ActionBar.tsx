@@ -1,6 +1,6 @@
 import { Plus, Search } from 'lucide-react'
 import Link from 'next/link'
-import { InputGroup, InputGroupAddon, InputGroupInput } from './ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 
 type Props = {
   searchTerm: string

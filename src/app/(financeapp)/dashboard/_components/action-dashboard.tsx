@@ -1,6 +1,6 @@
 'use client'
 
-import FilterDropdown from '@/components/FilterDropdown'
+import FilterDropdown from '@/components/shared/FilterDropdown'
 import { useFilterParam, useFilterParams } from '@/hooks/use-filter-params'
 import { Calendar } from 'lucide-react'
 

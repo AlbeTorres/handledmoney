@@ -1,8 +1,8 @@
-'use client'
+﻿'use client'
 
 import { Button } from '@/components/ui/button'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { CardWrapper } from './CardWrapper'
+import { CardWrapper } from '../../components/CardWrapper'
 
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group'
@@ -131,3 +131,4 @@ export const ChangePassword = () => {
     </CardWrapper>
   )
 }
+

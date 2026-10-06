@@ -1,4 +1,4 @@
-import { Breadcrumb } from '@/components/Breadcrumb'
+import { Breadcrumb } from '@/components/shared/Breadcrumb'
 import TransacctionDetailAction from '@/components/TransacctionDetailAction'
 import { TransactionDetailAttachments } from '@/components/TransactionDetailAttachments'
 import { TransactionDetailExpenseBreakdown } from '@/components/TransactionDetailExpenseBreakdown'

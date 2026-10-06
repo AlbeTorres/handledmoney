@@ -3,8 +3,8 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown } from 'lucide-react'
 import { IncomeTransaction } from '../interfaces'
-import { CategoryColumn } from './CategoryColumn'
-import { Actions } from './actions'
+import { CategoryColumn } from './shared/transaction-table/CategoryColumn'
+import { Actions } from './shared/transaction-table/actions'
 import { Button } from './ui/button'
 import { Checkbox } from './ui/checkbox'
 

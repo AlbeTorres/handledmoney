@@ -1,7 +1,7 @@
-'use client'
+﻿'use client'
 import { authClient } from '@/lib/auth-client'
 import { useTranslations } from 'next-intl'
-import { EmailActionForm } from './EmailActionForm'
+import { EmailActionForm } from '../../components/EmailActionForm'
 
 type Props = {
   email: string | undefined
@@ -37,3 +37,4 @@ export function ResendEmailForm({ email }: Props) {
     />
   )
 }
+
