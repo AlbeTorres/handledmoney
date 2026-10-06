@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { CategoryContent } from '@/components/CategoryContent'
+import { CategoryContent } from '@/app/(financeapp)/category/components/CategoryContent'
 
 // ── Module mocks ─────────────────────────────────────────────────────────────
 
@@ -8,7 +8,7 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => key,
 }))
 
-vi.mock('@/components/CategoryCard', () => ({
+vi.mock('@/app/(financeapp)/category/components/CategoryCard', () => ({
   CategoryCard: ({ category }: any) => (
     <div data-testid='category-card'>{category.name}</div>
   ),

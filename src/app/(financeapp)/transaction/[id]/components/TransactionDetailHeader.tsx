@@ -1,6 +1,6 @@
 'use client'
 
-import { TransactionStatusBadge } from '@/components/TransactionStatusBadge'
+import { TransactionStatusBadge } from './TransactionStatusBadge'
 import { Badge } from '@/components/ui/badge'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
 import { fmtDate, formatMoney, getIconComponent } from '@/lib/utils'

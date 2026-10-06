@@ -11,12 +11,12 @@ import { toSourceResult } from '@/lib/dashboard/source-result'
 import { getDashboardAccounts } from '@/repository/dashboard/accounts'
 import { getDashboardActuals } from '@/repository/dashboard/actuals'
 import { getDashboardPlan } from '@/repository/dashboard/budget'
-import { AccountsSection } from './_components/accounts-section'
-import { ActionDashboard } from './_components/action-dashboard'
-import { BudgetSection } from './_components/budget-section'
-import { ChartsSection } from './_components/charts-section'
-import { InsightSection } from './_components/insight-section'
-import { KpisSection } from './_components/kpis-section'
+import { AccountsSection } from './components/accounts-section'
+import { ActionDashboard } from './components/action-dashboard'
+import { BudgetSection } from './components/budget-section'
+import { ChartsSection } from './components/charts-section'
+import { InsightSection } from './components/insight-section'
+import { KpisSection } from './components/kpis-section'
 
 type SearchParams = Record<string, string | string[] | undefined>
 

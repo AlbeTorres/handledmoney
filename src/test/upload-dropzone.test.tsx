@@ -57,7 +57,7 @@ vi.mock('react-papaparse', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { UploadDropzone } from '@/components/UploadDropzone'
+import { UploadDropzone } from '@/app/(financeapp)/transaction/bulk/components/UploadDropzone'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

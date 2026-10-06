@@ -4,9 +4,9 @@ import { useDebouncedSearchParam } from '@/hooks/use-debounced-search-params'
 import { useFilterParam } from '@/hooks/use-filter-params'
 import { useSortParam } from '@/hooks/use-sort-params'
 import { useTranslations } from 'next-intl'
-import ActionBar from './shared/ActionBar'
-import FilterDropdown from './shared/FilterDropdown'
-import SortDropdown from './shared/SortDropdown'
+import ActionBar from '@/components/shared/ActionBar'
+import FilterDropdown from '@/components/shared/FilterDropdown'
+import SortDropdown from '@/components/shared/SortDropdown'
 
 const CURRENCY_OPTIONS = [
   { label: 'USD', value: 'USD' },

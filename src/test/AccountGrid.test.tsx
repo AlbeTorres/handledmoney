@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { AccountGrid } from '@/components/AccountGrid'
+import { AccountGrid } from '@/app/(financeapp)/account/components/AccountGrid'
 import { Account } from '@/interfaces'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────
 
 // Mock AccountCardWrapper — verify it renders for each filtered/sorted account
 // without testing its internal logic (already covered).
-vi.mock('@/components/AccountCardWrapper', () => ({
+vi.mock('@/app/(financeapp)/account/components/AccountCardWrapper', () => ({
   AccountCardWrapper: ({ account, hasTransactions }: any) => (
     <div data-testid={`account-card-${account.id}`}>
       <span data-testid={`name-${account.id}`}>{account.name}</span>

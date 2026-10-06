@@ -4,7 +4,7 @@ import { CategorySelect } from '@/repository/categories'
 import { useTranslations } from 'next-intl'
 import { Search } from 'lucide-react'
 
-import { CategoryCard } from './CategoryCard'
+import { CategoryCard } from '@/app/(financeapp)/category/components/CategoryCard'
 
 interface CategoryListProps {
   categories: (CategorySelect & { children?: any[] })[]

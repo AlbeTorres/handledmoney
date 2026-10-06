@@ -9,7 +9,7 @@ vi.mock('next-intl', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionDetailAttachments } from '@/components/TransactionDetailAttachments'
+import { TransactionDetailAttachments } from '@/app/(financeapp)/transaction/[id]/components/TransactionDetailAttachments'
 
 // ── Tests ──────────────────────────────────────────────────────────────────────
 

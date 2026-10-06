@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import type { BudgetCategory } from '@/components/CategoryCombobox'
-import type { QuickTarget } from '@/components/BudgetStructureEditor'
+import type { BudgetCategory } from '@/app/(financeapp)/budget/create/components/CategoryCombobox'
+import type { QuickTarget } from '@/app/(financeapp)/budget/create/components/BudgetStructureEditor'
 import { createTemplateGroups } from '@/lib/budget-plan-templates'
 import type { CreateBudgetValues } from '@/lib/schema'
 import { useEffect } from 'react'
@@ -28,7 +28,7 @@ vi.mock('next-intl', () => ({
 }))
 vi.mock('sonner', () => ({ toast: { success: vi.fn(), error: vi.fn() } }))
 vi.mock('@/actions/budget/create-budget', () => ({ createBudgetAction: mocks.createBudget }))
-vi.mock('@/components/QuickCreateCategoryDrawer', () => ({
+vi.mock('@/app/(financeapp)/budget/create/components/QuickCreateCategoryDrawer', () => ({
   QuickCreateCategoryDrawer: (props: any) => {
     mocks.lastDrawerProps.current = props
     return (
@@ -66,8 +66,8 @@ vi.mock('@/components/ui/select', () => ({
   SelectItem: ({ value, children }: any) => <option value={value}>{children}</option>,
 }))
 
-import { BudgetStructureEditor } from '@/components/BudgetStructureEditor'
-import { CreateBudgetForm } from '@/components/CreateBudgetForm'
+import { BudgetStructureEditor } from '@/app/(financeapp)/budget/create/components/BudgetStructureEditor'
+import { CreateBudgetForm } from '@/app/(financeapp)/budget/create/components/CreateBudgetForm'
 
 const incomeCategories: BudgetCategory[] = [
   { id: '9f7d1f5e-0a4f-4b8e-9a1c-2c3d4e5f6070', name: 'Salary', type: 'income', icon: 'wallet', color: '137FEC' },

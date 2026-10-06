@@ -46,7 +46,7 @@ vi.mock('@/components/shared/FilterDropdown', () => ({
   },
 }))
 
-import { ActionDashboard } from '@/app/(financeapp)/dashboard/_components/action-dashboard'
+import { ActionDashboard } from '@/app/(financeapp)/dashboard/components/action-dashboard'
 
 type DropdownProps = {
   label: string

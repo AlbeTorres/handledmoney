@@ -19,16 +19,16 @@ vi.mock('@/repository/dashboard/accounts', () => ({
   getDashboardAccounts: mocks.getDashboardAccounts,
 }))
 // The chart section keeps the client dynamic; the page test only inspects props.
-vi.mock('@/app/(financeapp)/dashboard/_components/finance-charts-client', () => ({
+vi.mock('@/app/(financeapp)/dashboard/components/finance-charts-client', () => ({
   FinanceChartsClient: () => null,
 }))
 
 import Dashboard from '@/app/(financeapp)/dashboard/page'
-import { AccountsSection } from '@/app/(financeapp)/dashboard/_components/accounts-section'
-import { BudgetSection } from '@/app/(financeapp)/dashboard/_components/budget-section'
-import { ChartsSection } from '@/app/(financeapp)/dashboard/_components/charts-section'
-import { InsightSection } from '@/app/(financeapp)/dashboard/_components/insight-section'
-import { KpisSection } from '@/app/(financeapp)/dashboard/_components/kpis-section'
+import { AccountsSection } from '@/app/(financeapp)/dashboard/components/accounts-section'
+import { BudgetSection } from '@/app/(financeapp)/dashboard/components/budget-section'
+import { ChartsSection } from '@/app/(financeapp)/dashboard/components/charts-section'
+import { InsightSection } from '@/app/(financeapp)/dashboard/components/insight-section'
+import { KpisSection } from '@/app/(financeapp)/dashboard/components/kpis-section'
 import { dashboardRange } from '@/lib/dashboard/period'
 import type { DashboardActual } from '@/lib/dashboard/actuals'
 import type { DashboardAccount } from '@/lib/dashboard/accounts'

@@ -8,10 +8,10 @@ import { exportTransactionsToCSV } from '@/lib/export-csv'
 import { Download, Upload } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import Link from 'next/link'
-import ActionBar from './shared/ActionBar'
-import FilterDropdown from './shared/FilterDropdown'
-import SortDropdown from './shared/SortDropdown'
-import { Button } from './ui/button'
+import ActionBar from '@/components/shared/ActionBar'
+import FilterDropdown from '@/components/shared/FilterDropdown'
+import SortDropdown from '@/components/shared/SortDropdown'
+import { Button } from '@/components/ui/button'
 
 type Props = {
   categories: { id: string; name: string }[]

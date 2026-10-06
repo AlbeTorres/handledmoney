@@ -7,7 +7,7 @@ vi.mock('next-intl', () => ({
     key === 'step_count' ? `Step ${params?.current} of ${params?.total}` : key,
 }))
 
-import { BudgetCreationStepper } from '@/components/BudgetCreationStepper'
+import { BudgetCreationStepper } from '@/app/(financeapp)/budget/create/components/BudgetCreationStepper'
 
 function stepItem(label: string) {
   const item = screen.getByText(label).closest('li')

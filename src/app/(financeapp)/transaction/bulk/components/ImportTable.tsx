@@ -1,6 +1,6 @@
-import { SelectedColumns } from '../interfaces'
+import { SelectedColumns } from '@/interfaces'
 import { TableHeadSelected } from './TableHeadSelected'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 
 type Props = {
   headers: string[]

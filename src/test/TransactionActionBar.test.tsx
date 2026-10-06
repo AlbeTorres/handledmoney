@@ -96,7 +96,7 @@ vi.mock('@/components/ui/button', () => ({
 
 // ── Component Under Test ──
 
-import TransactionActionBar from '@/components/TransactionActionBar'
+import TransactionActionBar from '@/app/(financeapp)/transaction/components/TransactionActionBar'
 
 const CATEGORIES = [
   { id: 'cat-1', name: 'Food' },

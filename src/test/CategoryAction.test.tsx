@@ -82,7 +82,7 @@ vi.mock('@/components/shared/SortDropdown', () => ({
 
 // ── Component Under Test ──
 
-import CategoryAction from '@/components/CategoryAction'
+import CategoryAction from '@/app/(financeapp)/category/components/CategoryAction'
 
 // ── Tests ──
 

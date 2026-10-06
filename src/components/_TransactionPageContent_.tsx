@@ -2,8 +2,8 @@
 
 import { Account, Category, Transaction } from '../interfaces'
 import { useTransactionDrawer } from '@/hooks/use-transaction-drawer'
-import TransactionActionBar from './TransactionActionBar'
-import { TransactionList } from './TransactionList'
+import TransactionActionBar from '@/app/(financeapp)/transaction/components/TransactionActionBar'
+import { TransactionList } from '@/app/(financeapp)/transaction/components/TransactionList'
 import { TransactionQuickEdit } from './TransactionQuickEdit'
 import { TransactionSummaryCards } from './TransactionSummaryCards'
 

@@ -1,4 +1,4 @@
-import { CreateAccountForm } from '@/components/CreateAccountForm'
+import { CreateAccountForm } from './components/CreateAccountForm'
 import { FormWrapper } from '@/components/shared/FormWrapper'
 import { getTranslations } from 'next-intl/server'
 

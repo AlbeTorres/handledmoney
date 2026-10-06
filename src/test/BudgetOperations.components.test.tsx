@@ -19,11 +19,11 @@ vi.mock('next/navigation', () => ({ useRouter: () => ({ push: mocks.push }) }))
 vi.mock('next/link', () => ({ default: ({ children, href }: { children: React.ReactNode; href: string }) => <a href={href}>{children}</a> }))
 vi.mock('sonner', () => ({ toast: { success: mocks.success, error: mocks.error } }))
 
-import { AddBudgetGroupForm } from '@/components/AddBudgetGroupForm'
-import { AddBudgetItemForm } from '@/components/AddBudgetItemForm'
-import { BudgetDetailView } from '@/components/BudgetDetailView'
-import { BudgetGrid } from '@/components/BudgetGrid'
-import { BudgetGroupSection } from '@/components/BudgetGroupSection'
+import { AddBudgetGroupForm } from '@/app/(financeapp)/budget/[id]/components/AddBudgetGroupForm'
+import { AddBudgetItemForm } from '@/app/(financeapp)/budget/[id]/components/AddBudgetItemForm'
+import { BudgetDetailView } from '@/app/(financeapp)/budget/[id]/components/BudgetDetailView'
+import { BudgetGrid } from '@/app/(financeapp)/budget/components/BudgetGrid'
+import { BudgetGroupSection } from '@/app/(financeapp)/budget/[id]/components/BudgetGroupSection'
 
 const budgetId = '00000000-0000-0000-0000-000000000001'
 const budget = { id: budgetId, userId: 'user-1', name: 'Plan', startDate: new Date('2026-01-01'), endDate: null, createdAt: new Date(), updatedAt: new Date(), totalIncome: 1000, totalAllocated: 700, remainingToAllocate: 300, groups: [] }

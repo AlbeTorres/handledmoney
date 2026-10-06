@@ -1,7 +1,7 @@
 'use client'
 
-import type { BudgetCategory } from '@/components/CategoryCombobox'
-import { BudgetAllocationSummary } from '@/components/BudgetAllocationSummary'
+import type { BudgetCategory } from './CategoryCombobox'
+import { BudgetAllocationSummary } from './BudgetAllocationSummary'
 import { FieldError } from '@/components/ui/field'
 import {
   InputGroup,

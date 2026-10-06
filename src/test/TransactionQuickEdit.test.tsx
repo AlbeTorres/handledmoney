@@ -88,7 +88,7 @@ vi.mock('@/components/ui/textarea', () => ({
   Textarea: (props: React.TextareaHTMLAttributes<HTMLTextAreaElement>) => <textarea {...props} />,
 }))
 
-vi.mock('@/components/Tab', () => ({
+vi.mock('@/app/(financeapp)/transaction/components/Tab', () => ({
   Tab: ({ activeView, onViewChange, tabs }: { activeView: string; onViewChange: (v: string) => void; tabs: string[] }) => (
     <div data-testid='tab'>
       {tabs.map(tab => (

@@ -1,65 +1,46 @@
 'use client'
 
-import { deleteCategoryAction } from '@/actions/category/delete-category'
-import { updateCategoryAction } from '@/actions/category/update-category'
-import { useConfirm } from '@/hooks/use-confirm'
-
+import { createCategoryAction } from '@/actions/category/create-category'
 import { ICONS } from '@/lib/data'
-import { UpdateCategorySchema } from '@/lib/schema'
+import { CategoryFormData, categorySchema } from '@/lib/schema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTranslations } from 'next-intl'
 import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'sonner'
-import * as z from 'zod'
-import { AppearanceSection } from './shared/AppearanceSection'
-import { CategoryPreview } from './CategoryPreview'
-import { FormActions } from './shared/FormActions'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from './ui/field'
-import { InputGroup, InputGroupInput } from './ui/input-group'
+import z from 'zod'
+import { AppearanceSection } from '@/components/shared/AppearanceSection'
+import { CategoryPreview } from '@/app/(financeapp)/category/components/CategoryPreview'
+import { FormActions } from '@/components/shared/FormActions'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
+import { InputGroup, InputGroupInput } from '@/components/ui/input-group'
 
-type EditCategoryValues = z.infer<typeof UpdateCategorySchema>
+type CreateCategoryValues = z.infer<typeof categorySchema>
 
-export function EditCategoryForm({ initialValues }: { initialValues: EditCategoryValues }) {
+export function CreateCategoryForm() {
   const [isPending, setIsPending] = useState(false)
   const router = useRouter()
   const t = useTranslations('handledmoney.category')
-  const [ConfirmationDialog, confirm] = useConfirm(t('delete.title'), t('delete.description'))
 
-  const form = useForm<EditCategoryValues>({
-    resolver: zodResolver(UpdateCategorySchema),
-    defaultValues: initialValues,
+  const form = useForm<CreateCategoryValues>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: {
+      name: '',
+      icon: 'more_horizontal',
+      color: '94a3b8',
+      type: 'expense',
+    },
   })
 
-  const watched = useWatch<EditCategoryValues>({ control: form.control })
+  const watched = useWatch<CreateCategoryValues>({ control: form.control })
+
   const CurrentIcon = ICONS.find(i => i.name === watched.icon)?.icon || ICONS[0].icon
 
-  const handleSubmit = async (data: z.infer<typeof UpdateCategorySchema>) => {
+  const handleSubmit = async (data: CategoryFormData) => {
     setIsPending(true)
     try {
-      const response = await updateCategoryAction(data)
-      if (response.success) {
-        toast.success(response.message)
-        router.push('/category')
-        router.refresh()
-      } else {
-        toast.error(response.message)
-      }
-    } catch (error) {
-      toast.error(t('form.error_generic'))
-    } finally {
-      setIsPending(false)
-    }
-  }
-
-  const handleDelete = async () => {
-    const ok = await confirm()
-    if (!ok) return
-
-    setIsPending(true)
-    try {
-      const response = await deleteCategoryAction(initialValues.id)
+      const response = await createCategoryAction(data)
       if (response.success) {
         toast.success(response.message)
         router.push('/category')
@@ -75,12 +56,12 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
   }
 
   const handleCancel = useCallback(() => {
+    form.reset()
     router.back()
-  }, [router])
+  }, [form])
 
   return (
     <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
-      <ConfirmationDialog />
       <div className='grid sm:grid-cols-2 sm:gap-4'>
         <CategoryPreview
           name={watched.name!}
@@ -88,7 +69,6 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
           type={watched.type!}
           Icon={CurrentIcon}
         />
-
         <form onSubmit={form.handleSubmit(handleSubmit)}>
           <div className='p-6 sm:p-8 space-y-8'>
             <FieldGroup>
@@ -97,13 +77,13 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='form-edit-category-name'>
+                    <FieldLabel htmlFor='form-create-category-name'>
                       {t('form.category_name')}
                     </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         {...field}
-                        id='form-edit-category-name'
+                        id='form-create-category-name'
                         aria-invalid={fieldState.invalid}
                         placeholder={t('form.category_name_placeholder')}
                         autoComplete='off'
@@ -111,7 +91,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                         disabled={isPending}
                       />
                     </InputGroup>
-                    <FieldDescription>{t('form.update_name_description')}</FieldDescription>
+                    <FieldDescription>{t('form.category_name_description')}</FieldDescription>
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                   </Field>
                 )}
@@ -123,7 +103,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field data-invalid={fieldState.invalid}>
-                      <FieldLabel htmlFor='form-edit-category-type'>
+                      <FieldLabel htmlFor='form-create-category-type'>
                         {t('form.transaction_type')}
                       </FieldLabel>
                       <div className='flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl'>
@@ -170,10 +150,9 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
 
           <FormActions
             onCancel={handleCancel}
-            handleDelete={handleDelete}
             isPending={isPending}
-            text={t('form.update_button')}
-            loadingText={t('form.updating')}
+            text={t('form.create_button')}
+            loadingText={t('form.creating')}
           />
         </form>
       </div>

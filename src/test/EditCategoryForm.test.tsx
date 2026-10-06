@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { EditCategoryForm } from '@/components/EditCategoryForm'
+import { EditCategoryForm } from '@/app/(financeapp)/category/[id]/edit/components/EditCategoryForm'
 
 // ── Mocks ─────────────────────────────────────────────────────────────────────
 
@@ -63,7 +63,7 @@ vi.mock('@/components/shared/AppearanceSection', () => ({
   AppearanceSection: () => <div data-testid="appearance-section" />,
 }))
 
-vi.mock('@/components/CategoryPreview', () => ({
+vi.mock('@/app/(financeapp)/category/components/CategoryPreview', () => ({
   CategoryPreview: ({ name }: { name: string }) => <div data-testid="category-preview">{name}</div>,
 }))
 

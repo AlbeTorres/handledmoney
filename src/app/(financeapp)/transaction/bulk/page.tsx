@@ -1,6 +1,6 @@
 import { getBankAccountByUserAction } from '@/data-access/get-account'
 import Link from 'next/link'
-import { CardContainer } from './CardContainer'
+import { CardContainer } from './components/CardContainer'
 
 export default async function BulkTransactionPage() {
   const accounts = await getBankAccountByUserAction()

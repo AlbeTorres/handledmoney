@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { AccountTransactionTable } from '@/components/AccountTransactionTable'
+import { AccountTransactionTable } from '@/app/(financeapp)/account/[id]/components/AccountTransactionTable'
 import { Transaction } from '@/interfaces'
 
 // ── Hoisted mocks ─────────────────────────────────────────────────────────────

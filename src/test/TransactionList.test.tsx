@@ -79,7 +79,7 @@ vi.mock('react-hot-toast', () => ({
 
 // ── Component Under Test ───────────────────────────────────────────────────────
 
-import { TransactionList } from '@/components/TransactionList'
+import { TransactionList } from '@/app/(financeapp)/transaction/components/TransactionList'
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 

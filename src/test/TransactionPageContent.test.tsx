@@ -35,7 +35,7 @@ vi.mock('@/lib/utils', () => ({
   fmtDate: vi.fn((d: Date) => d.toLocaleDateString()),
 }))
 
-vi.mock('@/components/TransactionCategoryCell', () => ({
+vi.mock('@/app/(financeapp)/transaction/[id]/components/TransactionCategoryCell', () => ({
   TransactionCategoryCell: ({ categoryName }: { categoryName?: string }) => (
     <span data-testid='category-cell'>{categoryName ?? 'uncategorized'}</span>
   ),

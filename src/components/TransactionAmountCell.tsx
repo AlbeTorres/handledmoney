@@ -1,7 +1,7 @@
 'use client'
 
 import { fmt } from '@/lib/utils'
-import { TransactionStatusBadge } from './TransactionStatusBadge'
+import { TransactionStatusBadge } from '@/app/(financeapp)/transaction/[id]/components/TransactionStatusBadge'
 
 interface TransactionAmountCellProps {
   amount: number
