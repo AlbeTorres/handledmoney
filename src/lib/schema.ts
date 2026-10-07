@@ -92,7 +92,6 @@ export const categorySchema = z.object({
   icon: z.string().min(1, { message: 'Please select an icon' }),
   color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
   type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
-  parentId: z.string().uuid().optional().nullable(),
 })
 
 export const UpdateCategorySchema = z.object({
@@ -101,7 +100,6 @@ export const UpdateCategorySchema = z.object({
   icon: z.string().min(1, { message: 'Please select an icon' }),
   color: z.string().regex(/^[0-9A-Fa-f]{6}$/, { message: 'Enter a valid hex color (e.g. 137FEC)' }),
   type: z.enum(['income', 'expense'], { required_error: 'Type is required' }),
-  parentId: z.string().uuid().optional().nullable(),
 })
 
 export type CategoryFormData = z.infer<typeof categorySchema>

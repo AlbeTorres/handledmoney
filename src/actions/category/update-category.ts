@@ -32,7 +32,7 @@ export const updateCategoryAction = async (values: z.infer<typeof UpdateCategory
     }
   }
 
-  const { id, name, icon, color, type, parentId } = validatedFields.data
+  const { id, name, icon, color, type } = validatedFields.data
 
   try {
     const existing = await getCategoryById(id, userId)
@@ -63,24 +63,11 @@ export const updateCategoryAction = async (values: z.infer<typeof UpdateCategory
       }
     }
 
-    // Hierarchy check if parentId is changing
-    if (parentId && parentId !== existing.parentId) {
-      const parent = await getCategoryById(parentId, userId)
-      if (parent?.parentId) {
-        return {
-          success: false,
-          status: 400,
-          message: 'Maximum hierarchy depth reached (2 levels)',
-        }
-      }
-    }
-
     const result = await updateCategory(id, userId, {
       name,
       icon,
       color,
       type,
-      parentId,
     })
 
     revalidatePath('/category')

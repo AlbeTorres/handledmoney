@@ -96,17 +96,20 @@ describe('CategoryContent', () => {
 
   // ── Section: Sorting ─────────────────────────────────────────────────────
 
-  it('sorts alphabetically by name when sort is category_name', () => {
+  it('sorts alphabetically by name within each type group when sort is category_name', () => {
     renderAll({ sort: 'category_name' })
 
-    expect(cardNames()).toEqual(['Dividends', 'Groceries', 'Rent', 'Salary'])
+    // The component renders the Expenses section before the Income section,
+    // so the alphabetical order applies inside each group.
+    expect(cardNames()).toEqual(['Groceries', 'Rent', 'Dividends', 'Salary'])
   })
 
-  it('sorts by date descending when sort is recently_added', () => {
+  it('sorts by date descending within each type group when sort is recently_added', () => {
     renderAll({ sort: 'recently_added' })
 
-    // Salary 2025-07-01, Groceries 2025-06-01, Rent 2025-05-01, Dividends 2025-04-01
-    expect(cardNames()).toEqual(['Salary', 'Groceries', 'Rent', 'Dividends'])
+    // Expenses: Groceries 2025-06-01, Rent 2025-05-01
+    // Income: Salary 2025-07-01, Dividends 2025-04-01
+    expect(cardNames()).toEqual(['Groceries', 'Rent', 'Salary', 'Dividends'])
   })
 
   // ── Section: Combined filtering ──────────────────────────────────────────

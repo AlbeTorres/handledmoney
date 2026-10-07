@@ -52,7 +52,12 @@ export default function TransactionDetailActions({ id }: TransactionDetailAction
         {'Edit'}
       </Link>
 
-      <Button variant='destructive' disabled={isPending} onClick={handleDelete}>
+      <Button
+        variant='destructive'
+        disabled={isPending}
+        onClick={handleDelete}
+        aria-label={t('row.delete_transaction')}
+      >
         <Trash className='size-4' />
       </Button>
     </div>

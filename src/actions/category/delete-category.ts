@@ -30,14 +30,6 @@ export const deleteCategoryAction = async (id: string) => {
       }
     }
 
-    if (existing.children && existing.children.length > 0) {
-      return {
-        success: false,
-        status: 400,
-        message: 'Please delete subcategories first',
-      }
-    }
-
     const result = await deleteCategory(id, userId)
 
     revalidatePath('/category')
@@ -47,12 +39,12 @@ export const deleteCategoryAction = async (id: string) => {
       status: 200,
       message: result?.archived ? 'Category archived successfully' : 'Category deleted successfully',
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting category:', error)
     return {
       success: false,
       status: 400,
-      message: error.message || 'Something went wrong',
+      message: error instanceof Error && error.message ? error.message : 'Something went wrong',
     }
   }
 }

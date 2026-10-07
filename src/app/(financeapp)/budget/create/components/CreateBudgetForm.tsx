@@ -190,6 +190,11 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
             <BudgetCreationStepper currentStep={step} />
             {step === 'setup' ? (
               <>
+                <div className='space-y-2'>
+                  <h2 ref={setupHeadingRef} tabIndex={-1} className='text-lg font-semibold'>
+                    {t('step_setup')}
+                  </h2>
+                </div>
                 <div className='w-full md:max-w-md'>
                   <FieldGroup>
                     <Controller
@@ -222,7 +227,7 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
                               <PopoverTrigger asChild>
                                 <Button
                                   variant='outline'
-                                  id='date-picker-simple'
+                                  id='budget-start-date'
                                   className='data-[empty=true]:text-muted-foreground w-[212px] justify-between text-left font-normal'
                                 >
                                   {field.value ? (

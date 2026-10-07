@@ -42,11 +42,8 @@ vi.mock('next/headers', () => ({
 /** Valid UUID used as category id across all tests */
 const VALID_ID = 'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
 
-/** Second valid UUID used for parentId / related entities */
+/** Second valid UUID used for related entities */
 const OTHER_UUID = 'b2c3d4e5-f6a7-8901-bcde-f12345678901'
-
-/** Third valid UUID for parent-of-parent hierarchy tests */
-const THIRD_UUID = 'c3d4e5f6-a7b8-9012-cdef-123456789012'
 
 /** Complete valid data that satisfies UpdateCategorySchema */
 const VALID_DATA = {
@@ -55,7 +52,6 @@ const VALID_DATA = {
   icon: '🛒',
   color: '137FEC',
   type: 'expense' as const,
-  parentId: null,
 }
 
 /** A successful session object returned by auth */
@@ -70,7 +66,6 @@ const EXISTING_CATEGORY = {
   icon: '🛒',
   color: '137FEC',
   type: 'expense',
-  parentId: null,
   userId: 'user-001',
 }
 
@@ -303,65 +298,6 @@ describe('updateCategoryAction', () => {
     })
   })
 
-  // ── Hierarchy depth ────────────────────────────────────────────────────────
-
-  it('returns 400 when hierarchy depth is exceeded (parent has parentId)', async () => {
-    // The intended parent already has a parent — that means it is already at depth 2
-    const parentWithParent = {
-      id: OTHER_UUID,
-      parentId: THIRD_UUID,
-    }
-    mockGetCategoryById.mockImplementation(async (id: string) => {
-      if (id === VALID_ID) return EXISTING_CATEGORY
-      if (id === OTHER_UUID) return parentWithParent
-      return null
-    })
-
-    const result = await updateCategoryAction({
-      ...VALID_DATA,
-      parentId: OTHER_UUID,
-    })
-
-    expect(result).toEqual({
-      success: false,
-      status: 400,
-      message: 'Maximum hierarchy depth reached (2 levels)',
-    })
-    expect(mockUpdateCategory).not.toHaveBeenCalled()
-  })
-
-  it('allows setting parentId when parent has no parent (depth 1)', async () => {
-    const parentWithoutParent = {
-      id: OTHER_UUID,
-      parentId: null,
-    }
-    mockGetCategoryById.mockImplementation(async (id: string) => {
-      if (id === VALID_ID) return EXISTING_CATEGORY
-      if (id === OTHER_UUID) return parentWithoutParent
-      return null
-    })
-
-    const result = await updateCategoryAction({
-      ...VALID_DATA,
-      parentId: OTHER_UUID,
-    })
-
-    expect(result.success).toBe(true)
-    expect(mockUpdateCategory).toHaveBeenCalled()
-  })
-
-  it('does NOT check hierarchy when parentId is not changing', async () => {
-    // parentId is null in both existing and incoming data — no hierarchy check needed
-    const result = await updateCategoryAction({
-      ...VALID_DATA,
-      parentId: null,
-    })
-
-    expect(result.success).toBe(true)
-    // getCategoryById is called once for the category itself, not for parent lookup
-    expect(mockGetCategoryById).toHaveBeenCalledTimes(1)
-  })
-
   // ── Success path ───────────────────────────────────────────────────────────
 
   it('returns 200 with updated category on success', async () => {
@@ -386,18 +322,7 @@ describe('updateCategoryAction', () => {
       icon: '🏪',
       color: 'FF5733',
       type: 'income' as const,
-      parentId: OTHER_UUID,
     }
-
-    const parentWithoutParent = {
-      id: OTHER_UUID,
-      parentId: null,
-    }
-    mockGetCategoryById.mockImplementation(async (id: string) => {
-      if (id === VALID_ID) return EXISTING_CATEGORY
-      if (id === OTHER_UUID) return parentWithoutParent
-      return null
-    })
 
     await updateCategoryAction({
       id: VALID_ID,

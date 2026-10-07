@@ -32,7 +32,7 @@ export const createCategoryAction = async (values: z.infer<typeof categorySchema
     }
   }
 
-  const { name, icon, color, type, parentId } = validatedFields.data
+  const { name, icon, color, type } = validatedFields.data
 
   try {
     // Unique name per type check
@@ -48,25 +48,12 @@ export const createCategoryAction = async (values: z.infer<typeof categorySchema
       }
     }
 
-    // Hierarchy check (max 2 levels)
-    if (parentId) {
-      const parent = existingCategories.find(c => c.id === parentId)
-      if (parent?.parentId) {
-        return {
-          success: false,
-          status: 400,
-          message: 'Maximum hierarchy depth reached (2 levels)',
-        }
-      }
-    }
-
     const result = await createCategory({
       userId,
       name,
       icon,
       color,
       type,
-      parentId,
     })
 
     revalidatePath('/category')

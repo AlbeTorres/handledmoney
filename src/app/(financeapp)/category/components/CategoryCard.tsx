@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl'
 import Link from 'next/link'
 
 interface CategoryCardProps {
-  category: CategorySelect & { children?: any[] }
+  category: CategorySelect
 }
 
 export function CategoryCard({ category }: CategoryCardProps) {

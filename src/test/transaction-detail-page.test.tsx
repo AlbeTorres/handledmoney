@@ -46,7 +46,7 @@ vi.mock('@/actions/transaction/delete-transaction', () => ({
   deleteTransactionAction: vi.fn(),
 }))
 
-vi.mock('@/actions/transaction/get-transaction', () => ({
+vi.mock('@/data-access/get-transaction', () => ({
   getTransactionByIdAction: mockGetTransactionByIdAction,
 }))
 

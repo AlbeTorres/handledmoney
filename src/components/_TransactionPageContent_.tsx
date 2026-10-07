@@ -1,6 +1,6 @@
 'use client'
 
-import { Account, Category, Transaction } from '../interfaces'
+import { Account, Transaction } from '../interfaces'
 import { useTransactionDrawer } from '@/hooks/use-transaction-drawer'
 import TransactionActionBar from '@/app/(financeapp)/transaction/components/TransactionActionBar'
 import { TransactionList } from '@/app/(financeapp)/transaction/components/TransactionList'
@@ -28,7 +28,7 @@ export const TransactionPageContent = ({
   totalExpenses,
   netBalance,
 }: Props) => {
-  const { isOpen, transaction, onOpen, onClose } = useTransactionDrawer()
+  const { isOpen, transaction, onClose } = useTransactionDrawer()
 
   return (
     <>
@@ -40,9 +40,9 @@ export const TransactionPageContent = ({
       <TransactionActionBar categories={categories} transactions={data} />
       <TransactionList
         data={data}
+        categories={categories}
         totalPages={totalPages}
         currentPage={currentPage}
-        onRowClick={onOpen}
       />
       <TransactionQuickEdit
         accounts={accounts}

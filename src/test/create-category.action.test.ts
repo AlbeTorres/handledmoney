@@ -54,7 +54,6 @@ vi.mock('next/headers', () => ({
 //   - icon: non-empty string
 //   - color: 6-char hex string (no # prefix)
 //   - type: 'income' | 'expense'
-//   - parentId: optional UUID or null
 // ────────────────────────────────────────────────────────────────────────────────
 
 /** A valid category payload that passes categorySchema validation */
@@ -63,11 +62,6 @@ const VALID_CATEGORY = {
   icon: 'utensils',
   color: 'FF0000',
   type: 'income' as const,
-}
-
-const VALID_CATEGORY_WITH_PARENT = {
-  ...VALID_CATEGORY,
-  parentId: '550e8400-e29b-41d4-a716-446655440000',
 }
 
 const MOCK_USER_ID = 'user-123'
@@ -93,7 +87,6 @@ const CREATED_CATEGORY_RESULT = {
   icon: 'utensils',
   color: 'FF0000',
   type: 'income',
-  parentId: null,
   createdAt: new Date(),
 }
 
@@ -112,10 +105,9 @@ function setupSuccessfulDefaults() {
 //   1. Authentication — returns 401 when no userId
 //   2. Validation — returns 400 when schema fails
 //   3. Duplicate check — returns 400 for same-name categories (case-insensitive)
-//   4. Hierarchy — returns 400 when max depth (2 levels) is exceeded
-//   5. Success — returns 200 with created category data
-//   6. Error handling — returns 500 when repository throws
-//   7. Side effects — revalidatePath called, createCategory called with correct data
+//   4. Success — returns 200 with created category data
+//   5. Error handling — returns 500 when repository throws
+//   6. Side effects — revalidatePath called, createCategory called with correct data
 // ────────────────────────────────────────────────────────────────────────────────
 
 describe('createCategoryAction', () => {
@@ -268,7 +260,7 @@ describe('createCategoryAction', () => {
   describe('duplicate name check', () => {
     it('returns 400 when a category with the same name already exists for the same type', async () => {
       mockGetCategoriesByUserId.mockResolvedValue([
-        { id: 'existing-1', name: 'Food', type: 'income', parentId: null },
+        { id: 'existing-1', name: 'Food', type: 'income'},
       ])
 
       const result = await createCategoryAction(VALID_CATEGORY)
@@ -282,7 +274,7 @@ describe('createCategoryAction', () => {
 
     it('performs case-insensitive comparison for duplicate check', async () => {
       mockGetCategoriesByUserId.mockResolvedValue([
-        { id: 'existing-1', name: 'food', type: 'income', parentId: null },
+        { id: 'existing-1', name: 'food', type: 'income'},
       ])
 
       const result = await createCategoryAction({ ...VALID_CATEGORY, name: 'Food' })
@@ -296,7 +288,7 @@ describe('createCategoryAction', () => {
 
     it('performs trimmed comparison for duplicate check', async () => {
       mockGetCategoriesByUserId.mockResolvedValue([
-        { id: 'existing-1', name: '  Food  ', type: 'income', parentId: null },
+        { id: 'existing-1', name: '  Food  ', type: 'income'},
       ])
 
       const result = await createCategoryAction({ ...VALID_CATEGORY, name: 'Food' })
@@ -325,67 +317,10 @@ describe('createCategoryAction', () => {
 
     it('does not call createCategory when duplicate exists', async () => {
       mockGetCategoriesByUserId.mockResolvedValue([
-        { id: 'existing-1', name: 'Food', type: 'income', parentId: null },
+        { id: 'existing-1', name: 'Food', type: 'income'},
       ])
 
       await createCategoryAction(VALID_CATEGORY)
-
-      expect(mockCreateCategory).not.toHaveBeenCalled()
-    })
-  })
-
-  // ── Hierarchy depth check ───────────────────────────────────────────────────
-
-  describe('hierarchy depth check', () => {
-    it('returns 400 when parent already has a parentId (exceeds max 2 levels)', async () => {
-      const parentId = '550e8400-e29b-41d4-a716-446655440000'
-      // Parent category already has a parent — this would create a 3rd level
-      mockGetCategoriesByUserId.mockResolvedValue([
-        { id: parentId, name: 'Subfood', type: 'income', parentId: 'another-parent-uuid' },
-      ])
-
-      const result = await createCategoryAction({
-        ...VALID_CATEGORY,
-        parentId,
-      })
-
-      expect(result).toEqual({
-        success: false,
-        status: 400,
-        message: 'Maximum hierarchy depth reached (2 levels)',
-      })
-    })
-
-    it('allows valid 2-level hierarchy (parent has no parentId)', async () => {
-      const parentId = '550e8400-e29b-41d4-a716-446655440000'
-      mockGetCategoriesByUserId.mockResolvedValue([
-        { id: parentId, name: 'Food Category', type: 'income', parentId: null },
-      ])
-
-      const result = await createCategoryAction({
-        ...VALID_CATEGORY,
-        parentId,
-      })
-
-      expect(result.success).toBe(true)
-    })
-
-    it('allows category with no parentId (root level)', async () => {
-      const result = await createCategoryAction(VALID_CATEGORY)
-
-      expect(result.success).toBe(true)
-    })
-
-    it('does not call createCategory when hierarchy depth is exceeded', async () => {
-      const parentId = '550e8400-e29b-41d4-a716-446655440000'
-      mockGetCategoriesByUserId.mockResolvedValue([
-        { id: parentId, name: 'Subfood', type: 'income', parentId: 'another-parent-uuid' },
-      ])
-
-      await createCategoryAction({
-        ...VALID_CATEGORY,
-        parentId,
-      })
 
       expect(mockCreateCategory).not.toHaveBeenCalled()
     })
@@ -406,15 +341,14 @@ describe('createCategoryAction', () => {
     })
 
     it('calls createCategory with correct data including userId', async () => {
-      await createCategoryAction(VALID_CATEGORY_WITH_PARENT)
+      await createCategoryAction(VALID_CATEGORY)
 
       expect(mockCreateCategory).toHaveBeenCalledWith({
         userId: MOCK_USER_ID,
-        name: VALID_CATEGORY_WITH_PARENT.name,
-        icon: VALID_CATEGORY_WITH_PARENT.icon,
-        color: VALID_CATEGORY_WITH_PARENT.color,
-        type: VALID_CATEGORY_WITH_PARENT.type,
-        parentId: VALID_CATEGORY_WITH_PARENT.parentId,
+        name: VALID_CATEGORY.name,
+        icon: VALID_CATEGORY.icon,
+        color: VALID_CATEGORY.color,
+        type: VALID_CATEGORY.type,
       })
     })
 
@@ -432,7 +366,7 @@ describe('createCategoryAction', () => {
 
     it('does not call revalidatePath when creation fails due to duplicate', async () => {
       mockGetCategoriesByUserId.mockResolvedValue([
-        { id: 'existing-1', name: 'Food', type: 'expense', parentId: null },
+        { id: 'existing-1', name: 'Food', type: 'expense'},
       ])
 
       await createCategoryAction(VALID_CATEGORY)
