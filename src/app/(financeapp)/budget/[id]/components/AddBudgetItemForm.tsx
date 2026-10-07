@@ -2,6 +2,7 @@
 
 import { createBudgetItemAction } from '@/actions/budget/budget-item'
 import { createCategoryAction } from '@/actions/category/create-category'
+import { getCategoriesByUserAction } from '@/actions/category/get-categories'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
 import type { CategorySelect } from '@/repository/categories'
 import { Loader2, Plus, X } from 'lucide-react'
 import { useEffect, useRef, useState, useTransition } from 'react'

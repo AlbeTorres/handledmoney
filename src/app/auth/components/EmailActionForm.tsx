@@ -19,7 +19,6 @@ type Props = {
   headerLabelKey: string
   backButtonHref?: string
   backButtonLabelKey: string
-  callbackUrl?: string
   cooldownKey?: string
   submitButtonLabelKey: string
   showFieldLabel?: boolean
@@ -41,7 +40,6 @@ export function EmailActionForm({
   headerLabelKey,
   backButtonHref = '/auth/login',
   backButtonLabelKey,
-  callbackUrl = '/',
   cooldownKey = 'email_cooldown_until',
   submitButtonLabelKey,
   showFieldLabel = false,
@@ -93,8 +91,6 @@ export function EmailActionForm({
       headerLabel={headerLabelKey ? t(headerLabelKey as any) : ''}
       backButtonHref={backButtonHref}
       backButtonLabel={t(backButtonLabelKey as any)}
-      callbackUrl={callbackUrl}
-      isPending={isPending}
       classname='mx-auto pt-2'
     >
       <form onSubmit={form.handleSubmit(handleFormSubmit)}>

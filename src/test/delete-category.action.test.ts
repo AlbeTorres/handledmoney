@@ -54,36 +54,24 @@ vi.mock('next/headers', () => ({
 
 const MOCK_CATEGORY_ID = 'cat-delete-001'
 const MOCK_USER_ID = 'user-123'
-const MOCK_CHILD_ID = 'cat-child-001'
 
 /** Authenticated session with a valid user id */
 const AUTHENTICATED_SESSION = {
   user: { id: MOCK_USER_ID },
 }
 
-/** A category that exists with no children — safe to delete */
-const EXISTING_CATEGORY_NO_CHILDREN = {
+/** An existing category owned by the user — safe to delete */
+const EXISTING_CATEGORY = {
   id: MOCK_CATEGORY_ID,
   userId: MOCK_USER_ID,
   name: 'Food',
-  children: [],
 }
 
-/** A category that has subcategories — cannot be deleted */
-const EXISTING_CATEGORY_WITH_CHILDREN = {
-  id: MOCK_CATEGORY_ID,
-  userId: MOCK_USER_ID,
-  name: 'Food',
-  children: [
-    { id: MOCK_CHILD_ID, name: 'Fast Food', parentId: MOCK_CATEGORY_ID },
-  ],
-}
-
-/** Default mocks for a successful flow (authenticated, category exists, no children) */
+/** Default mocks for a successful flow (authenticated, category exists) */
 function setupSuccessfulDefaults() {
   mockGetSession.mockResolvedValue(AUTHENTICATED_SESSION)
   mockHeaders.mockResolvedValue({})
-  mockGetCategoryById.mockResolvedValue(EXISTING_CATEGORY_NO_CHILDREN)
+  mockGetCategoryById.mockResolvedValue(EXISTING_CATEGORY)
   mockDeleteCategory.mockResolvedValue(undefined)
   mockRevalidatePath.mockImplementation(() => {})
 }
@@ -93,11 +81,10 @@ function setupSuccessfulDefaults() {
 // Full coverage for deleteCategoryAction covering every branch:
 //   1. Authentication — returns 401 when no userId
 //   2. Not found — returns 404 when getCategoryById returns null
-//   3. Has children — returns 400 when category has subcategories
-//   4. Success — returns 200 on successful deletion
-//   5. Error handling — returns 400 with error message when repository throws
-//   6. Side effects — revalidatePath called, deleteCategory called with correct args
-//   7. Verification — getCategoryById called before deletion
+//   3. Success — returns 200 on successful deletion
+//   4. Error handling — returns 400 with error message when repository throws
+//   5. Side effects — revalidatePath called, deleteCategory called with correct args
+//   6. Verification — getCategoryById called before deletion
 // ────────────────────────────────────────────────────────────────────────────────
 
 describe('deleteCategoryAction', () => {
@@ -199,57 +186,6 @@ describe('deleteCategoryAction', () => {
       await deleteCategoryAction(MOCK_CATEGORY_ID)
 
       expect(mockRevalidatePath).not.toHaveBeenCalled()
-    })
-  })
-
-  // ── Has children (subcategories) ──────────────────────────────────────────
-
-  describe('category has children', () => {
-    it('returns 400 when category has children (subcategories)', async () => {
-      mockGetCategoryById.mockResolvedValue(EXISTING_CATEGORY_WITH_CHILDREN)
-
-      const result = await deleteCategoryAction(MOCK_CATEGORY_ID)
-
-      expect(result).toEqual({
-        success: false,
-        status: 400,
-        message: 'Please delete subcategories first',
-      })
-    })
-
-    it('does not call deleteCategory when category has children', async () => {
-      mockGetCategoryById.mockResolvedValue(EXISTING_CATEGORY_WITH_CHILDREN)
-
-      await deleteCategoryAction(MOCK_CATEGORY_ID)
-
-      expect(mockDeleteCategory).not.toHaveBeenCalled()
-    })
-
-    it('does not call revalidatePath when category has children', async () => {
-      mockGetCategoryById.mockResolvedValue(EXISTING_CATEGORY_WITH_CHILDREN)
-
-      await deleteCategoryAction(MOCK_CATEGORY_ID)
-
-      expect(mockRevalidatePath).not.toHaveBeenCalled()
-    })
-
-    it('handles undefined children array gracefully (no crash)', async () => {
-      // When children is undefined, the check `existing.children && existing.children.length > 0`
-      // should evaluate to false and allow deletion
-      mockGetCategoryById.mockResolvedValue({
-        id: MOCK_CATEGORY_ID,
-        userId: MOCK_USER_ID,
-        name: 'Food',
-        // children is undefined — no children property at all
-      })
-
-      const result = await deleteCategoryAction(MOCK_CATEGORY_ID)
-
-      expect(result).toEqual({
-        success: true,
-        status: 200,
-        message: 'Category deleted successfully',
-      })
     })
   })
 

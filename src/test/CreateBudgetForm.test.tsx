@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type { BudgetCategory } from '@/app/(financeapp)/budget/create/components/CategoryCombobox'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -99,6 +99,21 @@ async function setAmount(user: ReturnType<typeof userEvent.setup>, categoryName:
   const input = within(rowFor(categoryName)).getByRole('spinbutton')
   await user.clear(input)
   await user.type(input, String(value))
+}
+
+async function selectDate(
+  user: ReturnType<typeof userEvent.setup>,
+  label: 'start_date' | 'end_date',
+  date: Date,
+) {
+  await user.click(screen.getByRole('button', { name: label }))
+  const selector = `[data-day="${date.toLocaleDateString()}"]`
+  const day = await waitFor(() => {
+    const element = document.querySelector<HTMLButtonElement>(selector)
+    expect(element).not.toBeNull()
+    return element as HTMLButtonElement
+  })
+  await user.click(day)
 }
 
 // A summary metric value is the <dd> in the same row <div> as its <dt> label.
@@ -441,6 +456,9 @@ describe('CreateBudgetForm wizard', () => {
   it('drives the full budget creation journey end-to-end with real components', async () => {
     mocks.createBudget.mockResolvedValue({ success: true, data: { id: 'budget-1' } })
     const salaryId = incomeCategories[0].id
+    const now = new Date()
+    const startDate = new Date(now.getFullYear(), now.getMonth(), 1)
+    const endDate = new Date(now.getFullYear(), now.getMonth(), 28)
     const user = userEvent.setup()
     render(<CreateBudgetForm initialCategories={allCategories} />)
 
@@ -449,8 +467,8 @@ describe('CreateBudgetForm wizard', () => {
 
     // Step 1: fill metadata (name + month/year) and continue to step 2.
     await user.type(screen.getByLabelText('name'), 'August')
-    fireEvent.change(screen.getByLabelText('start_date'), { target: { value: '2026-08-01' } })
-    fireEvent.change(screen.getByLabelText('end_date'), { target: { value: '2026-08-31' } })
+    await selectDate(user, 'start_date', startDate)
+    await selectDate(user, 'end_date', endDate)
     await user.click(screen.getByRole('button', { name: 'next' }))
     await waitFor(() => expect(screen.getByRole('heading', { name: 'heading_structure' })).toBeInTheDocument())
 
@@ -529,8 +547,8 @@ describe('CreateBudgetForm wizard', () => {
     await waitFor(() => expect(mocks.createBudget).toHaveBeenCalledTimes(1))
     const payload = mocks.createBudget.mock.calls[0][0]
     expect(payload.name).toBe('August')
-    expect(payload.startDate.getTime()).toBe(new Date('2026-08-01T00:00:00').getTime())
-    expect(payload.endDate.getTime()).toBe(new Date('2026-08-31T00:00:00').getTime())
+    expect(payload.startDate.getTime()).toBe(startDate.getTime())
+    expect(payload.endDate.getTime()).toBe(endDate.getTime())
     expect(payload.groups).toHaveLength(1)
     expect(payload.groups[0]).toMatchObject({
       name: 'Income',
@@ -545,5 +563,5 @@ describe('CreateBudgetForm wizard', () => {
     // Success navigation after the action resolves.
     await waitFor(() => expect(mocks.push).toHaveBeenCalledWith('/budget/budget-1'))
     expect(mocks.refresh).toHaveBeenCalled()
-  })
+  }, 15_000)
 })

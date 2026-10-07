@@ -1,4 +1,4 @@
-import { getCategoriesByUserAction } from '@/data-access/get-categories'
+import { getCategoriesByUserAction } from '@/actions/category/get-categories'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 // ── Mock Definitions ──
@@ -129,7 +129,7 @@ describe('getCategoriesByUserAction', () => {
     await getCategoriesByUserAction()
 
     // The action must pass the authenticated user's id to the repository layer
-    expect(mockGetCategoriesByUserId).toHaveBeenCalledWith('user-456')
+    expect(mockGetCategoriesByUserId).toHaveBeenCalledWith('user-456', undefined)
     expect(mockGetCategoriesByUserId).toHaveBeenCalledTimes(1)
   })
 })

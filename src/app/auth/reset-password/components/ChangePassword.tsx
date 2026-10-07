@@ -73,8 +73,6 @@ export const ChangePassword = () => {
       headerLabel={t('forgot_password_title')}
       backButtonHref='/auth/login'
       backButtonLabel={t('back_to_login')}
-      callbackUrl={'/'}
-      isPending={isPending}
     >
       <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className='mt-4 space-y-4'>

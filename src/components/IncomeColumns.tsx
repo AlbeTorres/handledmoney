@@ -90,11 +90,7 @@ export const incomecolumns: ColumnDef<IncomeTransaction>[] = [
     },
     cell: ({ row }) => {
       return (
-        <CategoryColumn
-          transactionId={row.original.id}
-          categoryId={row.original.category?.id}
-          categoryName={row.original.category?.name}
-        />
+        <CategoryColumn categoryName={row.original.category?.name} />
       )
     },
   },

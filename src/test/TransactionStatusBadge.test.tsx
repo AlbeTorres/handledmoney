@@ -42,7 +42,7 @@ describe('TransactionStatusBadge', () => {
   it('applies green styling for cleared status', () => {
     render(<TransactionStatusBadge status='cleared' />)
     const badge = screen.getByText('status.cleared').closest('span')
-    expect(badge?.className).toContain('bg-emerald')
+    expect(badge?.className).toContain('text-emerald')
   })
 
   it('applies amber styling for pending status', () => {

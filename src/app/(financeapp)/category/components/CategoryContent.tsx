@@ -7,7 +7,7 @@ import { CategoryCard } from './CategoryCard'
 import { Button } from '@/components/ui/button'
 
 interface CategoryListProps {
-  categories: (CategorySelect & { children?: any[] })[]
+  categories: CategorySelect[]
   activeType: ('expense' | 'income')[]
   search: string
   sort: string

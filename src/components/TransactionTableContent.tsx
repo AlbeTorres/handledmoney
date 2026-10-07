@@ -1,40 +1,31 @@
 'use client'
 
-import toast from 'react-hot-toast'
 import { Transaction } from '../interfaces'
-
-import { Row } from '@tanstack/react-table'
-import { DataTable } from './shared/transaction-table/DataTable'
-import { columns } from './columns'
+import { TransactionList } from '@/app/(financeapp)/transaction/components/TransactionList'
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card'
 
 type Props = {
   data: Transaction[]
   totalPages: number
   currentPage: number
+  categories?: { id: string; name: string }[]
 }
 
-export const TransactionTableContent = ({ data, totalPages, currentPage }: Props) => {
-  const onDelete = async (row: Row<Transaction>[]) => {
-    const ids = row.map(r => r.original.id)
-    const result = { error: false }
-
-    if (result.error) {
-      toast.error('Something went wrong!')
-    }
-  }
+export const TransactionTableContent = ({
+  data,
+  totalPages,
+  currentPage,
+  categories = [],
+}: Props) => {
   return (
     <Card className='border-none drop-shadow-sm w-full'>
       <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
         <CardTitle className='text-xl line-clamp-1'>Transactions History</CardTitle>
       </CardHeader>
       <CardContent>
-        <DataTable
-          key={currentPage}
-          columns={columns}
+        <TransactionList
           data={data}
-          filterKey='date'
-          onDelete={row => onDelete(row)}
+          categories={categories}
           totalPages={totalPages}
           currentPage={currentPage}
         />
