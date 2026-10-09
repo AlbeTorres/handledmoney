@@ -21,7 +21,7 @@ export const TableHeadSelected = ({ columnIndex, selectedColumns, onChange }: Pr
       <SelectTrigger
         className={cn(
           'focus:ring-offset-0 focus:ring-transparent outline-none border-none bg-transparent capitalize',
-          currentSelection && 'text-blue-500',
+          currentSelection && 'text-primary',
         )}
       >
         <SelectValue placeholder='Skip' />

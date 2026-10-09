@@ -39,21 +39,21 @@ describe('TransactionStatusBadge', () => {
     expect(container.firstChild).toBeNull()
   })
 
-  it('applies green styling for cleared status', () => {
+  it('applies success styling for cleared status', () => {
     render(<TransactionStatusBadge status='cleared' />)
     const badge = screen.getByText('status.cleared').closest('span')
-    expect(badge?.className).toContain('text-emerald')
+    expect(badge?.className).toContain('text-success')
   })
 
-  it('applies amber styling for pending status', () => {
+  it('applies warning styling for pending status', () => {
     render(<TransactionStatusBadge status='pending' />)
     const badge = screen.getByText('status.pending').closest('span')
-    expect(badge?.className).toContain('bg-amber')
+    expect(badge?.className).toContain('bg-warning')
   })
 
-  it('applies slate styling for recurring status', () => {
+  it('applies muted styling for recurring status', () => {
     render(<TransactionStatusBadge status='recurring' />)
     const badge = screen.getByText('status.recurring').closest('span')
-    expect(badge?.className).toContain('bg-slate')
+    expect(badge?.className).toContain('bg-muted')
   })
 })

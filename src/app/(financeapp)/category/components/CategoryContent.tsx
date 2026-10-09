@@ -3,6 +3,7 @@
 import { CategorySelect } from '@/repository/categories'
 
 import { Search } from 'lucide-react'
+import { useTranslations } from 'next-intl'
 import { CategoryCard } from './CategoryCard'
 import { Button } from '@/components/ui/button'
 
@@ -14,6 +15,7 @@ interface CategoryListProps {
 }
 
 export function CategoryContent({ categories, activeType, search, sort }: CategoryListProps) {
+  const t = useTranslations('handledmoney.category')
   const clearFilters = () => {
     const params = new URLSearchParams(window.location.search)
     params.delete('type')
@@ -55,8 +57,8 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
     <div className='flex flex-col overflow-y-auto space-y-14 pb-8 '>
       {expensesCategories.length > 0 && (
         <div className='flex flex-col gap-4'>
-          <p className='text-lg font-semibold'>Expenses</p>
-          <div className='w-full bg-gray-200 h-px' />
+          <p className='text-lg font-semibold'>{t('filter.expenses')}</p>
+          <div className='w-full bg-border h-px' />
           <div className='grid grid-cols-1 md:grid-cols-3 items-center content-start justify-center gap-4'>
             {expensesCategories.map(category => (
               <CategoryCard key={category.id} category={category} />
@@ -67,8 +69,8 @@ export function CategoryContent({ categories, activeType, search, sort }: Catego
 
       {incomeCategories.length > 0 && (
         <div className='flex flex-col gap-4'>
-          <p className='text-lg font-semibold'>Income</p>
-          <div className='w-full bg-gray-200 h-px' />
+          <p className='text-lg font-semibold'>{t('filter.income')}</p>
+          <div className='w-full bg-border h-px' />
           <div className='grid grid-cols-1 md:grid-cols-3 items-center content-start justify-center gap-4'>
             {incomeCategories.map(category => (
               <CategoryCard key={category.id} category={category} />

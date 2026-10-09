@@ -20,7 +20,7 @@ export function BudgetGroupSection({ group, budgetId }: { group: BudgetGroupWith
   const [deletePending, startDeleteTransition] = useTransition()
   const [renamePending, startRenameTransition] = useTransition()
   const isIncome = group.calculationType === 'income'
-  const actualTone = group.groupActual > group.groupPlanned ? 'text-destructive' : 'text-emerald-700'
+  const actualTone = group.groupActual > group.groupPlanned ? 'text-danger' : 'text-success'
 
   const rename = () => { if (!name.trim()) return; startRenameTransition(async () => { const result = await updateBudgetGroupAction({ id: group.id, name: name.trim() }, budgetId); if (result.success) { setEditingName(false); toast.success(result.message ?? 'Group updated') } else toast.error(result.message ?? 'Failed to update group') }) }
   const remove = () => startDeleteTransition(async () => { const result = await deleteBudgetGroupAction(group.id, budgetId); if (result.success) toast.success(result.message ?? 'Group deleted'); else toast.error(result.message ?? 'Failed to delete group') })
@@ -28,7 +28,7 @@ export function BudgetGroupSection({ group, budgetId }: { group: BudgetGroupWith
   return <section className='overflow-hidden rounded-xl border border-border bg-card'>
     <div className='flex min-h-16 items-center gap-3 px-4 py-3 sm:px-5'>
       <button aria-label={`Toggle ${group.name}`} onClick={() => setCollapsed(value => !value)} className='rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground'>{collapsed ? <ChevronRight className='size-4' /> : <ChevronDown className='size-4' />}</button>
-      <span className={cn('label-caps rounded-full px-2 py-1', isIncome ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300')}>{isIncome ? 'Income' : 'Outflow'}</span>
+      <span className={cn('label-caps rounded-full px-2 py-1', isIncome ? 'bg-success/15 text-success' : 'bg-primary/15 text-primary')}>{isIncome ? 'Income' : 'Outflow'}</span>
       <div className='min-w-0 flex-1'>{editingName ? <div className='flex items-center gap-1'><input aria-label='Group name' value={name} onChange={event => setName(event.target.value)} className='h-8 w-full max-w-56 rounded-md border bg-background px-2 body-sm font-semibold' autoFocus /><Button size='icon' variant='ghost' aria-label='Save group name' className='size-8' onClick={rename} disabled={renamePending}><Check className='size-3.5' /></Button><Button size='icon' variant='ghost' aria-label='Cancel group rename' className='size-8' onClick={() => { setName(group.name); setEditingName(false) }}><X className='size-3.5' /></Button></div> : <h2 className='title-md truncate text-foreground'>{group.name}</h2>}</div>
       <div className='hidden text-right sm:block'><p className='label-caps text-muted-foreground'>Planned</p><p className='body-sm font-semibold tabular-nums'>{currency(group.groupPlanned)}</p></div>
       <div className='hidden text-right md:block'><p className='label-caps text-muted-foreground'>Actual</p><p className={cn('body-sm font-semibold tabular-nums', actualTone)}>{currency(group.groupActual)}</p></div>

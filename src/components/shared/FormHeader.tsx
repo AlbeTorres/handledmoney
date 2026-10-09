@@ -12,8 +12,8 @@ export function FormHeader({ title, description }: FormAccountHeaderProps) {
         <LandmarkIcon className='size-6' />
       </div>
       <div>
-        <h1 className='text-3xl font-extrabold text-slate-900 dark:text-white'>{title}</h1>
-        <p className='text-slate-500 dark:text-slate-400 font-medium'>{description}</p>
+        <h1 className='text-3xl font-extrabold text-foreground'>{title}</h1>
+        <p className='text-muted-foreground font-medium'>{description}</p>
       </div>
     </div>
   )

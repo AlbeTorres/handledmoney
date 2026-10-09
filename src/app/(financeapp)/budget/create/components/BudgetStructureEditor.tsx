@@ -103,7 +103,7 @@ export function BudgetStructureEditor({
           ))}
           <>
             {createOpen ? (
-              <div className='grid gap-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end rounded-md border shadow-sm bg-muted/30 px-4 py-3'>
+              <div className='grid gap-3 sm:grid-cols-[1fr_10rem_auto] sm:items-end rounded-md border bg-muted/30 px-4 py-3'>
                 <Field>
                   <FieldLabel htmlFor='new-budget-group-name'>{t('group_name')}</FieldLabel>
                   <Input
@@ -143,7 +143,7 @@ export function BudgetStructureEditor({
               </div>
             ) : (
               <button
-                className='flex flex-col w-full items-center text-lg justify-center  text-primary rounded-md border border-primary border-dashed p-4 hover:bg-primary/20  hover:text-green-700 hover:border-green-700 duration-300 transition-all'
+                className='flex flex-col w-full items-center gap-1 rounded-md border border-dashed border-primary p-4 text-lg text-primary transition-colors hover:bg-primary/5'
                 onClick={() => setCreateOpen(true)}
               >
                 <CirclePlus className='size-4' />
@@ -167,9 +167,9 @@ export function BudgetStructureEditor({
             </div>
             <div className='flex items-center gap-1.5 border-t pt-2'>
               {incomeReady ? (
-                <CircleDollarSign className='size-4 shrink-0 text-emerald-600' />
+                <CircleDollarSign className='size-4 shrink-0 text-success' />
               ) : (
-                <WalletCards className='size-4 shrink-0 text-sky-600' />
+                <WalletCards className='size-4 shrink-0 text-primary' />
               )}
               <dt className='text-muted-foreground'>
                 {incomeReady ? t('summary_income_ready') : t('summary_income_pending')}

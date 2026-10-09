@@ -1,62 +1,47 @@
 'use client'
-import { Bell } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+
+import { SidebarTrigger } from '@/components/ui/sidebar'
+import { getPageTitle } from '@/lib/shell-nav'
 
 interface AppHeaderProps {
   userName: string
   avatarUrl: string | null
 }
 
-const BELL_ICON = <Bell aria-hidden='true' />
-
-const TITLE_MAP: Record<string, string> = {
-  category: 'Category Overview',
-  account: 'Accounts Overview',
-  transactions: 'Transactions',
-}
-
-function getTitleFromPathname(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean) // ["category", "create"]
-  const firstSegment = segments[0]
-
-  if (!firstSegment) return 'Accounts Overview' // fallback para "/"
-
-  return TITLE_MAP[firstSegment] ?? firstSegment.charAt(0).toUpperCase() + firstSegment.slice(1)
-}
-
 export function AppHeader({ userName, avatarUrl }: AppHeaderProps) {
   const pathname = usePathname()
-  const title = getTitleFromPathname(pathname)
+  const title = getPageTitle(pathname)
+  const initial = userName.trim().charAt(0).toUpperCase() || 'U'
 
   return (
-    <header className='sticky shadow-sm top-0 z-10 flex items-center justify-between px-8 py-4 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800'>
-      <div className='flex items-center gap-8'>
-        <h2 className='text-xl font-bold tracking-tight'>{title}</h2>
+    <header className='sticky top-0 z-10 flex min-h-16 items-center justify-between gap-4 border-b border-border bg-background/90 px-4 py-3 backdrop-blur-sm sm:px-6 lg:px-8'>
+      <div className='flex min-w-0 items-center gap-3'>
+        <SidebarTrigger className='size-11 shrink-0 sm:size-9' />
+        <p className='truncate text-base font-semibold tracking-tight sm:text-lg'>{title}</p>
       </div>
       <div className='flex items-center gap-3'>
-        <button
-          className='p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors relative focus-visible:ring-2 focus-visible:ring-slate-400 outline-none'
-          aria-label='Notifications'
+        {userName && (
+          <span className='hidden text-sm text-muted-foreground md:inline'>{userName}</span>
+        )}
+        <div
+          role='img'
+          aria-label={userName || 'User avatar'}
+          className='size-9 shrink-0 overflow-hidden rounded-full border border-border bg-muted text-muted-foreground'
         >
-          {BELL_ICON}
-          <span className='absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-background-dark'></span>
-        </button>
-        <div className='size-9 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border border-slate-300 dark:border-slate-600 relative'>
-          {avatarUrl && (
+          {avatarUrl ? (
             <Image
-              alt={`${userName} Profile`}
-              className='w-full h-full object-cover'
+              alt=''
+              className='h-full w-full object-cover'
               src={avatarUrl}
               width={36}
               height={36}
-              priority
             />
-          )}
-          {!avatarUrl && (
-            <div className='w-full h-full flex items-center justify-center text-slate-500 dark:text-slate-400'>
-              {userName.charAt(0).toUpperCase()}
-            </div>
+          ) : (
+            <span className='flex h-full w-full items-center justify-center text-sm font-semibold'>
+              {initial}
+            </span>
           )}
         </div>
       </div>

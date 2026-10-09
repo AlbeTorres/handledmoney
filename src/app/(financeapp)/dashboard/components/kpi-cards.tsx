@@ -55,7 +55,7 @@ export function KpiCards({ kpis }: Props) {
       ),
     },
     {
-      label: 'Balance Neto',
+      label: 'Te queda este mes',
       icon: Scale,
       value: formatCurrency(kpis.netActual),
       tone: kpis.netActual >= 0 ? 'success' : 'danger',
@@ -85,7 +85,7 @@ export function KpiCards({ kpis }: Props) {
       {cards.map((c) => (
         <div
           key={c.label}
-          className="rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md"
+          className="rounded-xl border border-border bg-card p-5"
         >
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium text-muted-foreground text-pretty">

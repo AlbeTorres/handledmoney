@@ -21,7 +21,13 @@ export default async function CategoryPage({ searchParams }: CategoryPageProps) 
 
   if (!categories || categories.length === 0) {
     return (
-      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+      <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.categories')}</h1>
+          <p className='body-lg mt-1 text-muted-foreground'>
+            Organize and classify your transactions by category.
+          </p>
+        </div>
         <EmptyState
           title={t('empty_state.title')}
           description={t('empty_state.description')}
@@ -34,7 +40,13 @@ export default async function CategoryPage({ searchParams }: CategoryPageProps) 
   }
 
   return (
-    <div className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>
+    <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+      <div>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.categories')}</h1>
+        <p className='body-lg mt-1 text-muted-foreground'>
+          Organize and classify your transactions by category.
+        </p>
+      </div>
       <CategoryAction />
       <CategoryContent
         sort={sort}

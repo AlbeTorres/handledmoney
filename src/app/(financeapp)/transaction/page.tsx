@@ -45,7 +45,13 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
 
   if (!accounts || accounts.length === 0) {
     return (
-      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+      <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.transactions')}</h1>
+          <p className='body-lg mt-1 text-muted-foreground'>
+            Review and manage your account movements.
+          </p>
+        </div>
         <EmptyState
           title={t('account.empty_state.title')}
           description={t('account.empty_state.description')}
@@ -62,7 +68,13 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
   if (!transactions || transactions.length === 0) {
     if (!hasActiveFilters) {
       return (
-        <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+        <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+          <div>
+            <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.transactions')}</h1>
+            <p className='body-lg mt-1 text-muted-foreground'>
+              Review and manage your account movements.
+            </p>
+          </div>
           <EmptyState
             title={t('transaction.empty_state.title')}
             description={t('transaction.empty_state.description')}
@@ -78,7 +90,13 @@ export default async function TransactionPage({ searchParams }: TransactionPageP
   }
 
   return (
-    <div className='p-8 space-y-8 max-w-7xl mx-auto w-full'>
+    <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+      <div>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.transactions')}</h1>
+        <p className='body-lg mt-1 text-muted-foreground'>
+          Review and manage your account movements.
+        </p>
+      </div>
       <TransactionActionBar categories={categories} transactions={transactions} />
       <TransactionList
         data={transactions}

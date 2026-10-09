@@ -76,7 +76,7 @@ export function DeleteAccountDialog({
 
         {hasTransactions && (
           <div className='py-4 space-y-4'>
-            <p className='text-sm text-amber-600 font-medium'>
+            <p className='text-sm text-warning font-medium'>
               {t('delete.has_transactions_warning')}
             </p>
             <div className='space-y-2'>
@@ -99,7 +99,7 @@ export function DeleteAccountDialog({
 
         {!hasTransactions && (
           <div className='py-4'>
-            <p className='text-sm text-slate-500'>{t('delete.no_transactions')}</p>
+            <p className='text-sm text-muted-foreground'>{t('delete.no_transactions')}</p>
           </div>
         )}
 

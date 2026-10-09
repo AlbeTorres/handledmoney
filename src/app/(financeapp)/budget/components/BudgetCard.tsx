@@ -1,6 +1,7 @@
 'use client'
 
 import type { BudgetListItem } from '@/interfaces'
+import { cn } from '@/lib/utils'
 import { ArrowUpRight, CalendarDays } from 'lucide-react'
 import Link from 'next/link'
 
@@ -25,15 +26,15 @@ export function BudgetCard({
     budget.totalIncome > 0 ? Math.min((budget.totalAllocated / budget.totalIncome) * 100, 100) : 0
   const balanceClass =
     budget.remainingToAllocate === 0
-      ? 'text-emerald-700'
+      ? 'text-success'
       : budget.remainingToAllocate < 0
-        ? 'text-destructive'
-        : 'text-amber-700'
+        ? 'text-danger'
+        : 'text-warning'
 
   return (
     <Link
       href={`/budget/${budget.id}`}
-      className='group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
+      className='group rounded-xl border border-border bg-card p-6 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
     >
       <div className='flex items-start justify-between gap-4'>
         <div className='min-w-0'>
@@ -75,9 +76,23 @@ export function BudgetCard({
             {currency(budget.remainingToAllocate)}
           </span>
         </div>
-        <div className='h-2 overflow-hidden rounded-full bg-muted'>
+        <div
+          role='progressbar'
+          aria-label={budget.name}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(progress)}
+          className='h-2 overflow-hidden rounded-full bg-muted'
+        >
           <div
-            className='h-full rounded-full bg-primary transition-all'
+            className={cn(
+              'h-full rounded-full transition-[width]',
+              budget.remainingToAllocate < 0
+                ? 'bg-danger'
+                : budget.remainingToAllocate === 0
+                  ? 'bg-success'
+                  : 'bg-primary',
+            )}
             style={{ width: `${progress}%` }}
           />
         </div>

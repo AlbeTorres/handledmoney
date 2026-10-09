@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 session.json
+
+# OpenNext / Cloudflare generated output
+/.open-next/
+/.wrangler/
+/.vinext/
+.dev.vars*

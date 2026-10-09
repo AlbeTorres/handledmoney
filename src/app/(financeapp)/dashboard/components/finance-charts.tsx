@@ -76,7 +76,7 @@ export function FinanceCharts({
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
       {/* Bar chart */}
-      <div className="rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md lg:col-span-3">
+      <div className="rounded-xl border border-border bg-card p-5 lg:col-span-3">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-sm font-semibold">
             {viewMode === 'monthly'
@@ -103,7 +103,15 @@ export function FinanceCharts({
             Sin datos para graficar en este período
           </div>
         ) : (
-          <div className="h-72 w-full">
+          <div
+            className="h-72 w-full"
+            role="img"
+            aria-label={
+              viewMode === 'monthly'
+                ? 'Gráfico de barras: estimado vs real por categoría'
+                : 'Gráfico de barras: tendencia mensual de ingresos y gastos'
+            }
+          >
             <ResponsiveContainer width="100%" height="100%">
               {viewMode === 'monthly' ? (
               <BarChart data={budgetVsActual} barGap={6}>
@@ -145,7 +153,7 @@ export function FinanceCharts({
                   dataKey="label"
                   tickLine={false}
                   axisLine={false}
-                  tick={{ fill: 'var(--muted-foreground)', fontSize: 11 }}
+                  tick={{ fill: 'var(--muted-foreground)', fontSize: 12 }}
                 />
                 <YAxis
                   tickFormatter={axisFormat}
@@ -178,7 +186,7 @@ export function FinanceCharts({
       </div>
 
       {/* Donut chart — legend reads dynamic group names */}
-      <div className="rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md lg:col-span-2">
+      <div className="rounded-xl border border-border bg-card p-5 lg:col-span-2">
         <h2 className="mb-4 text-sm font-semibold">Gasto real por grupo</h2>
 
         {expenseByGroup.length === 0 ? (
@@ -187,7 +195,11 @@ export function FinanceCharts({
           </div>
         ) : (
           <div className="flex flex-col items-center gap-4 sm:flex-row lg:flex-col">
-            <div className="relative h-48 w-48 shrink-0">
+            <div
+              className="relative h-48 w-48 shrink-0"
+              role="img"
+              aria-label="Gráfico de dona del gasto real por grupo"
+            >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie

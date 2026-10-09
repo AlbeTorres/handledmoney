@@ -10,12 +10,12 @@ interface TransactionAmountCellProps {
 }
 
 export function TransactionAmountCell({ amount, type, status }: TransactionAmountCellProps) {
-  const colorClass = type === 'income' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-900 dark:text-white'
+  const colorClass = type === 'income' ? 'text-success' : 'text-foreground'
 
   return (
     <div data-testid='amount-cell' className={`text-right ${colorClass}`}>
       <div className='font-semibold tabular-nums'>
-        <span className='text-slate-400 font-normal'>$</span>
+        <span className='font-normal text-muted-foreground'>$</span>
         {fmt(amount)}
       </div>
       {status && <TransactionStatusBadge status={status} />}

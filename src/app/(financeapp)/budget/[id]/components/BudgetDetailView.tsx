@@ -83,7 +83,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
         <Link href='/budget' className='inline-flex w-fit items-center gap-2 body-sm text-muted-foreground hover:text-foreground lg:hidden'><ArrowLeft className='size-4' /> All budgets</Link>
 
         <div className='flex-1 min-w-0'>
-          {editing ? <div className='grid max-w-xl gap-2 sm:grid-cols-3'><input aria-label='Budget name' value={name} onChange={event => setName(event.target.value)} className='rounded-md border bg-background px-3 py-2 font-semibold sm:col-span-3' /><input aria-label='Start date' type='date' value={startDate} onChange={event => setStartDate(event.target.value)} className='rounded-md border bg-background px-2 py-2 body-sm' /><input aria-label='End date' type='date' value={endDate} onChange={event => setEndDate(event.target.value)} min={startDate} className='rounded-md border bg-background px-2 py-2 body-sm' /><Button size='sm' onClick={saveMetadata} disabled={isPending}>Save changes</Button></div> : <><div className='flex flex-wrap items-center gap-3'><h1 className='display-lg truncate text-foreground'>{budget.name}</h1><span className='label-caps rounded-full bg-primary/15 px-2.5 py-1 text-primary'>Budget plan</span></div><p className='body-lg mt-1 text-muted-foreground'>{periodLabel}{budget.endDate ? ` – ${formatDate(budget.endDate)}` : ' – ongoing'}</p></>}
+          {editing ? <div className='grid max-w-xl gap-2 sm:grid-cols-3'><input aria-label='Budget name' value={name} onChange={event => setName(event.target.value)} className='rounded-md border bg-background px-3 py-2 font-semibold sm:col-span-3' /><input aria-label='Start date' type='date' value={startDate} onChange={event => setStartDate(event.target.value)} className='rounded-md border bg-background px-2 py-2 body-sm' /><input aria-label='End date' type='date' value={endDate} onChange={event => setEndDate(event.target.value)} min={startDate} className='rounded-md border bg-background px-2 py-2 body-sm' /><Button size='sm' onClick={saveMetadata} disabled={isPending}>Save changes</Button></div> : <><div className='flex flex-wrap items-center gap-3'><h1 className='text-2xl font-bold tracking-tight truncate text-foreground'>{budget.name}</h1><span className='label-caps rounded-full bg-primary/15 px-2.5 py-1 text-primary'>Budget plan</span></div><p className='body-lg mt-1 text-muted-foreground'>{periodLabel}{budget.endDate ? ` – ${formatDate(budget.endDate)}` : ' – ongoing'}</p></>}
         </div>
 
         <div className='flex flex-wrap gap-2 lg:justify-end'>
@@ -100,7 +100,7 @@ export function BudgetDetailView({ budget }: BudgetDetailViewProps) {
 
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant='outline' size='sm' className='gap-2 text-red-600 hover:text-red-600'>
+            <Button variant='outline' size='sm' className='gap-2 text-destructive hover:text-destructive'>
               {isPending ? <Loader2 className='size-4 animate-spin' /> : <Trash2 className='size-4' />}
               Delete
             </Button>

@@ -1,4 +1,5 @@
 import { Banknote, CircleDollarSign, CreditCard, Landmark, PiggyBank, WalletCards, type LucideIcon } from 'lucide-react'
+import Link from 'next/link'
 
 import type { PresentedAccount } from '@/lib/dashboard/account-presentation'
 import type { AggregateBalance, SupportedAccountType } from '@/lib/dashboard/accounts'
@@ -36,13 +37,18 @@ interface Props {
 export function AccountsWidget({ accounts, aggregateBalance }: Props) {
 
   return (
-    <section className='flex h-full flex-col rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md'>
+    <section className='flex h-full flex-col rounded-xl border border-border bg-card'>
       <div className='flex items-center justify-between border-b border-border px-5 py-4'>
         <h2 className='flex items-center gap-2 text-sm font-semibold'>
           <Landmark className='size-4 text-muted-foreground' />
           Mis Cuentas
         </h2>
-        <span className='text-xs text-muted-foreground'>Saldo líquido</span>
+        <Link
+          href='/account'
+          className='rounded text-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring outline-none'
+        >
+          Gestionar
+        </Link>
       </div>
 
        {accounts.length === 0 ? (

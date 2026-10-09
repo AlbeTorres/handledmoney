@@ -184,7 +184,7 @@ export function CreateBudgetForm({ initialCategories }: { initialCategories: Bud
 
   return (
     <>
-      <div className='overflow-hidden rounded-md border bg-card shadow-sm'>
+      <div className='overflow-hidden rounded-md border bg-card'>
         <form onSubmit={form.handleSubmit(submit)} noValidate>
           <div className='space-y-8 p-6 sm:p-8'>
             <BudgetCreationStepper currentStep={step} />

@@ -26,12 +26,12 @@ export function AppearanceSection({
   const t = useTranslations('handledmoney.account')
   return (
     <section className='space-y-6'>
-      <h3 className='text-sm font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500'>
+      <h3 className='text-sm font-bold uppercase tracking-widest text-muted-foreground'>
         {t('form.appearance')}
       </h3>
 
       <Field data-invalid={!!iconError}>
-        <label className='text-sm font-semibold text-slate-700 dark:text-slate-300'>
+        <label className='text-sm font-semibold text-foreground'>
           {t('form.select_icon')}
         </label>
         <IconPicker value={iconValue} onChange={onIconChange} />
@@ -39,7 +39,7 @@ export function AppearanceSection({
       </Field>
 
       <Field data-invalid={!!colorError}>
-        <label className='text-sm font-semibold text-slate-700 dark:text-slate-300'>
+        <label className='text-sm font-semibold text-foreground'>
           {t('form.account_color')}
         </label>
         <ColorPicker value={colorValue} onChange={onColorChange} />

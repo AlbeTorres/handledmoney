@@ -66,7 +66,7 @@ export function CreateAccountForm() {
   }, [form])
 
   return (
-    <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+    <div className='bg-card border border-border rounded-xl overflow-hidden'>
       <form id='form-create-account' onSubmit={form.handleSubmit(handleSubmit)}>
         <div className='p-8 space-y-8'>
           {/* Basic Info */}
@@ -172,7 +172,7 @@ export function CreateAccountForm() {
             </div>
           </FieldGroup>
 
-          <div className='border-t border-slate-100 dark:border-slate-800' />
+          <div className='border-t border-border' />
 
           <AppearanceSection
             iconValue={form.watch('icon')}

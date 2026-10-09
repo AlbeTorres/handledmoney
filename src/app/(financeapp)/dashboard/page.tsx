@@ -2,6 +2,7 @@ import { headers } from 'next/headers'
 
 import { auth } from '@/lib/auth'
 import {
+  dashboardPeriodLabel,
   dashboardRange,
   defaultDashboardPeriod,
   parseDashboardPeriod,
@@ -28,15 +29,15 @@ const PERIOD_KEYS = ['mode', 'year', 'month'] as const
  * retryable alert before any dashboard data query.
  */
 const unavailableResponse = (
-  <section className='flex flex-1 flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-    <main className='mt-6 flex flex-col gap-4 lg:mt-8'>
+  <section className='flex flex-1 flex-col overflow-y-auto bg-background'>
+    <div className='mt-6 flex flex-col gap-4 lg:mt-8'>
       <div
         role='alert'
         className='rounded-xl border border-border bg-card p-5 text-sm text-muted-foreground'
       >
         No se pudieron cargar los datos del panel. Intenta actualizar la página.
       </div>
-    </main>
+    </div>
   </section>
 )
 
@@ -67,7 +68,12 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const accounts = toSourceResult(getDashboardAccounts(userId))
 
   return (
-    <section className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>
+    <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+      <div className='flex flex-col gap-1'>
+        <h1 className='text-2xl font-bold tracking-tight'>Panel de control</h1>
+        <p className='text-sm text-muted-foreground'>{dashboardPeriodLabel(period)}</p>
+      </div>
+
       <ActionDashboard dashboardmode={period.mode} />
       <KpisSection actuals={actuals} plan={plan} period={period} />
 
@@ -82,6 +88,6 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
           <InsightSection actuals={actuals} plan={plan} period={period} />
         </div>
       </div>
-    </section>
+    </div>
   )
 }

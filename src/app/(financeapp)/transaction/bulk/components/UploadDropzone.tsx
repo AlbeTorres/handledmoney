@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 import { useCSVState } from '@/store'
 import { Upload } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { useState } from 'react'
+import { useState, type HTMLAttributes } from 'react'
 import { useCSVReader } from 'react-papaparse'
 import toast from 'react-hot-toast'
 
@@ -43,7 +43,13 @@ export const UploadDropzone = () => {
 
   return (
     <CSVReader onUploadAccepted={onUpload}>
-      {({ getRootProps }: any) => (
+      {({
+        getRootProps,
+      }: {
+        getRootProps: (
+          props?: HTMLAttributes<HTMLDivElement>,
+        ) => HTMLAttributes<HTMLDivElement>
+      }) => (
         <div
           {...getRootProps({
             onDragEnter: () => setIsDragging(true),
@@ -65,7 +71,7 @@ export const UploadDropzone = () => {
           <p className='text-sm text-muted-foreground'>{t('import.dropzone_drag_hint')}</p>
           <button
             type='button'
-            className='mt-3 inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-6 py-2 text-sm font-medium shadow-md shadow-primary/20 transition-all duration-300 hover:bg-primary/90 hover:scale-105 outline-none'
+            className='mt-3 inline-flex items-center justify-center rounded-md bg-primary px-6 py-2 text-sm font-medium text-primary-foreground outline-none transition-colors hover:bg-primary-hover'
           >
             {t('import.upload_button')}
           </button>

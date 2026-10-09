@@ -10,10 +10,18 @@ import {
 } from '@/components/ui/input-group'
 import { clampProgressPercentage, getBudgetAllocationTotals, getCategoryIncomePercentage } from '@/lib/budget-allocation'
 import type { CreateBudgetValues } from '@/lib/schema'
-import { getIconComponent } from '@/lib/utils'
-import { CircleDollarSign, WalletCards } from 'lucide-react'
+import { ICONS } from '@/lib/data'
+import { CircleDollarSign, Landmark, WalletCards } from 'lucide-react'
 import { Controller, FormProvider, useFormContext, type UseFormReturn } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
+
+const AllocationIconByKey = new Map<string, typeof Landmark>(ICONS.map(i => [i.name, i.icon]))
+const DEFAULT_ALLOCATION_ICON = ICONS[0].icon
+
+function categoryGlyph(iconName: string) {
+  const Icon = AllocationIconByKey.get(iconName) ?? DEFAULT_ALLOCATION_ICON
+  return <Icon className='size-4 text-white' aria-hidden='true' />
+}
 
 // Local formatter, consistent with the en-US/USD pattern used across the
 // budget components. Configurable currency is out of scope for now.
@@ -52,7 +60,7 @@ function GroupCard({ group, groupIndex, categories, totalIncome }: GroupCardProp
     <section className='rounded-md border bg-card p-4'>
       <div className='flex flex-wrap items-center gap-2'>
         {group.calculationType === 'income' ? (
-          <CircleDollarSign className='size-5 shrink-0 text-primary' aria-hidden='true' />
+          <CircleDollarSign className='size-5 shrink-0 text-success' aria-hidden='true' />
         ) : (
           <WalletCards className='size-5 shrink-0 text-primary' aria-hidden='true' />
         )}
@@ -92,7 +100,6 @@ interface CategoryRowProps {
 function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmount }: CategoryRowProps) {
   const t = useTranslations('handledmoney.budget.form')
   const { formState } = useFormContext<CreateBudgetValues>()
-  const Icon = getIconComponent(category.icon)
   const realPercentage = getCategoryIncomePercentage(plannedAmount, totalIncome)
   const clamped = clampProgressPercentage(realPercentage)
   const amountError = formState.errors.groups?.[groupIndex]?.items?.[itemIndex]?.plannedAmount?.message
@@ -103,7 +110,7 @@ function CategoryRow({ groupIndex, category, itemIndex, totalIncome, plannedAmou
         className='flex size-9 shrink-0 items-center justify-center rounded-full'
         style={{ backgroundColor: `#${category.color}` }}
       >
-        <Icon className='size-4 text-white' aria-hidden='true' />
+        {categoryGlyph(category.icon)}
       </span>
       <div className='min-w-0 flex-1'>
         <div className='flex items-baseline justify-between gap-2'>

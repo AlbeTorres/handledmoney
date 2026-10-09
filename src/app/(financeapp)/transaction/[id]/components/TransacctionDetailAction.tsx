@@ -44,13 +44,12 @@ export default function TransactionDetailActions({ id }: TransactionDetailAction
   return (
     <div className='flex items-end justify-end gap-3'>
       <ConfirmDialog />
-      <Link
-        className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
-        href={`/transaction/${id}/edit`}
-      >
-        <Pencil className='size-4' />
-        {'Edit'}
-      </Link>
+      <Button asChild variant='outline'>
+        <Link href={`/transaction/${id}/edit`}>
+          <Pencil className='size-4' />
+          {'Edit'}
+        </Link>
+      </Button>
 
       <Button
         variant='destructive'

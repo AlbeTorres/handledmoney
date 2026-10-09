@@ -74,9 +74,9 @@ export const EditTransactionForm = ({
   return (
     <form id='form-create-account' onSubmit={form.handleSubmit(handleSubmit)}>
       <FieldGroup>
-        <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+        <div className='rounded-xl border border-border bg-card overflow-hidden'>
           <div className='p-8 space-y-8 '>
-            <h1>Transaction Details</h1>
+            <h2 className='text-lg font-semibold'>Transaction Details</h2>
 
             <div className='grid grid-cols-1 grid-rows-2 sm:grid-cols-2 gap-6'>
               <Controller
@@ -172,7 +172,7 @@ export const EditTransactionForm = ({
           </div>
         </div>
 
-        <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+        <div className='rounded-xl border border-border bg-card overflow-hidden'>
           <div className='p-8 space-y-8 '>
             <div className='grid grid-cols-1 grid-rows-2 sm:grid-cols-2 gap-6'>
               <Controller
@@ -231,7 +231,7 @@ export const EditTransactionForm = ({
           </div>
         </div>
 
-        <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+        <div className='rounded-xl border border-border bg-card overflow-hidden'>
           <div className='p-8 space-y-8 '>
             <Controller
               name='notes'

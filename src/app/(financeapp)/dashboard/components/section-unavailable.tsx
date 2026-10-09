@@ -6,7 +6,7 @@
  */
 export function SectionUnavailable() {
   return (
-    <section className='rounded-xl border border-border bg-card p-5 shadow-sm'>
+    <section className='rounded-xl border border-border bg-card p-5'>
       <div role='alert' className='text-sm text-muted-foreground'>
         No se pudieron cargar los datos de esta sección. Intenta actualizar la página.
       </div>

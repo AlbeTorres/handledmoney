@@ -17,7 +17,7 @@ interface Props {
 
 export function BudgetTable({ groups, viewMode }: Props) {
   return (
-    <section className="rounded-xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+    <section className="rounded-xl border border-border bg-card">
       <div className="flex items-baseline justify-between border-b border-border p-5">
         <div>
           <h2 className="text-sm font-semibold">Estimado vs Real por categoría</h2>
@@ -47,7 +47,7 @@ export function BudgetTable({ groups, viewMode }: Props) {
                   )}
                 />
                 <h3 className="text-sm font-semibold">{group.name}</h3>
-                <span className="rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
                   {group.kind === 'income' ? 'Ingreso' : 'Gasto'}
                 </span>
               </div>
@@ -81,10 +81,17 @@ export function BudgetTable({ groups, viewMode }: Props) {
 
                     {/* Progress bar */}
                     <div className="flex items-center gap-3">
-                      <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div
+                        role="progressbar"
+                        aria-label={cat.name}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={Math.round(cat.pct * 100)}
+                        className="h-2 flex-1 overflow-hidden rounded-full bg-muted"
+                      >
                         <div
                           className={cn(
-                            'h-full rounded-full transition-all',
+                            'h-full rounded-full transition-[width]',
                             STATUS_BAR[cat.status],
                           )}
                           style={{

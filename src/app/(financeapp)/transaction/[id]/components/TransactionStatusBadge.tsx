@@ -12,15 +12,15 @@ interface TransactionStatusBadgeProps {
 const STATUS_CONFIG: Record<Status, { icon: typeof CheckCircle; className: string }> = {
   cleared: {
     icon: CheckCircle,
-    className: 'text-emerald-700',
+    className: 'text-success',
   },
   pending: {
     icon: Clock,
-    className: 'bg-amber-50 text-amber-700',
+    className: 'bg-warning/15 text-warning',
   },
   recurring: {
     icon: RefreshCw,
-    className: 'bg-slate-100 text-slate-600',
+    className: 'bg-muted text-muted-foreground',
   },
 }
 
@@ -34,7 +34,7 @@ export function TransactionStatusBadge({ status }: TransactionStatusBadgeProps) 
 
   return (
     <span
-      className={`flex items-center gap-1 px-2 py-0.5  text-[10px] font-semibold ${config.className}`}
+      className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${config.className}`}
     >
       <Icon className='size-3' />
       {t(`status.${status}`)}

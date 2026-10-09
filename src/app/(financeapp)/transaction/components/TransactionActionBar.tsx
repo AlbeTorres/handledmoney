@@ -44,7 +44,7 @@ export default function TransactionActionBar({ categories, transactions }: Props
 
   return (
     <>
-      <div className='flex items-center justify-end mt-6 mb-14 gap-2'>
+      <div className='flex items-center justify-end gap-2'>
         <Button
           data-testid='export-csv-button'
           variant='outline'
@@ -54,14 +54,12 @@ export default function TransactionActionBar({ categories, transactions }: Props
           <Download className='size-4' />
           <span>{t('action.export_csv')}</span>
         </Button>
-        <Link
-          href='/transaction/bulk'
-          data-testid='bulk-add-button'
-          className='inline-flex items-center shadow-md gap-2 border border-input bg-background hover:bg-accent hover:text-accent-foreground px-3 py-1.5 rounded-md text-sm font-medium transition-colors'
-        >
-          <Upload className='size-4' />
-          <span>{t('action.bulk_add')}</span>
-        </Link>
+        <Button asChild variant='outline' size='sm'>
+          <Link href='/transaction/bulk' data-testid='bulk-add-button'>
+            <Upload className='size-4' />
+            <span>{t('action.bulk_add')}</span>
+          </Link>
+        </Button>
       </div>
       <ActionBar
         searchTerm={searchTerm}

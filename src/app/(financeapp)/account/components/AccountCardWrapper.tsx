@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { AccountCard } from './AccountCard'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
-import { TiltCardWrapper } from './TiltCardWrapper'
 
 interface AccountCardWrapperProps {
   account: {
@@ -49,29 +48,27 @@ export function AccountCardWrapper({
 
   return (
     <>
-      <TiltCardWrapper>
-        <AccountCard
-          institution={account.bank ?? t('card.unknown_bank')}
-          name={account.name ?? t('card.unnamed_account')}
-          balance={
-            account.balance
-              ? parseFloat(account.balance).toLocaleString('en-US', {
-                  style: 'currency',
-                  currency: account.currency ?? 'USD',
-                })
-              : '$0.00'
-          }
-          currency={account.currency ?? 'USD'}
-          detail={account.type ?? t('card.general_type')}
-          status='Active' // Hardcoded for now as per current design
-          statusVariant='active'
-          accentColor={account.color ? `#${account.color}` : '#3b82f6'}
-          Icon={iconComponent}
-          onDetails={handleDetails}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
-      </TiltCardWrapper>
+      <AccountCard
+        institution={account.bank ?? t('card.unknown_bank')}
+        name={account.name ?? t('card.unnamed_account')}
+        balance={
+          account.balance
+            ? parseFloat(account.balance).toLocaleString('en-US', {
+                style: 'currency',
+                currency: account.currency ?? 'USD',
+              })
+            : '$0.00'
+        }
+        currency={account.currency ?? 'USD'}
+        detail={account.type ?? t('card.general_type')}
+        status='Active' // Hardcoded for now as per current design
+        statusVariant='active'
+        accentColor={account.color ? `#${account.color}` : '#3b82f6'}
+        Icon={iconComponent}
+        onDetails={handleDetails}
+        onEdit={handleEdit}
+        onDelete={handleDelete}
+      />
 
       <DeleteAccountDialog
         id={account.id}

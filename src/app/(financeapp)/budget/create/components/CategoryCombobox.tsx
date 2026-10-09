@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { getIconComponent } from '@/lib/utils'
-import { Check, ChevronsUpDown, Plus } from 'lucide-react'
+import { ICONS } from '@/lib/data'
+import { Check, ChevronsUpDown, Landmark, Plus } from 'lucide-react'
 import { useTranslations } from 'next-intl'
 import { useMemo, useState } from 'react'
 
@@ -14,6 +14,14 @@ export type BudgetCategory = {
   type: 'income' | 'expense'
   icon: string
   color: string
+}
+
+const CategoryIconByKey = new Map<string, typeof Landmark>(ICONS.map(i => [i.name, i.icon]))
+const DEFAULT_CATEGORY_ICON = ICONS[0].icon
+
+function categoryGlyph(iconName: string, color: string) {
+  const Icon = CategoryIconByKey.get(iconName) ?? DEFAULT_CATEGORY_ICON
+  return <Icon className='size-4 shrink-0' style={{ color: `#${color}` }} />
 }
 
 export function CategoryCombobox({
@@ -36,7 +44,6 @@ export function CategoryCombobox({
   const [query, setQuery] = useState('')
   const expectedType = calculationType === 'income' ? 'income' : 'expense'
   const selected = categories.find(category => category.id === selectedCategoryId)
-  const SelectedIcon = selected ? getIconComponent(selected.icon) : null
   const compatible = useMemo(
     () =>
       categories.filter(
@@ -61,9 +68,7 @@ export function CategoryCombobox({
         >
           {selected ? (
             <span className='inline-flex min-w-0 items-center gap-2'>
-              {SelectedIcon && (
-                <SelectedIcon className='size-4 shrink-0' style={{ color: `#${selected.color}` }} />
-              )}
+              {categoryGlyph(selected.icon, selected.color)}
               <span className='truncate'>{selected.name}</span>
             </span>
           ) : (

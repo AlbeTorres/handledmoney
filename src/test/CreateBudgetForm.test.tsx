@@ -489,11 +489,11 @@ describe('CreateBudgetForm wizard', () => {
     expect(within(rowFor('Salary')).getByRole('spinbutton')).toHaveValue(0)
     expect(within(rowFor('Groceries')).getByRole('spinbutton')).toHaveValue(0)
 
-    // Assign amounts: income 1000, outflow 700 -> unassigned 300 shown in amber.
+    // Assign amounts: income 1000, outflow 700 -> unassigned 300 shown in warning tone.
     await setAmount(user, 'Salary', 1000)
     await setAmount(user, 'Groceries', 700)
     expect(metricValue('allocation_unassigned')).toBe('$300.00')
-    expect(screen.getByText('balance_positive')).toHaveClass('bg-amber-500/10')
+    expect(screen.getByText('balance_positive')).toHaveClass('bg-warning/15')
 
     // Back to step 2 and forward again: assigned amounts are preserved.
     await user.click(screen.getByRole('button', { name: 'back' }))

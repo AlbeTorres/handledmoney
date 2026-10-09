@@ -1,5 +1,6 @@
 import { EditCategoryForm } from '@/app/(financeapp)/category/[id]/edit/components/EditCategoryForm'
 import { FormWrapper } from '@/components/shared/FormWrapper'
+import { Button } from '@/components/ui/button'
 import { getCategoryByIdAction } from '@/data-access/get-category-by-id'
 import { getTranslations } from 'next-intl/server'
 import { redirect } from 'next/navigation'
@@ -26,13 +27,10 @@ export default async function EditCategoryPage({ params }: EditCategoryPageProps
         <div className='flex items-center justify-center h-full'>
           <div className='text-center'>
             <h2 className='text-2xl font-bold mb-2'>{t('edit.not_found')}</h2>
-            <p className='text-slate-500 mb-4'>{t('edit.not_found_description')}</p>
-            <button
-              onClick={() => redirect('/category')}
-              className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors'
-            >
+            <p className='text-muted-foreground mb-4'>{t('edit.not_found_description')}</p>
+            <Button type='button' onClick={() => redirect('/category')}>
               {t('edit.go_back')}
-            </button>
+            </Button>
           </div>
         </div>
       </FormWrapper>

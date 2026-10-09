@@ -111,6 +111,31 @@ export function defaultDashboardPeriod(now: Date = new Date()): DashboardPeriod 
   return { mode: 'monthly', year: now.getUTCFullYear(), month: now.getUTCMonth() }
 }
 
+const MONTH_LABELS = [
+  'Enero',
+  'Febrero',
+  'Marzo',
+  'Abril',
+  'Mayo',
+  'Junio',
+  'Julio',
+  'Agosto',
+  'Septiembre',
+  'Octubre',
+  'Noviembre',
+  'Diciembre',
+]
+
+/**
+ * Human period label for the dashboard heading, e.g. `Marzo 2026` for a
+ * monthly period and `Resumen anual · 2026` for an annual one. Spanish by
+ * convention: dashboard strings are hardcoded in Spanish.
+ */
+export function dashboardPeriodLabel(period: DashboardPeriod): string {
+  if (period.mode === 'monthly') return `${MONTH_LABELS[period.month]} ${period.year}`
+  return `Resumen anual · ${period.year}`
+}
+
 /**
  * One UTC half-open range for a validated period: monthly
  * `[monthStart, nextMonthStart)` or annual `[yearStart, nextYearStart)`.

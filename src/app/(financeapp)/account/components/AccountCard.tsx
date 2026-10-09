@@ -41,7 +41,7 @@ export function AccountCard({
 
   return (
     <div
-      className={`group bg-white dark:bg-slate-900 rounded-xl border-l-4 border-y border-r border-slate-200 dark:border-slate-800 p-6 transition-all relative`}
+      className={`group bg-card rounded-xl border-l-4 border-y border-r border-border p-6 transition-colors relative`}
       style={{ borderLeftColor: accentColor }}
     >
       <div className='flex justify-between items-start mb-6'>
@@ -55,7 +55,7 @@ export function AccountCard({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className='text-slate-400 hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1 cursor-pointer'
+              className='text-muted-foreground hover:text-primary transition-colors focus-visible:ring-2 focus-visible:ring-primary rounded outline-none p-1 cursor-pointer'
               aria-label={t('card.options_aria')}
               onClick={e => e.stopPropagation()}
             >
@@ -92,16 +92,15 @@ export function AccountCard({
         </DropdownMenu>
       </div>
       <div>
-        <p className='text-[9px] font-semibold text-slate-400 uppercase tracking-widest'>
+        <p className='text-xs font-semibold text-muted-foreground uppercase tracking-widest'>
           {institution}
         </p>
-        <h3 className='text-xl font-bold text-slate-900 dark:text-white mb-4'>{name}</h3>
+        <h3 className='text-xl font-bold text-foreground mb-4'>{name}</h3>
         <div className='flex text-xl gap-x-2'>
-          <p className=' font-medium uppercase'>{detail}</p>
-          <p>**** **** **** ****</p>
+          <p className='font-medium uppercase text-muted-foreground'>{detail}</p>
         </div>
       </div>
-      <div className='mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 w-full'>
+      <div className='mt-6 pt-4 border-t border-border w-full'>
         <div className='flex items-baseline gap-1 tabular-nums'>
           <div className='flex items-center gap-2 justify-between w-full'>
             <div>
@@ -109,7 +108,7 @@ export function AccountCard({
             </div>
             <p
               style={{ backgroundColor: `${accentColor}1A`, color: accentColor }}
-              className='text-xs font-medium p-2 rounded-md text-slate-400'
+              className='text-xs font-medium p-2 rounded-md'
             >
               {currency}
             </p>

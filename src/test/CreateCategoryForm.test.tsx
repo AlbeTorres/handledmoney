@@ -77,8 +77,8 @@ describe('CreateCategoryForm', () => {
     setup()
 
     const expenseButton = screen.getByText('form.type_expense')
-    // The selected button gets the bg-white class indicating active state
-    expect(expenseButton.className).toContain('bg-white')
+    // The selected button gets the bg-background class indicating active state
+    expect(expenseButton.className).toContain('bg-background')
   })
 
   // ── Section: Type toggle ────────────────────────────────────────────────────
@@ -91,8 +91,8 @@ describe('CreateCategoryForm', () => {
     const incomeButton = screen.getByText('form.type_income')
     const expenseButton = screen.getByText('form.type_expense')
     // Income gets active styles, expense loses them
-    expect(incomeButton.className).toContain('bg-white')
-    expect(expenseButton.className).not.toContain('bg-white')
+    expect(incomeButton.className).toContain('bg-background')
+    expect(expenseButton.className).not.toContain('bg-background')
   })
 
   // ── Section: Validation ─────────────────────────────────────────────────────

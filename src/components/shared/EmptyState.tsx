@@ -32,7 +32,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       <div className='mt-4 flex flex-col sm:flex-row items-center justify-center gap-4'>
         <Link
           href={onPrimaryActionHref}
-          className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
+          className='flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-hover transition-colors px-4 py-2.5 rounded-md text-sm'
         >
           <Plus className='size-4' />
           {primaryActionText}
@@ -41,7 +41,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         {showImportButton && (
           <Link
             href={onImportAction || ''}
-            className='flex items-center border-2 border-primary gap-2 bg-transparent text-primary hover:bg-secondary hover:text-white hover:border-secondary transition-all duration-300 px-4 py-2 rounded-md text-sm  shadow-lg shadow-primary/20 hover:scale-105'
+            className='flex items-center border border-primary gap-2 bg-transparent text-primary hover:bg-primary-hover/10 transition-colors px-4 py-2 rounded-md text-sm'
           >
             <Import className='size-4' />
             {importActionText}

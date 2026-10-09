@@ -59,7 +59,7 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
 
   if (!accountData || !transactionsData) {
     return (
-      <div className='flex items-center justify-center h-screen'>
+      <div className='flex items-center justify-center py-20'>
         <p>{t('detail.error')}</p>
       </div>
     )
@@ -77,53 +77,49 @@ export default async function AccountPage({ searchParams, params }: AccountPageP
   const avgDailySpend = totalExpenses > 0 ? totalExpenses / 30 : 0
 
   return (
-    <div className='bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased font-display'>
-      <div className='flex  h-screen overflow-hidden'>
-        <main className='flex-1 flex flex-col overflow-y-auto bg-slate-50 dark:bg-background-dark/50'>
-          <AccountInfo account={accountData} />
+    <div className='flex flex-1 flex-col bg-background'>
+      <AccountInfo account={accountData} />
 
-          <div className='p-8 container space-y-8'>
-            <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
-              <InfoCard
-                title={t('detail.total_income')}
-                value={totalIncome}
-                icon={<ArrowDown className='size-4 text-emerald-500' />}
-                category='income'
-              />
+      <div className='container flex flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+        <div className='grid grid-cols-1 md:grid-cols-4 gap-6'>
+          <InfoCard
+            title={t('detail.total_income')}
+            value={totalIncome}
+            icon={<ArrowDown className='size-4 text-income' />}
+            category='income'
+          />
 
-              <InfoCard
-                title={t('detail.total_expenses')}
-                value={totalExpenses}
-                icon={<ArrowUp className='size-4 text-rose-500' />}
-                category='expense'
-              />
+          <InfoCard
+            title={t('detail.total_expenses')}
+            value={totalExpenses}
+            icon={<ArrowUp className='size-4 text-expense' />}
+            category='expense'
+          />
 
-              <InfoCard
-                title={t('detail.net_flow')}
-                value={netFlow}
-                icon={<ArrowRightLeft className='size-4 text-primary' />}
-              />
+          <InfoCard
+            title={t('detail.net_flow')}
+            value={netFlow}
+            icon={<ArrowRightLeft className='size-4 text-primary' />}
+          />
 
-              <InfoCard
-                title={t('detail.avg_daily_spend')}
-                value={avgDailySpend}
-                icon={<TrendingUp className='size-4 text-slate-400' />}
-              />
-            </div>
+          <InfoCard
+            title={t('detail.avg_daily_spend')}
+            value={avgDailySpend}
+            icon={<TrendingUp className='size-4 text-muted-foreground' />}
+          />
+        </div>
 
-            <div className='bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden p-6'>
-              <h3 className='font-bold text-lg mb-4'>
-                {t('detail.transactions_for', { name: accountData.name })}
-              </h3>
-              <AccountTransactionTable
-                data={transactionsData}
-                categories={categories}
-                totalPages={totalPages}
-                currentPage={currentPage}
-              />
-            </div>
-          </div>
-        </main>
+        <div className='bg-card rounded-xl border border-border overflow-hidden p-6'>
+          <h3 className='font-bold text-lg mb-4'>
+            {t('detail.transactions_for', { name: accountData.name })}
+          </h3>
+          <AccountTransactionTable
+            data={transactionsData}
+            categories={categories}
+            totalPages={totalPages}
+            currentPage={currentPage}
+          />
+        </div>
       </div>
     </div>
   )

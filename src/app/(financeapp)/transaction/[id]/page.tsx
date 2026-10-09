@@ -27,7 +27,7 @@ export default async function TransactionDetailPage({ params }: TransactionDetai
   const transaction = response.data
 
   return (
-    <div className='container mx-auto space-y-6 p-8'>
+    <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
       <div className='flex flex-col md:flex-row md:items-center justify-between'>
         <Breadcrumb
           pathTitle={transaction.payee}

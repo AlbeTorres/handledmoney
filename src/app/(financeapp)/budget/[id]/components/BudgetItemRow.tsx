@@ -76,7 +76,7 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
         <div className='flex items-center gap-2'>
           <span className='text-sm font-medium text-foreground truncate'>{item.name}</span>
           {item.categoryId && (
-            <span className='text-[10px] uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md'>
+            <span className='text-xs uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5 rounded-md'>
               mapped
             </span>
           )}
@@ -124,14 +124,21 @@ export function BudgetItemRow({ item, budgetId }: BudgetItemRowProps) {
       </div>
 
       <span className={cn('body-sm tabular-nums text-right', isOver ? 'font-medium text-destructive' : 'text-muted-foreground')}>{currency(item.actualAmount)}</span>
-      <span className={cn('body-sm text-right font-medium tabular-nums', isOver ? 'text-destructive' : item.remaining > 0 ? 'text-emerald-700' : 'text-muted-foreground')}>{currency(item.remaining)}</span>
+      <span className={cn('body-sm text-right font-medium tabular-nums', isOver ? 'text-danger' : item.remaining > 0 ? 'text-success' : 'text-muted-foreground')}>{currency(item.remaining)}</span>
 
       <div className='px-3'>
-        <div className='h-1.5 w-full rounded-full bg-muted overflow-hidden'>
+        <div
+          role='progressbar'
+          aria-label={`Usage for ${item.name}`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(usagePct)}
+          className='h-1.5 w-full rounded-full bg-muted overflow-hidden'
+        >
           <div
             className={cn(
-              'h-full rounded-full transition-all',
-              usagePct > 100 ? 'bg-red-500' : usagePct > 75 ? 'bg-amber-500' : 'bg-emerald-500',
+              'h-full rounded-full transition-[width]',
+              usagePct > 100 ? 'bg-danger' : usagePct > 75 ? 'bg-warning' : 'bg-success',
             )}
             style={{ width: `${usagePct}%` }}
           />

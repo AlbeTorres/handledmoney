@@ -36,7 +36,7 @@ export default function ActionBar({
           onChange={e => setSearchTerm(e.target.value)}
         />
         <InputGroupAddon>
-          <Search className='size-4 text-slate-400' aria-hidden='true' />
+          <Search className='size-4 text-muted-foreground' aria-hidden='true' />
         </InputGroupAddon>
       </InputGroup>
 
@@ -44,7 +44,7 @@ export default function ActionBar({
 
       <Link
         href={href}
-        className='flex items-center gap-2 bg-primary text-white hover:bg-secondary transition-all duration-300 px-4 py-2.5 rounded-md text-sm font-bold shadow-lg shadow-primary/20 hover:scale-105'
+        className='flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary-hover transition-colors px-4 py-2.5 rounded-md text-sm font-bold'
       >
         <Plus className='size-4' />
         {buttonText}

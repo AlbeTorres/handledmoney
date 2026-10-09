@@ -31,7 +31,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
 
   if (!accounts || accounts.length === 0) {
     return (
-      <div className='m-auto flex  flex-col justify-center items-center gap-4'>
+      <div className='container flex w-full flex-col items-center gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+        <div className='flex w-full flex-col gap-1'>
+          <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.accounts')}</h1>
+        </div>
         <EmptyState
           title={t('empty_state.title')}
           description={t('empty_state.description')}
@@ -46,7 +49,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   }
 
   return (
-    <div className='px-8 py-10 my-5 flex flex-col gap-y-10 container'>
+    <div className='container flex w-full flex-col gap-y-6 px-4 py-6 sm:px-6 lg:px-8 lg:py-10'>
+      <div className='flex flex-col gap-1'>
+        <h1 className='text-2xl font-bold tracking-tight'>{t('breadcrumbs.accounts')}</h1>
+      </div>
       <AccountAction />
       <AccountGrid accounts={accounts} currency={currency} sort={sort} search={search} />
     </div>

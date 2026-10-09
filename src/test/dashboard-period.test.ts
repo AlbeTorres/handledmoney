@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   DashboardPeriodSchema,
+  dashboardPeriodLabel,
   dashboardRange,
   defaultDashboardPeriod,
   parseDashboardPeriod,
@@ -150,5 +151,16 @@ describe('dashboardRange half-open UTC ranges', () => {
       start: new Date('2026-12-01T00:00:00.000Z'),
       nextStart: new Date('2027-01-01T00:00:00.000Z'),
     })
+  })
+})
+
+describe('dashboardPeriodLabel human heading labels', () => {
+  it('returns the Spanish month and year for a monthly period', () => {
+    expect(dashboardPeriodLabel({ mode: 'monthly', year: 2026, month: 0 })).toBe('Enero 2026')
+    expect(dashboardPeriodLabel({ mode: 'monthly', year: 2026, month: 11 })).toBe('Diciembre 2026')
+  })
+
+  it('returns the annual summary label for an annual period', () => {
+    expect(dashboardPeriodLabel({ mode: 'annual', year: 2026 })).toBe('Resumen anual · 2026')
   })
 })

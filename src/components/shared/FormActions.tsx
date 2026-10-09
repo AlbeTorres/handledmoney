@@ -24,7 +24,7 @@ export function FormActions({
   return (
     <div
       className={cn(
-        'flex flex-col-reverse sm:flex-row items-center gap-4 px-8 py-5 border-t border-slate-100 dark:border-slate-800',
+        'flex flex-col-reverse sm:flex-row items-center gap-4 px-8 py-5 border-t border-border',
         {
           'justify-between': handleDelete,
           'justify-end': !handleDelete,
@@ -36,7 +36,7 @@ export function FormActions({
           disabled={isPending}
           type='button'
           onClick={handleDelete}
-          className='size-10 flex items-center justify-center bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 rounded-lg hover:bg-red-100 transition-all disabled:opacity-50'
+          className='size-10 flex items-center justify-center bg-destructive/10 text-destructive rounded-lg hover:bg-destructive/20 transition-colors disabled:opacity-50'
         >
           <Trash2 className='size-6' />
         </Button>

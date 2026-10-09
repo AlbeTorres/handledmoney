@@ -26,10 +26,10 @@ describe('TransactionAmountCell', () => {
     expect(cell.textContent).toContain('142.30')
   })
 
-  it('applies emerald color for income', () => {
+  it('applies success color for income', () => {
     render(<TransactionAmountCell amount={100} type='income' />)
     const cell = screen.getByTestId('amount-cell')
-    expect(cell.className).toContain('text-emerald')
+    expect(cell.className).toContain('text-success')
   })
 
   it('renders status badge when status is provided', () => {

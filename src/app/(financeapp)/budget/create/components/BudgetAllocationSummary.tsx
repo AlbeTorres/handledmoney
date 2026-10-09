@@ -19,10 +19,10 @@ export function BudgetAllocationSummary({ groups }: { groups: CreateBudgetValues
   const totals = getBudgetAllocationTotals(groups)
 
   let balanceKey: BalanceKey = 'balance_zero'
-  let balanceClass = 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-400'
+  let balanceClass = 'bg-success/15 text-success'
   if (totals.unassigned > 0) {
     balanceKey = 'balance_positive'
-    balanceClass = 'bg-amber-500/10 text-amber-700 dark:text-amber-400'
+    balanceClass = 'bg-warning/15 text-warning'
   } else if (totals.unassigned < 0) {
     balanceKey = 'balance_negative'
     balanceClass = 'bg-destructive/10 text-destructive'

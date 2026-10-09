@@ -2,10 +2,20 @@
 
 import { TransactionStatusBadge } from './TransactionStatusBadge'
 import { Badge } from '@/components/ui/badge'
+import { ICONS } from '@/lib/data'
 import { getTransactionTypeConfig } from '@/lib/transaction-types'
-import { fmtDate, formatMoney, getIconComponent } from '@/lib/utils'
-import { ArrowBigDown, ArrowBigUp } from 'lucide-react'
+import { fmtDate, formatMoney } from '@/lib/utils'
+import { ArrowBigDown, ArrowBigUp, Landmark } from 'lucide-react'
 import { useTranslations } from 'next-intl'
+
+const HeaderIconByKey = new Map<string, typeof Landmark>(ICONS.map(i => [i.name, i.icon]))
+const DEFAULT_HEADER_ICON = Landmark
+
+function headerGlyph(iconName: string | undefined) {
+  const Icon =
+    (iconName && HeaderIconByKey.get(iconName)) || (ICONS[0]?.icon ?? DEFAULT_HEADER_ICON)
+  return <Icon className='size-5 text-muted-foreground' />
+}
 
 interface TransactionDetailHeaderProps {
   type: 'income' | 'expense'
@@ -27,8 +37,6 @@ export function TransactionDetailHeader({
   const typeConfig = getTransactionTypeConfig(type)
   const prefix = type === 'income' ? t('amount.income_prefix') : t('amount.expense_prefix')
 
-  const Icon = getIconComponent(account.icon ?? 'account_balance')
-
   return (
     <section className='bg-background'>
       <div className='flex flex-col md:flex-row  mt-5  justify-between items-center'>
@@ -38,16 +46,14 @@ export function TransactionDetailHeader({
               {type === 'income' ? <ArrowBigUp /> : <ArrowBigDown />}
               {t(typeConfig.labelKey)}
             </Badge>
-            <p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>{fmtDate(date)}</p>
+            <p className='mt-1 text-sm text-muted-foreground'>{fmtDate(date)}</p>
           </div>
 
           <div className='py-2'>
-            <h1 className='text-5xl font-semibold tracking-tight  text-slate-900 dark:text-slate-100'>
-              {payee}
-            </h1>
+            <h1 className='text-2xl font-bold tracking-tight text-foreground'>{payee}</h1>
             <div className='flex items-center gap-2 mt-2'>
-              <Icon className='size-5 text-slate-500 dark:text-slate-400' />
-              <p className='mt-0.5 text-md text-slate-500 dark:text-slate-400'>
+              {headerGlyph(account.icon)}
+              <p className='mt-0.5 text-sm text-muted-foreground'>
                 {account.bank} · {account.name}
               </p>
             </div>
@@ -56,10 +62,8 @@ export function TransactionDetailHeader({
 
         <div className='flex flex-col items-end gap-4'>
           <p
-            className={`text-5xl tracking-tighter font-bold ${
-              type === 'income'
-                ? 'text-emerald-600 dark:text-emerald-400'
-                : 'text-rose-600 dark:text-rose-400'
+            className={`text-3xl font-bold tracking-tighter ${
+              type === 'income' ? 'text-income' : 'text-expense'
             }`}
           >
             {prefix}

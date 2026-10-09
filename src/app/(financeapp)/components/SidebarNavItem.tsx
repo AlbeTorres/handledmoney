@@ -13,7 +13,7 @@ export function SidebarNavItem({ href, icon: Icon, label, active }: SidebarNavIt
   return (
     <SidebarMenuItem>
       <SidebarMenuButton className='h-10' asChild isActive={active} tooltip={label}>
-        <Link href={href}>
+        <Link href={href} aria-current={active ? 'page' : undefined}>
           <Icon className='size-5!' />
           <span>{label}</span>
         </Link>

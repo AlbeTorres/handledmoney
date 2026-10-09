@@ -39,7 +39,7 @@ export function InsightCard({ groups }: Props) {
   }
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-primary p-5 text-primary-foreground shadow-sm">
+    <div className="relative overflow-hidden rounded-xl border border-primary bg-primary p-5 text-primary-foreground">
       <div className="absolute -right-6 -top-6 size-24 rounded-full bg-primary-foreground/10" />
       <div className="relative">
         <span className="flex size-8 items-center justify-center rounded-lg bg-primary-foreground/15">

@@ -15,7 +15,7 @@ export const CategoryColumn = ({ categoryName }: Props) => {
       {categoryName ? (
         categoryName
       ) : (
-        <span className='flex gap-1 text-red-500'>
+        <span className='flex gap-1 text-danger'>
           <TriangleAlertIcon className='size-4' /> {t('column.uncategorized')}
         </span>
       )}

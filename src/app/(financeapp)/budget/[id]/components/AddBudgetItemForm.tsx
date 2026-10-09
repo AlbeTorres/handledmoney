@@ -122,7 +122,7 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
         <div className='flex-1 space-y-1'>
           <Label
             htmlFor='item-name'
-            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+            className='text-xs uppercase tracking-wider text-muted-foreground'
           >
             Name
           </Label>
@@ -139,7 +139,7 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
         <div className='w-28 space-y-1'>
           <Label
             htmlFor='item-amount'
-            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+            className='text-xs uppercase tracking-wider text-muted-foreground'
           >
             Amount
           </Label>
@@ -159,7 +159,7 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
         <div className='w-36 space-y-1'>
           <Label
             htmlFor='item-category'
-            className='text-[10px] uppercase tracking-wider text-muted-foreground'
+            className='text-xs uppercase tracking-wider text-muted-foreground'
           >
             Category
           </Label>
@@ -185,7 +185,7 @@ export function AddBudgetItemForm({ groupId, budgetId, calculationType }: AddBud
             type='button'
             variant='ghost'
             size='sm'
-            className='h-6 px-0 text-[10px]'
+            className='h-6 px-0 text-xs'
             onClick={createCategory}
             disabled={isPending}
           >

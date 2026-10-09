@@ -123,7 +123,7 @@ export const ImportCard = ({ data, accounts, onCancel }: Props) => {
 
   return (
     <div className='max-w-screen-2xl mx-auto w-full pb-10 mt-24'>
-      <Card className='border-none drop-shadow-sm'>
+      <Card className='border-border'>
         <CardHeader className='gap-y-2 lg:flex-row lg:items-center lg:justify-between'>
           <CardTitle className='text-xl line-clamp-1'>{t('import.title')}</CardTitle>
           <div className='flex flex-wrap items-end gap-3'>

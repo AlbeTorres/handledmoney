@@ -79,7 +79,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
   }, [router])
 
   return (
-    <div className='bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl shadow-sm overflow-hidden'>
+    <div className='rounded-xl border border-border bg-card overflow-hidden'>
       <ConfirmationDialog />
       <div className='grid sm:grid-cols-2 sm:gap-4'>
         <CategoryPreview
@@ -126,14 +126,14 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                       <FieldLabel htmlFor='form-edit-category-type'>
                         {t('form.transaction_type')}
                       </FieldLabel>
-                      <div className='flex gap-2 p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl'>
+                      <div className='flex gap-2 p-1.5 bg-muted rounded-2xl'>
                         <button
                           type='button'
                           onClick={() => field.onChange('expense')}
-                          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
+                          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-colors ${
                             field.value === 'expense'
-                              ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600'
-                              : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                              ? 'bg-background text-foreground'
+                              : 'text-muted-foreground hover:text-foreground'
                           }`}
                         >
                           {t('form.type_expense')}
@@ -141,10 +141,10 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
                         <button
                           type='button'
                           onClick={() => field.onChange('income')}
-                          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
+                          className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-colors ${
                             field.value === 'income'
-                              ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-sm ring-1 ring-slate-200 dark:ring-slate-600'
-                              : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
+                              ? 'bg-background text-foreground'
+                              : 'text-muted-foreground hover:text-foreground'
                           }`}
                         >
                           {t('form.type_income')}
@@ -156,7 +156,7 @@ export function EditCategoryForm({ initialValues }: { initialValues: EditCategor
               </div>
             </FieldGroup>
 
-            <div className='border-t border-slate-100 dark:border-slate-800' />
+            <div className='border-t border-border' />
 
             <AppearanceSection
               iconValue={form.watch('icon')}

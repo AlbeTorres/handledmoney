@@ -54,7 +54,7 @@ export function BudgetStructureGroupCard({
   }
 
   return (
-    <section className='overflow-hidden rounded-md border bg-card shadow-sm'>
+    <section className='overflow-hidden rounded-md border bg-card'>
       <ConfirmItem />
       <div className='flex flex-wrap items-center justify-between gap-3 border-b bg-muted/30 px-4 py-3'>
         <div className='flex min-w-0 items-center gap-3'>
@@ -65,9 +65,9 @@ export function BudgetStructureGroupCard({
           />
           <span className='inline-flex items-center gap-1.5 rounded-md bg-background px-2 py-1 text-xs text-muted-foreground'>
             {watchedGroup.calculationType === 'income' ? (
-              <CircleDollarSign className='size-3.5 text-emerald-600' />
+              <CircleDollarSign className='size-3.5 text-success' />
             ) : (
-              <WalletCards className='size-3.5 text-sky-600' />
+              <WalletCards className='size-3.5 text-primary' />
             )}
             {watchedGroup.calculationType === 'income'
               ? t('group_type_income')
