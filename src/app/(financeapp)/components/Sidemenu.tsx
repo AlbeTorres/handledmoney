@@ -2,13 +2,16 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
+import { isRouteActive } from '@/lib/shell-nav'
 import {
   ArrowLeftRight,
   ChartColumnStacked,
@@ -19,7 +22,6 @@ import {
   WalletCards,
 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
-import { isRouteActive } from '@/lib/shell-nav'
 import { SidebarNavItem } from './SidebarNavItem'
 
 const NAV_ITEMS = [
@@ -75,6 +77,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarTrigger className='hidden md:flex' />
+      </SidebarFooter>
       {/* <SupportBox /> */}
     </Sidebar>
   )

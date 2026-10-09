@@ -16,7 +16,6 @@ export default async function HandledMoneyLayout({
 
   if (!session?.user) {
     redirect('/auth/login')
-    return null
   }
 
   const user = session.user
@@ -25,7 +24,7 @@ export default async function HandledMoneyLayout({
     <SidebarProvider>
       <AppSidebar />
       <div className='flex min-h-dvh w-full flex-1 flex-col bg-background'>
-        <AppHeader userName={user.name ?? ''} avatarUrl={user.image ?? null} />
+        <AppHeader />
         <main className='flex-1'>{children}</main>
         <DashboardFooter />
       </div>
